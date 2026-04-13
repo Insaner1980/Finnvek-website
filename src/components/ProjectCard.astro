@@ -1,0 +1,98 @@
+---
+interface Props {
+  name: string;
+  description: string;
+  url: string;
+  platform: string;
+  icon?: string;
+  iconAlt?: string;
+}
+
+const { name, description, url, platform, icon, iconAlt } = Astro.props;
+---
+
+<a href={url} class="card" target="_blank" rel="noopener noreferrer">
+  <span class="external-arrow" aria-hidden="true">&#8599;</span>
+  <div class="card-content">
+    <div class="card-header">
+      {icon && <img src={icon} alt={iconAlt || `${name} icon`} class="card-icon" />}
+      <h3 class="card-title">{name}</h3>
+      <span class="platform-tag">{platform}</span>
+    </div>
+    <p class="card-description">{description}</p>
+  </div>
+</a>
+
+<style>
+  .card {
+    display: block;
+    position: relative;
+    background: rgba(19, 19, 26, 0.92);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 0.5px solid var(--color-border);
+    border-radius: var(--radius-card);
+    padding: 1.5rem;
+    color: var(--color-primary);
+    transition: transform 0.2s ease, border-color 0.2s ease;
+  }
+
+  .external-arrow {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    font-size: 1.1rem;
+    color: var(--color-dimmed);
+    transition: color 0.2s ease, transform 0.2s ease;
+  }
+
+  @media (hover: hover) {
+    .card:hover {
+      transform: translateY(-2px);
+      border-color: var(--color-border-hover);
+    }
+
+    .external-arrow:hover {
+      color: var(--color-primary);
+      transform: translate(2px, -2px);
+    }
+  }
+
+  .card-header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .card-icon {
+    width: 72px;
+    height: 72px;
+    border-radius: 50%;
+  }
+
+  .card-title {
+    font-size: 1.25rem;
+    font-weight: 500;
+  }
+
+  .platform-tag {
+    font-family: var(--font-dm-mono), monospace;
+    font-size: 0.65rem;
+    font-weight: 400;
+    color: var(--color-muted);
+    background: transparent;
+    border: 1px solid var(--color-border);
+    border-radius: 100px;
+    padding: 0.15rem 0.6rem;
+    white-space: nowrap;
+  }
+
+  .card-description {
+    color: var(--color-primary);
+    font-size: 0.9375rem;
+    line-height: 1.5;
+    margin-bottom: 1rem;
+  }
+
+</style>

@@ -1,0 +1,107 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Hero from '../components/Hero.astro';
+import ProjectCard from '../components/ProjectCard.astro';
+import Footer from '../components/Footer.astro';
+---
+
+<BaseLayout>
+  <div class="fade-up fade-up-1">
+    <Hero />
+  </div>
+
+  <section class="projects fade-up fade-up-2">
+    <div class="container">
+      <h2 class="section-label"><span class="drop drop-1">P</span><span class="drop drop-2">R</span><span class="drop drop-3">O</span><span class="drop drop-4">J</span><span class="drop drop-5">E</span><span class="drop drop-6">C</span><span class="drop drop-7">T</span><span class="drop drop-8">S</span></h2>
+      <div class="project-grid">
+        <ProjectCard
+          name="KnitTools"
+          description="KnitTools is a knitting companion for Android — project tracking with row counter and session history, five knitting calculators, yarn label scanning, Ravelry pattern search, and a full reference library. Privacy-first, no ads, no data collection. Coming soon on Google Play and Amazon Appstore."
+          url="https://knittoolsapp.com"
+          platform="Coming soon"
+          icon="/knittools-icon.webp"
+          iconAlt="KnitTools app icon"
+        />
+      </div>
+      <p class="coming-soon">More apps coming soon</p>
+    </div>
+  </section>
+
+  <div class="fade-up fade-up-3">
+    <Footer />
+  </div>
+</BaseLayout>
+
+<style>
+  .projects {
+    padding: 1rem 0 1.5rem;
+  }
+
+  .section-label {
+    font-family: var(--font-dm-mono), monospace;
+    font-size: 0.85rem;
+    font-weight: 400;
+    text-transform: uppercase;
+    letter-spacing: 0.25em;
+    color: var(--color-primary);
+    margin-bottom: 1rem;
+  }
+
+  .drop {
+    display: inline-block;
+    opacity: 0;
+    animation: letterDrop 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+  }
+
+  .drop-1 { animation-delay: 0.3s; }
+  .drop-2 { animation-delay: 0.35s; }
+  .drop-3 { animation-delay: 0.4s; }
+  .drop-4 { animation-delay: 0.45s; }
+  .drop-5 { animation-delay: 0.5s; }
+  .drop-6 { animation-delay: 0.55s; }
+  .drop-7 { animation-delay: 0.6s; }
+  .drop-8 { animation-delay: 0.65s; }
+
+  @keyframes letterDrop {
+    0% {
+      opacity: 0;
+      transform: translateY(-30px);
+    }
+    60% {
+      opacity: 1;
+      transform: translateY(3px);
+    }
+    80% {
+      transform: translateY(-2px);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .project-grid {
+    display: grid;
+    gap: 1rem;
+  }
+
+  .coming-soon {
+    font-size: 0.8rem;
+    color: var(--color-primary);
+    text-align: center;
+    margin-top: 1.5rem;
+    opacity: 0;
+    animation: textDrop 0.5s ease-out 0.9s forwards;
+  }
+
+  @keyframes textDrop {
+    0% {
+      opacity: 0;
+      transform: translateY(-20px);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+</style>

@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Finnvek Logo Animation</title>
+    <style>
+        :root {
+            --easing: cubic-bezier(0.5, 0, 0.5, 1);
+            --bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        html, body {
+            height: 100%;
+            width: 100%;
+            background: #0a0a0f;
+            overflow: hidden;
+        }
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+        }
+
+        .logo-wrap {
+            width: 60vmin;
+            position: relative;
+        }
+
+        .logo-svg {
+            width: 100%;
+            height: auto;
+            display: block;
+            overflow: visible;
+        }
+
+        /* Letters fade/scale in with stagger */
+        .letter {
+            opacity: 0;
+            animation: letter-in 0.5s var(--bounce) forwards;
+        }
+
+        .letter-f { animation-delay: 0.1s; }
+        .letter-i { animation-delay: 0.2s; }
+        .letter-n1 { animation-delay: 0.3s; }
+        .letter-n2 { animation-delay: 0.4s; }
+        .letter-v { animation-delay: 0.5s; }
+        .letter-e { animation-delay: 0.6s; }
+        .letter-k { animation-delay: 0.7s; }
+
+        @keyframes letter-in {
+            0% {
+                opacity: 0;
+                transform: translateY(15px) scale(0.8);
+            }
+            100% {
+                opacity: 1;
+                transform: none;
+            }
+        }
+
+        /* F squishes when dot lands */
+        .letter-f {
+            animation: letter-in 0.5s var(--bounce) 0.1s forwards,
+                       squish-f 1.8s var(--easing) 0.8s;
+        }
+
+        @keyframes squish-f {
+            0%, 12% { transform: none; }
+            16% { transform: scaleY(0.93) scaleX(1.03); transform-origin: center bottom; }
+            22% { transform: none; }
+        }
+
+        /* E squishes when dot lands */
+        .letter-e {
+            animation: letter-in 0.5s var(--bounce) 0.6s forwards,
+                       squish-e 1.6s var(--easing) 1.2s;
+        }
+
+        @keyframes squish-e {
+            0%, 15% { transform: none; }
+            19% { transform: scaleY(0.93) scaleX(1.03); transform-origin: center bottom; }
+            25% { transform: none; }
+        }
+
+        /* Dot on F - bounces down from above */
+        .dot-f {
+            opacity: 0;
+            animation: dot-f-bounce 1.8s var(--easing) 0.8s forwards;
+        }
+
+        @keyframes dot-f-bounce {
+            0% {
+                opacity: 1;
+                transform: translateY(-200px);
+            }
+            15% {
+                transform: translateY(0);
+            }
+            25% {
+                transform: translateY(-70px);
+            }
+            40% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-30px);
+            }
+            63% {
+                transform: translateY(0);
+            }
+            72% {
+                transform: translateY(-10px);
+            }
+            82% {
+                transform: translateY(0);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Dot on E - bounces down slightly later */
+        .dot-e {
+            opacity: 0;
+            animation: dot-e-bounce 1.6s var(--easing) 1.2s forwards;
+        }
+
+        @keyframes dot-e-bounce {
+            0% {
+                opacity: 1;
+                transform: translateY(-250px) translateX(30px);
+            }
+            18% {
+                transform: translateY(0) translateX(0);
+            }
+            30% {
+                transform: translateY(-55px);
+            }
+            45% {
+                transform: translateY(0);
+            }
+            55% {
+                transform: translateY(-20px);
+            }
+            68% {
+                transform: translateY(0);
+            }
+            78% {
+                transform: translateY(-6px);
+            }
+            88% {
+                transform: translateY(0);
+            }
+            100% {
+                opacity: 1;
+                transform: none;
+            }
+        }
+
+        .hint {
+            position: fixed;
+            bottom: 2rem;
+            font-family: system-ui, sans-serif;
+            font-size: 1.2vmin;
+            color: rgba(255,255,255,0.15);
+            letter-spacing: 0.3em;
+            text-transform: uppercase;
+        }
+
+        /* Replay: strip all animations briefly */
+        .logo-wrap.replay .letter,
+        .logo-wrap.replay .dot-f,
+        .logo-wrap.replay .dot-e {
+            animation: none !important;
+            opacity: 0 !important;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="logo-wrap" id="logoWrap">
+        <svg class="logo-svg" viewBox="0 0 402 62" fill="none" xmlns="http://www.w3.org/2000/svg">
+
+            <!-- F -->
+            <path class="letter letter-f" d="M45.7734 9.83611H9.14062V51.1095H0V5.30095C0 4.66814 0.117188 4.07048 0.351562 3.50798C0.585938 2.94548 0.902344 2.45329 1.30078 2.03142C1.72266 1.60954 2.21484 1.28142 2.77734 1.04704C3.33984 0.812668 3.94922 0.69548 4.60547 0.69548H45.7734V9.83611Z" fill="white"/>
+
+            <!-- I -->
+            <path class="letter letter-i" d="M65.7617 51.1095H56.6211V0.69548H65.7617V51.1095Z" fill="white"/>
+
+            <!-- N1 -->
+            <path class="letter letter-n1" d="M134.828 47.2072C134.828 47.8635 134.699 48.4728 134.441 49.0353C134.207 49.5978 133.879 50.09 133.457 50.5119C133.059 50.9103 132.578 51.2267 132.016 51.4611C131.453 51.6955 130.855 51.8127 130.223 51.8127C129.66 51.8127 129.086 51.7072 128.5 51.4963C127.938 51.2853 127.434 50.9455 126.988 50.4767L93.5898 15.6017V51.1095H84.4492V4.59783C84.4492 3.66033 84.707 2.81658 85.2227 2.06658C85.7617 1.29314 86.4414 0.71892 87.2617 0.34392C88.1289 -0.00764266 89.0195 -0.0896739 89.9336 0.0978261C90.8477 0.261889 91.6328 0.683764 92.2891 1.36345L125.688 36.2033V0.695482H134.828V47.2072Z" fill="white"/>
+
+            <!-- N2 -->
+            <path class="letter letter-n2" d="M203.859 47.2072C203.859 47.8635 203.73 48.4728 203.473 49.0353C203.238 49.5978 202.91 50.09 202.488 50.5119C202.09 50.9103 201.609 51.2267 201.047 51.4611C200.484 51.6955 199.887 51.8127 199.254 51.8127C198.691 51.8127 198.117 51.7072 197.531 51.4963C196.969 51.2853 196.465 50.9455 196.02 50.4767L162.621 15.6017V51.1095H153.48V4.59783C153.48 3.66033 153.738 2.81658 154.254 2.06658C154.793 1.29314 155.473 0.71892 156.293 0.34392C157.16 -0.00764266 158.051 -0.0896739 158.965 0.0978261C159.879 0.261889 160.664 0.683764 161.32 1.36345L194.719 36.2033V0.695482H203.859V47.2072Z" fill="white"/>
+
+            <!-- V -->
+            <path class="letter letter-v" d="M272.961 0.69548L249.09 49.3166C248.715 50.0666 248.152 50.6642 247.402 51.1095C246.676 51.5783 245.867 51.8127 244.977 51.8127C244.109 51.8127 243.301 51.5783 242.551 51.1095C241.824 50.6642 241.262 50.0666 240.863 49.3166L217.027 0.69548H227.258L244.977 37.0119L262.766 0.69548H272.961Z" fill="white"/>
+
+            <!-- E -->
+            <path class="letter letter-e" d="M333.723 50.5236H300.746C299.48 50.5236 298.098 50.3009 296.598 49.8556C295.098 49.4103 293.703 48.6838 292.414 47.6759C291.148 46.6447 290.082 45.3205 289.215 43.7033C288.371 42.0627 287.949 40.0588 287.949 37.6916V4.71501C287.949 4.0822 288.066 3.48454 288.301 2.92204C288.535 2.35954 288.852 1.86736 289.25 1.44548C289.672 1.02361 290.164 0.69548 290.727 0.461105C291.289 0.22673 291.898 0.109543 292.555 0.109543H333.723V9.25017H297.09V37.6916C297.09 38.8869 297.406 39.8009 298.039 40.4338C298.672 41.0666 299.598 41.383 300.816 41.383H333.723V50.5236Z" fill="white"/>
+
+            <!-- K -->
+            <path class="letter letter-k" d="M401.391 51.1095H388.418L367.852 30.508H361.418V21.297H367.852L388.418 0.69548H401.391L375.48 25.9025L401.391 51.1095ZM357.762 51.1095H348.621V0.69548H357.762V51.1095Z" fill="white"/>
+
+            <!-- Turquoise dots -->
+            <circle class="dot-f" cx="23.9492" cy="32.1095" r="11" fill="#1DB4A5"/>
+            <circle class="dot-e" cx="311.949" cy="25.1095" r="10" fill="#1DB4A5"/>
+        </svg>
+    </div>
+
+    <div class="hint">click to replay</div>
+
+    <script>
+        const wrap = document.getElementById('logoWrap');
+
+        document.body.addEventListener('click', () => {
+            wrap.classList.add('replay');
+            requestAnimationFrame(() => {
+                requestAnimationFrame(() => {
+                    wrap.classList.remove('replay');
+                });
+            });
+        });
+    </script>
+</body>
+</html>
