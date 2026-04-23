@@ -6,13 +6,13 @@ import BaseLayout from '../layouts/BaseLayout.astro';
   title="Privacy. Finnvek"
   description="Finnvek privacy policy."
 >
-  <div class="page">
-    <header class="site-header">
-      <a href="/" class="logo" aria-label="Finnvek home">
-        <img src="/finnvek-logo.svg" alt="Finnvek" width="140" height="18" />
-      </a>
-    </header>
+  <header class="site-header">
+    <a href="/" class="logo" aria-label="Finnvek home">
+      <img src="/finnvek-logo.svg" alt="Finnvek" width="140" height="18" />
+    </a>
+  </header>
 
+  <div class="page">
     <section class="prose">
       <h1 class="serif">Privacy</h1>
       <p>Privacy policy coming with product launch.</p>
@@ -21,11 +21,16 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 
   <footer class="site-footer">
     <div class="footer-inner">
-      <div class="footer-brand">Finnvek &middot; 2026 &middot; Turku, Finland</div>
-      <div class="footer-links">
-        <a href="mailto:contact@finnvek.com">contact@finnvek.com</a>
-        <span class="dot">&middot;</span>
-        <a href="/privacy">Privacy</a>
+      <div class="footer-brand">Finnvek</div>
+      <div class="footer-meta">
+        <div class="footer-facts">
+          <span>Turku, Finland</span>
+          <span>2026</span>
+        </div>
+        <div class="footer-links">
+          <a href="mailto:contact@finnvek.com">contact@finnvek.com</a>
+          <a href="/privacy">Privacy</a>
+        </div>
       </div>
     </div>
   </footer>
