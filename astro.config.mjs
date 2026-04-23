@@ -9,15 +9,15 @@ export default defineConfig({
   fonts: [
     {
       provider: fontProviders.google(),
-      name: 'Lekton',
-      cssVariable: '--font-display',
-      weights: [400, 700],
+      name: 'Literata',
+      cssVariable: '--font-serif',
+      weights: [400, 500],
       styles: ['normal'],
     },
     {
       provider: fontProviders.google(),
-      name: 'Commissioner',
-      cssVariable: '--font-body',
+      name: 'Figtree',
+      cssVariable: '--font-sans',
       weights: [300, 400, 500],
       styles: ['normal'],
     },

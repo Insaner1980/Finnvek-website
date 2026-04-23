@@ -1,10 +1,61 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-import HeroLogo from '../components/HeroLogo.astro';
 ---
 
 <BaseLayout>
-  <main>
-    <HeroLogo />
-  </main>
+  <div class="page">
+    <header class="site-header">
+      <a href="/" class="logo" aria-label="Finnvek home">
+        <img src="/finnvek-logo.svg" alt="Finnvek" width="140" height="18" />
+      </a>
+      <div class="header-meta">
+        <div class="location">Turku, Finland</div>
+        <div class="time" id="local-time">&nbsp;</div>
+      </div>
+    </header>
+
+    <section class="hero">
+      <h1 class="serif">Software that takes time. <br />Made carefully.</h1>
+    </section>
+
+    <section class="about">
+      <p>Finnvek is independent software from Turku, Finland. I'm one developer, working on my own projects.</p>
+      <p>It exists because some ideas were worth following, and I had the freedom to follow them. The kind of ideas that stay interesting for years, not weeks. The kind I care about enough to build carefully, without shortcuts or rushed releases.</p>
+      <p>Every product is its own thing. No ads, no tracking. Made to work well, and to keep working for a long time.</p>
+      <p>The first one is KnitTools. More are on the way.</p>
+    </section>
+
+    <section class="knittools">
+      <div class="knittools-image">
+        <img src="/knittools-phone.png" alt="KnitTools app on a phone" width="280" height="593" />
+      </div>
+      <div class="knittools-content">
+        <div class="label">Coming soon</div>
+        <h2 class="serif">KnitTools</h2>
+        <p>KnitTools is a pocket companion for knitters. It counts your rows, reads your patterns, and keeps your stash quietly in order, with voice and AI that speaks knitter. In eleven languages, for Android.</p>
+        <div class="knittools-actions">
+          <a href="https://knittoolsapp.com" class="link-primary">knittoolsapp.com &rarr;</a>
+        </div>
+      </div>
+    </section>
+
+    <section class="more-apps">
+      <p>More apps are in development.</p>
+    </section>
+  </div>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div class="footer-brand">Finnvek &middot; 2026 &middot; Turku, Finland</div>
+      <div class="footer-links">
+        <a href="mailto:contact@finnvek.com">contact@finnvek.com</a>
+        <span class="dot">&middot;</span>
+        <a href="/privacy">Privacy</a>
+      </div>
+    </div>
+  </footer>
 </BaseLayout>
+
+<script>
+  import '../scripts/clock';
+</script>

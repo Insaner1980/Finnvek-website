@@ -8,8 +8,8 @@ interface Props {
 }
 
 const {
-  title = 'Finnvek',
-  description = 'Finnvek — independent software, privacy by default, made to last.',
+  title = 'Finnvek. Software that takes time. Made carefully.',
+  description = 'Independent software from Turku, Finland. One developer, building products with care. First app: KnitTools, coming soon.',
 } = Astro.props;
 
 const canonical = new URL(Astro.url.pathname, Astro.site).toString();
@@ -23,8 +23,10 @@ const ogImage = new URL('/og-image.png', Astro.site).toString();
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="generator" content={Astro.generator} />
     <meta name="description" content={description} />
-    <meta name="theme-color" content="#08080A" />
+    <meta name="theme-color" content="#0C0C0C" />
+
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
     <link rel="canonical" href={canonical} />
 
     <meta property="og:type" content="website" />
@@ -38,8 +40,8 @@ const ogImage = new URL('/og-image.png', Astro.site).toString();
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={ogImage} />
 
-    <Font cssVariable="--font-display" preload />
-    <Font cssVariable="--font-body" preload />
+    <Font cssVariable="--font-serif" preload />
+    <Font cssVariable="--font-sans" preload />
 
     <title>{title}</title>
   </head>

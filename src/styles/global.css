@@ -1,10 +1,16 @@
 :root {
-  --color-bg: #08080A;
-  --color-text: #EDEDF0;
-  --color-muted: #8E8E9F;
-  --color-dimmed: #5A5A6A;
-  --color-accent: #1DB4A5;
-  --color-accent-hover: #24D4C2;
+  --color-bg: #0C0C0C;
+  --color-text: #F0F0EC;
+  --color-text-muted: #9A9A95;
+  --color-text-dimmed: #5F5F5A;
+  --color-accent: #24D4C2;
+  --color-accent-hover: #3EE8D7;
+  --color-border: #252525;
+  --color-border-faint: #1A1A1A;
+
+  --container-wide: 1100px;
+  --container-prose: 720px;
+  --container-about: 640px;
 }
 
 *,
@@ -18,29 +24,11 @@ body {
   margin: 0;
   padding: 0;
   min-height: 100vh;
-  background-color: var(--color-bg);
-  background-image: radial-gradient(
-    circle,
-    rgba(255, 255, 255, 0.05) 1px,
-    transparent 1px
-  );
-  background-size: 32px 32px;
-  background-attachment: fixed;
-}
-
-@media (max-width: 640px) {
-  html,
-  body {
-    background-image: radial-gradient(
-      circle,
-      rgba(255, 255, 255, 0.07) 1px,
-      transparent 1px
-    );
-  }
+  background: var(--color-bg);
 }
 
 body {
-  font-family: var(--font-body), system-ui, sans-serif;
+  font-family: var(--font-sans), system-ui, sans-serif;
   font-weight: 400;
   color: var(--color-text);
   line-height: 1.6;
@@ -48,25 +36,259 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
-  font-family: var(--font-display), system-ui, sans-serif;
-  font-weight: 700;
-  line-height: 1.2;
-  letter-spacing: -0.01em;
+.serif {
+  font-family: var(--font-serif), Georgia, serif;
+}
+
+.sans {
+  font-family: var(--font-sans), system-ui, sans-serif;
+}
+
+a {
+  color: var(--color-accent);
+  text-decoration: none;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+.page {
+  max-width: var(--container-wide);
+  margin: 0 auto;
+  padding: 0 2rem;
+}
+
+.site-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding-top: 2.5rem;
+}
+
+.site-header .logo {
+  display: inline-block;
+  line-height: 0;
+}
+
+.site-header .logo img {
+  width: 140px;
+  height: auto;
+}
+
+.header-meta {
+  text-align: right;
+  font-family: var(--font-sans), system-ui, sans-serif;
+  font-size: 0.875rem;
+  color: var(--color-text-muted);
+  line-height: 1.5;
+}
+
+.header-meta .time {
+  font-variant-numeric: tabular-nums;
+}
+
+.hero {
+  margin-top: 10rem;
+  max-width: var(--container-prose);
+}
+
+.hero h1 {
+  font-family: var(--font-serif), Georgia, serif;
+  font-weight: 400;
+  font-size: clamp(2.5rem, 5vw, 4.5rem);
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  color: var(--color-text);
   margin: 0;
 }
 
-.label,
-.mono,
-[data-role="label"] {
-  font-family: var(--font-display), system-ui, sans-serif;
-  font-weight: 400;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
+.about {
+  margin-top: 8rem;
+  max-width: var(--container-about);
+  font-size: 1.125rem;
+  line-height: 1.65;
+  color: var(--color-text);
+}
+
+.about p {
+  margin: 0 0 1.5rem 0;
+}
+
+.about p:last-child {
+  margin-bottom: 0;
+}
+
+.knittools {
+  margin-top: 8rem;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 4rem;
+  align-items: center;
+  max-width: 900px;
+}
+
+.knittools-image img {
+  max-width: 280px;
+  height: auto;
+}
+
+.knittools-content .label {
+  font-family: var(--font-sans), system-ui, sans-serif;
   font-size: 0.75rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--color-accent);
+  margin-bottom: 1rem;
+}
+
+.knittools-content h2 {
+  font-family: var(--font-serif), Georgia, serif;
+  font-weight: 500;
+  font-size: 2.5rem;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  margin: 0 0 1.5rem 0;
+  color: var(--color-text);
+}
+
+.knittools-content p {
+  font-size: 1.0625rem;
+  line-height: 1.6;
+  color: var(--color-text);
+  max-width: 480px;
+  margin: 0 0 2rem 0;
+}
+
+.link-primary {
+  font-family: var(--font-sans), system-ui, sans-serif;
+  font-size: 0.9375rem;
+  font-weight: 500;
+  color: var(--color-accent);
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+  padding-bottom: 2px;
+  transition: border-color 150ms ease, color 150ms ease;
+}
+
+.link-primary:hover {
+  color: var(--color-accent-hover);
+  border-bottom-color: var(--color-accent-hover);
+}
+
+.more-apps {
+  margin-top: 6rem;
+  text-align: center;
+  padding: 2rem 0;
+}
+
+.more-apps p {
+  font-family: var(--font-sans), system-ui, sans-serif;
+  font-size: 0.9375rem;
+  color: var(--color-text-muted);
+  margin: 0;
+  font-style: italic;
+}
+
+.site-footer {
+  margin-top: 6rem;
+  padding: 3rem 0 2rem;
+  border-top: 1px solid var(--color-border-faint);
+}
+
+.footer-inner {
+  max-width: var(--container-wide);
+  margin: 0 auto;
+  padding: 0 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-family: var(--font-sans), system-ui, sans-serif;
+  font-size: 0.8125rem;
+  color: var(--color-text-dimmed);
+}
+
+.footer-links a {
+  color: var(--color-text-muted);
+}
+
+.footer-links a:hover {
+  color: var(--color-accent);
+}
+
+.footer-links .dot {
+  margin: 0 0.5rem;
+  color: var(--color-text-dimmed);
+}
+
+.prose {
+  max-width: var(--container-prose);
+  margin-top: 6rem;
+  color: var(--color-text-muted);
+  font-size: 1rem;
+  line-height: 1.7;
+}
+
+.prose h1 {
+  font-family: var(--font-serif), Georgia, serif;
+  font-weight: 500;
+  font-size: 2rem;
+  color: var(--color-text);
+  margin: 0 0 1.5rem 0;
+  letter-spacing: -0.01em;
+}
+
+@media (max-width: 768px) {
+  .knittools {
+    grid-template-columns: 1fr;
+    gap: 2.5rem;
+    text-align: center;
+  }
+
+  .knittools-image {
+    display: flex;
+    justify-content: center;
+  }
+
+  .knittools-image img {
+    max-width: 220px;
+  }
+
+  .knittools-content p {
+    margin-left: auto;
+    margin-right: auto;
+  }
+}
+
+@media (max-width: 640px) {
+  .page {
+    padding: 0 1.25rem;
+  }
+
+  .site-header {
+    padding-top: 1.5rem;
+  }
+
+  .site-header .logo img {
+    width: 100px;
+  }
+
+  .hero {
+    margin-top: 6rem;
+  }
+
+  .about,
+  .knittools {
+    margin-top: 6rem;
+  }
+
+  .footer-inner {
+    flex-direction: column;
+    gap: 1rem;
+    text-align: center;
+    padding: 0 1.25rem;
+  }
 }
