@@ -1,18 +1,76 @@
-/* Design tokens */
+@font-face {
+  font-family: 'Geist';
+  font-display: swap;
+  src: url('/fonts/geist-variable.woff2') format('woff2-variations');
+  font-weight: 100 900;
+}
+
+@font-face {
+  font-family: 'Syne';
+  font-style: normal;
+  font-weight: 600 800;
+  font-display: swap;
+  src: url('/fonts/syne-700.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+  font-family: 'Syne';
+  font-style: normal;
+  font-weight: 600 800;
+  font-display: swap;
+  src: url('/fonts/syne-latin-ext.woff2') format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+
+@font-face {
+  font-family: 'Teko';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url('/fonts/teko-500.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Routed Gothic';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('/fonts/routed-gothic.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Routed Gothic';
+  font-style: italic;
+  font-weight: 400;
+  font-display: swap;
+  src: url('/fonts/routed-gothic-half-italic.ttf') format('truetype');
+}
+
+/* Design tokens — blueprint paper */
 :root {
-  --bg-base: #0A0A0F;
-  --color-primary: #EDEDF0;
-  --color-muted: #8E8E9F;
-  --color-dimmed: #5A5A6A;
+  --font-teko: 'Teko', sans-serif;
+
+  /* Paper surface */
+  --bg-base: #f3f3ee;
+  --bg-paper-2: #eceae2;
+  --white: #fafaf7;
+
+  /* Ink */
+  --color-primary: #0e0f10;
+  --color-secondary: #1b1d1f;
+  --color-muted: #7a7e85;
+  --color-dimmed: #a8abaf;
+
+  /* Accent */
   --color-accent: #1DB4A5;
   --color-accent-hover: #24D4C2;
-  --bg-card: #13131A;
-  --color-border: #1E1E28;
-  --color-border-hover: #2A2A35;
 
-  --max-width: 720px;
-  --padding-mobile: 20px;
-  --radius-card: 12px;
+  /* Rules & grid */
+  --color-border: #c9ccd1;
+  --color-border-soft: #dddfe2;
+  --grid: #e5e6de;
+  --grid-major: #d3d4cb;
 }
 
 /* Reset */
@@ -31,28 +89,38 @@ html {
 }
 
 body {
-  font-family: var(--font-dm-sans), system-ui, sans-serif;
+  font-family: 'Geist', system-ui, sans-serif;
   color: var(--color-primary);
-  background-color: var(--bg-base);
-  background-image: url('/hero-bg.webp');
-  background-attachment: fixed;
-  background-size: cover;
-  background-position: center;
+  background-color: var(--bg-paper-2);
   line-height: 1.6;
+  min-height: 100vh;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
+/* Soft paper noise / vignette across the page */
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+  background-image:
+    radial-gradient(transparent 60%, rgba(0, 0, 0, 0.035)),
+    repeating-linear-gradient(180deg, rgba(0, 0, 0, 0.008) 0 1px, transparent 1px 4px);
+  mix-blend-mode: multiply;
+}
+
 /* Typography */
 h1, h2, h3, h4 {
-  font-family: var(--font-sora), system-ui, sans-serif;
-  font-weight: 500;
+  font-family: 'Geist', system-ui, sans-serif;
+  font-weight: 600;
   line-height: 1.2;
 }
 
 ::selection {
-  background: rgba(29, 180, 165, 0.3);
-  color: #EDEDF0;
+  background: var(--color-accent);
+  color: var(--bg-base);
 }
 
 a {
@@ -65,18 +133,159 @@ a:hover {
   color: var(--color-accent-hover);
 }
 
-/* Layout */
-.container {
-  max-width: var(--max-width);
-  margin: 0 auto;
-  padding: 0 var(--padding-mobile);
+/* Outer drafting-sheet frame — hairline rules on right and bottom only */
+.frame {
+  position: fixed;
+  top: 16px;
+  left: 16px;
+  right: 16px;
+  bottom: 16px;
+  border-right: 1px solid var(--color-border);
+  border-bottom: 1px solid var(--color-border);
+  pointer-events: none;
+  z-index: 3;
 }
 
-/* Fade-up animations */
+/* Vertical shell rule — right edge of the logo column (inside frame) */
+.frame-anchor {
+  position: fixed;
+  top: 16px;
+  bottom: 16px;
+  left: 112px;
+  width: 1px;
+  background: var(--color-border);
+  pointer-events: none;
+  z-index: 3;
+}
+
+/* Horizontal shell rule — below the top metadata row (inside frame, right of anchor) */
+.frame-topbar {
+  position: fixed;
+  top: 56px;
+  left: 112px;
+  right: 16px;
+  height: 1px;
+  background: var(--color-border);
+  pointer-events: none;
+  z-index: 3;
+}
+
+/* Grid paper — fills the framed interior (below topbar, right of anchor, inside outer frame) */
+.grid-paper {
+  position: fixed;
+  top: 56px;
+  left: 112px;
+  right: 16px;
+  bottom: 16px;
+  pointer-events: none;
+  z-index: 0;
+  background-color: var(--bg-base);
+  background-image:
+    linear-gradient(var(--grid) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid) 1px, transparent 1px),
+    linear-gradient(var(--grid-major) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid-major) 1px, transparent 1px);
+  background-size: 24px 24px, 24px 24px, 120px 120px, 120px 120px;
+  background-position: 0 0, 0 0, 0 0, 0 0;
+}
+
+/* Viewport-edge masks — hide content that scrolls outside the grid-paper bounds */
+.mask-top,
+.mask-bottom {
+  position: fixed;
+  left: 0;
+  right: 0;
+  background-color: var(--bg-paper-2);
+  pointer-events: none;
+  z-index: 3;
+}
+
+.mask-top {
+  top: 0;
+  height: 56px;
+}
+
+.mask-bottom {
+  bottom: 0;
+  height: 16px;
+}
+
+/* Desk — content working area sits on top of the grid paper */
+.desk {
+  position: relative;
+  z-index: 2;
+  margin: 48px clamp(40px, 5vw, 80px) 48px clamp(120px, 12vw, 160px);
+  padding: clamp(16px, 2vw, 24px) clamp(40px, 5vw, 72px);
+  display: grid;
+  gap: 32px;
+}
+
+/* Module — each content block sits flat on the paper */
+.module {
+  position: relative;
+}
+
+/* Top-right descriptor */
+.descriptor {
+  position: fixed;
+  top: 14px;
+  right: 18px;
+  font-family: 'Routed Gothic', 'Syne', system-ui, sans-serif;
+  font-weight: 400;
+  font-size: clamp(12px, 1.1vw, 15px);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--color-primary);
+  text-align: right;
+  line-height: 1.5;
+  z-index: 5;
+}
+
+/* Pulse keyframe kept for potential reuse */
+@keyframes pulse {
+  0%, 100% { opacity: 0.35; }
+  50%      { opacity: 1; }
+}
+
+/* Hand-drawn vertical divider — reusable inline SVG pipe */
+.hand-rule {
+  display: inline-block;
+  width: 3px;
+  height: 14px;
+  vertical-align: middle;
+  flex-shrink: 0;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 3 14'><path d='M 1.4 0.6 Q 2.2 3.5 1.4 7 Q 0.7 10.5 1.5 13.4' stroke='%23a8abaf' stroke-width='1' fill='none' stroke-linecap='round'/></svg>");
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+/* Section label */
+.slabel {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-family: 'Routed Gothic', var(--font-dm-mono), monospace;
+  font-size: 13px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--color-muted);
+}
+
+.slabel .dash {
+  color: var(--color-accent);
+  font-size: 14px;
+}
+
+.slabel .num {
+  color: var(--color-primary);
+  font-weight: 500;
+}
+
+/* Fade-up reveals */
 @keyframes fadeUp {
   from {
     opacity: 0;
-    transform: translateY(16px);
+    transform: translateY(8px);
   }
   to {
     opacity: 1;
@@ -84,18 +293,42 @@ a:hover {
   }
 }
 
-.fade-up {
+.reveal {
   opacity: 0;
-  animation: fadeUp 0.6s ease-out forwards;
+  animation: fadeUp 600ms cubic-bezier(0.2, 0.7, 0.2, 1) forwards;
 }
 
-.fade-up-1 { animation-delay: 0s; }
-.fade-up-2 { animation-delay: 0.12s; }
-.fade-up-3 { animation-delay: 0.24s; }
-.fade-up-4 { animation-delay: 0.36s; }
+/* Mobile */
+@media (max-width: 720px) {
+  .frame {
+    top: 10px;
+    left: 10px;
+    right: 10px;
+    bottom: 10px;
+  }
 
-@media (min-width: 640px) {
-  :root {
-    --padding-mobile: 24px;
+  .frame-anchor,
+  .frame-topbar {
+    display: none;
+  }
+
+  .grid-paper {
+    top: 10px;
+    left: 10px;
+    right: 10px;
+    bottom: 10px;
+  }
+
+  .desk {
+    margin: 32px 16px;
+    padding: 32px 22px;
+    gap: 40px;
+  }
+
+  .descriptor {
+    top: 12px;
+    right: 16px;
+    font-size: 9.5px;
+    letter-spacing: 0.16em;
   }
 }

@@ -1,107 +1,152 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-import Hero from '../components/Hero.astro';
+import Ruler from '../components/Ruler.astro';
 import ProjectCard from '../components/ProjectCard.astro';
 import Footer from '../components/Footer.astro';
 ---
 
 <BaseLayout>
-  <div class="fade-up fade-up-1">
-    <Hero />
-  </div>
+  <Ruler />
 
-  <section class="projects fade-up fade-up-2">
-    <div class="container">
-      <h2 class="section-label"><span class="drop drop-1">P</span><span class="drop drop-2">R</span><span class="drop drop-3">O</span><span class="drop drop-4">J</span><span class="drop drop-5">E</span><span class="drop drop-6">C</span><span class="drop drop-7">T</span><span class="drop drop-8">S</span></h2>
-      <div class="project-grid">
-        <ProjectCard
-          name="KnitTools"
-          description="KnitTools is a knitting companion for Android — project tracking with row counter and session history, five knitting calculators, yarn label scanning, Ravelry pattern search, and a full reference library. Privacy-first, no ads, no data collection. Coming soon on Google Play and Amazon Appstore."
-          url="https://knittoolsapp.com"
-          platform="Coming soon"
-          icon="/knittools-icon.webp"
-          iconAlt="KnitTools app icon"
-        />
+  <p class="descriptor reveal" style="animation-delay: 0.1s">
+    Independent software<br />from Turku, Finland
+  </p>
+
+  <main class="desk">
+    <section class="module product-row">
+      <div class="product-col">
+        <ProjectCard name="KnitTools" />
       </div>
-      <p class="coming-soon">More apps coming soon</p>
-    </div>
-  </section>
 
-  <div class="fade-up fade-up-3">
-    <Footer />
-  </div>
+      <aside class="spec-sheet reveal" style="animation-delay: 3.5s">
+        <h3 class="spec-sheet-title">Finnvek</h3>
+        <dl class="spec-list">
+          <div class="spec-row"><dt>Location</dt><dd>Turku, FI</dd></div>
+          <div class="spec-row"><dt>Lat</dt><dd>60.4518° N</dd></div>
+          <div class="spec-row"><dt>Long</dt><dd>22.2666° E</dd></div>
+          <div class="spec-row"><dt>Privacy</dt><dd>Yours</dd></div>
+          <div class="spec-row"><dt>Ads</dt><dd>None</dd></div>
+          <div class="spec-row"><dt>Tracking</dt><dd>None</dd></div>
+          <div class="spec-row"><dt>Lifespan</dt><dd>Kept</dd></div>
+          <div class="spec-row"><dt>Funding</dt><dd>Self</dd></div>
+        </dl>
+      </aside>
+    </section>
+
+    <div class="catalog-note reveal" style="animation-delay: 3.9s" role="separator">
+      <span class="line" aria-hidden="true"></span>
+      <span class="text">More apps on the drafting table</span>
+      <span class="line" aria-hidden="true"></span>
+    </div>
+
+    <div class="reveal" style="animation-delay: 4.1s">
+      <Footer />
+    </div>
+  </main>
 </BaseLayout>
 
 <style>
-  .projects {
-    padding: 1rem 0 1.5rem;
-  }
-
-  .section-label {
-    font-family: var(--font-dm-mono), monospace;
-    font-size: 0.85rem;
-    font-weight: 400;
+  .catalog-note {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 18px;
+    padding-top: 16px;
+    padding-bottom: 8px;
+    font-family: 'Routed Gothic', var(--font-dm-mono), monospace;
+    font-size: 11px;
+    letter-spacing: 0.22em;
     text-transform: uppercase;
-    letter-spacing: 0.25em;
-    color: var(--color-primary);
-    margin-bottom: 1rem;
+    color: var(--color-muted);
   }
 
-  .drop {
-    display: inline-block;
-    opacity: 0;
-    animation: letterDrop 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+  .catalog-note .line {
+    flex: 1 1 0;
+    max-width: 180px;
+    height: 1px;
+    background: var(--color-border);
   }
 
-  .drop-1 { animation-delay: 0.3s; }
-  .drop-2 { animation-delay: 0.35s; }
-  .drop-3 { animation-delay: 0.4s; }
-  .drop-4 { animation-delay: 0.45s; }
-  .drop-5 { animation-delay: 0.5s; }
-  .drop-6 { animation-delay: 0.55s; }
-  .drop-7 { animation-delay: 0.6s; }
-  .drop-8 { animation-delay: 0.65s; }
+  @media (max-width: 720px) {
+    .catalog-note {
+      gap: 12px;
+    }
 
-  @keyframes letterDrop {
-    0% {
-      opacity: 0;
-      transform: translateY(-30px);
-    }
-    60% {
-      opacity: 1;
-      transform: translateY(3px);
-    }
-    80% {
-      transform: translateY(-2px);
-    }
-    100% {
-      opacity: 1;
-      transform: translateY(0);
+    .catalog-note .line {
+      max-width: 60px;
     }
   }
 
-  .project-grid {
+  .product-row {
     display: grid;
-    gap: 1rem;
+    grid-template-columns: 1fr 280px;
+    gap: 48px;
+    align-items: start;
   }
 
-  .coming-soon {
-    font-size: 0.8rem;
+  .product-col {
+    min-width: 0;
+  }
+
+  .spec-sheet {
+    border: 1px solid var(--color-border);
+    background: var(--bg-base);
+    width: 100%;
+  }
+
+  .spec-sheet-title {
+    font-family: 'Routed Gothic', var(--font-dm-mono), monospace;
+    font-size: 12px;
+    font-weight: 400;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
     color: var(--color-primary);
-    text-align: center;
-    margin-top: 1.5rem;
-    opacity: 0;
-    animation: textDrop 0.5s ease-out 0.9s forwards;
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--color-border);
+    background: var(--bg-paper-2);
+    margin: 0;
   }
 
-  @keyframes textDrop {
-    0% {
-      opacity: 0;
-      transform: translateY(-20px);
+  .spec-list {
+    margin: 0;
+  }
+
+  .spec-row {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    align-items: center;
+    padding: 10px 16px;
+    border-bottom: 1px solid var(--color-border);
+    font-family: 'Routed Gothic', var(--font-dm-mono), monospace;
+  }
+
+  .spec-row:last-child {
+    border-bottom: none;
+  }
+
+  .spec-row dt {
+    font-size: 11px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--color-muted);
+  }
+
+  .spec-row dd {
+    font-size: 13px;
+    letter-spacing: 0.06em;
+    color: var(--color-primary);
+    text-align: right;
+    margin: 0;
+  }
+
+  @media (max-width: 900px) {
+    .product-row {
+      grid-template-columns: 1fr;
+      gap: 32px;
     }
-    100% {
-      opacity: 1;
-      transform: translateY(0);
+
+    .spec-sheet {
+      max-width: 360px;
     }
   }
 </style>

@@ -16,6 +16,8 @@ const {
 <html lang="en">
   <head>
     <meta charset="utf-8" />
+    <link rel="preload" href="/fonts/geist-variable.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/fonts/teko-500.ttf" as="font" type="font/ttf" crossorigin />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     <link rel="canonical" href="https://finnvek.com/" />
@@ -50,6 +52,12 @@ const {
     })} />
   </head>
   <body>
+    <div class="frame" aria-hidden="true"></div>
+    <div class="frame-anchor" aria-hidden="true"></div>
+    <div class="frame-topbar" aria-hidden="true"></div>
+    <div class="grid-paper" aria-hidden="true"></div>
     <slot />
+    <div class="mask-top" aria-hidden="true"></div>
+    <div class="mask-bottom" aria-hidden="true"></div>
   </body>
 </html>

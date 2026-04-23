@@ -2,34 +2,31 @@
 import LogoAnimated from './LogoAnimated.astro';
 ---
 
-<section class="hero">
-  <div class="container">
-    <LogoAnimated />
-    <p class="subtitle">Independent software from Turku, Finland</p>
-  </div>
-</section>
+<div class="hero-logo" id="heroLogo">
+  <LogoAnimated />
+</div>
 
 <style>
-  .hero {
-    min-height: 55vh;
-    padding: 48px 24px 32px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+  .hero-logo {
+    position: fixed;
+    width: 98.9vh;
+    left: 0;
+    top: 0.3vh;
+    transform-origin: top left;
+    transform: rotate(-90deg) translateX(-100%);
+    z-index: 10;
   }
 
-  .container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  }
-
-  .subtitle {
-    font-family: var(--font-sora), system-ui, sans-serif;
-    font-weight: 400;
-    font-size: 24px;
-    color: var(--color-muted);
-    margin-top: 1.5rem;
-    text-align: center;
+  @media (max-width: 720px) {
+    .hero-logo {
+      position: relative;
+      width: calc(100% - 2rem);
+      left: auto;
+      top: auto;
+      transform: none;
+      transform-origin: initial;
+      margin: 1.5rem auto 0;
+      padding: 0;
+    }
   }
 </style>

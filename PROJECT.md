@@ -1,138 +1,374 @@
 # Finnvek.com
 
-Finnvek corporate website. Single-page static site showcasing Finnvek and its software projects.
+Code-backed project summary for the current repository state in `/home/emma/dev/Finnvek-website/finnvek-site`.
 
-**URL:** https://finnvek.com
-**Contact:** contact@finnvek.com
-**Location:** Turku, Finland
+This document is intentionally strict: it describes what is verifiably implemented in code today, not what earlier design notes or plans may have intended.
 
-## Tech Stack
+## Overview
 
-- **Framework:** Astro 6.1.5 (static output)
-- **Styling:** Pure CSS with custom properties (no Tailwind)
-- **Fonts:** Google Fonts via Astro font system
-- **Sitemap:** @astrojs/sitemap (auto-generated)
-- **Deployment:** Cloudflare Pages (static dist/ output)
-- **Node:** >=22.12.0
+- Public site URL configured in Astro: `https://finnvek.com`
+- Site type: static Astro site
+- Current routed pages in source: 1 (`src/pages/index.astro`)
+- Current built pages: 1 (`/index.html`)
+- HTML language: `en`
+- Brand/contact values hard-coded in layout/footer:
+  - Company name: `Finnvek`
+  - Contact email: `contact@finnvek.com`
+  - Locality: `Turku, Finland`
+  - Footer coordinates: `60.4518° N · 22.2666° E`
 
-## Commands
+## Runtime And Build Stack
+
+### Declared and installed dependencies
+
+Exact installed top-level package versions (`npm ls --depth=0`):
+
+- `astro@6.1.5`
+- `@astrojs/sitemap@3.7.2`
+- `gsap@3.15.0`
+
+### Node requirement
+
+From `package.json`:
+
+- `node >=22.12.0`
+
+### Scripts
+
+From `package.json`:
 
 | Command | Action |
-|---------|--------|
-| `npm run dev` | Dev server at localhost:4321 |
-| `npm run build` | Static build to dist/ |
-| `npm run preview` | Preview built site |
+| --- | --- |
+| `npm run dev` | Runs `astro dev` |
+| `npm run build` | Runs `astro build` |
+| `npm run preview` | Runs `astro preview` |
+| `npm run astro` | Runs Astro CLI |
 
-## Design System
+### Astro configuration
 
-### Theme
+From `astro.config.mjs`:
 
-Dark-only theme. No light mode.
+- `site: 'https://finnvek.com'`
+- `output: 'static'`
+- `@astrojs/sitemap` integration enabled
+- `fonts` config exists for:
+  - `Sora` -> `--font-sora`
+  - `DM Sans` -> `--font-dm-sans`
+  - `DM Mono` -> `--font-dm-mono`
 
-### Color Palette
+Important current-state note:
 
-| Token | Value | Usage |
-|-------|-------|-------|
-| `--bg-base` | `#0A0A0F` | Page background (fallback) |
-| `--bg-card` | `#13131A` | Card background (used as rgba(19,19,26,0.92) with backdrop-filter) |
-| `--color-primary` | `#EDEDF0` | Primary text |
-| `--color-muted` | `#8E8E9F` | Secondary text, labels |
-| `--color-dimmed` | `#5A5A6A` | Tertiary text |
-| `--color-accent` | `#1DB4A5` | Turquoise accent, links |
-| `--color-accent-hover` | `#24D4C2` | Link hover |
-| `--color-border` | `#1E1E28` | Borders |
-| `--color-border-hover` | `#2A2A35` | Card border hover |
+- The source UI does not use `Sora` or `DM Sans`.
+- The emitted build CSS still uses fallbacks like `var(--font-dm-mono)`, but no explicit `--font-dm-mono` definition was found in built HTML/CSS.
+- The actual visible typography is primarily driven by self-hosted `@font-face` rules in `src/styles/global.css`, not by any visible Astro-generated font variable definitions.
 
-### Typography
+## Actual Source Structure
 
-| Role | Font | Weight | Variable |
-|------|------|--------|----------|
-| Headings | Sora | 400, 500 | `--font-sora` |
-| Body | DM Sans | 400 | `--font-dm-sans` |
-| Labels, tags, footer | DM Mono | 400 | `--font-dm-mono` |
+```text
+src/
+  components/
+    Footer.astro
+    Hero.astro
+    LogoAnimated.astro
+    LogoStatic.astro
+    ProjectCard.astro
+  layouts/
+    BaseLayout.astro
+  pages/
+    index.astro
+  styles/
+    global.css
+  content/
+    blog/.gitkeep
+  content.config.ts
+
+public/
+  apple-touch-icon.png
+  favicon.svg
+  hero-bg.webp
+  knittools-icon.webp
+  og-image.png
+  robots.txt
+  fonts/
+    geist-variable.woff2
+    routed-gothic.ttf
+    routed-gothic-half-italic.ttf
+    syne-700.woff2
+    syne-800.woff2
+    syne-latin-ext.woff2
+    teko-500.ttf
+```
+
+## Routing And Content Model
+
+### Routes
+
+Implemented route files:
+
+- `src/pages/index.astro` -> `/`
+
+No other pages are defined in `src/pages/`.
+
+### Content collections
+
+`src/content.config.ts` defines one Astro content collection:
+
+- `blog`
+  - loader: `glob({ base: './src/content/blog', pattern: '**/*.{md,mdx}' })`
+  - schema:
+    - `title: string`
+    - `description: string`
+    - `pubDate: date`
+    - `updatedDate?: date`
+
+Current actual content state:
+
+- `src/content/blog/` contains only `.gitkeep`
+- build emits a warning that no blog files match the configured pattern
+- no page currently renders or links blog content
+
+## Page Composition
+
+The live page is composed as follows:
+
+1. `BaseLayout.astro`
+2. `Hero.astro`
+3. A fixed descriptor paragraph: `Independent software / from Turku, Finland`
+4. Notebook-style main area (`main.desk`) containing:
+   - spiral ring decoration
+   - main paper pad
+   - `ProjectCard name="KnitTools"`
+   - note text: `More apps on the drafting table`
+5. A separate “sticker” aside listing four principles:
+   - `Privacy by default / yours`
+   - `No ads, no tracking / clean`
+   - `Made to last / kept`
+   - `Independent / self-funded`
+6. `Footer.astro`
+
+## Visual System Actually Implemented
+
+### Theme direction
+
+The current site is not dark-only.
+
+It uses a light paper/desk visual system:
+
+- desk background: `--bg-desk: #cec9be`
+- paper background: `--bg-base: #f3f3ee`
+- white paper accent: `--white: #fafaf7`
+- primary text: `--color-primary: #0e0f10`
+- accent: `--color-accent: #1DB4A5`
+
+The page includes paper/grid/noise textures via layered CSS backgrounds and a `body::before` overlay.
 
 ### Layout
 
-- Max width: 720px
-- Mobile padding: 20px (24px at 640px+)
-- Card border-radius: 12px
+Desktop (`> 720px`):
 
-## Project Structure
+- logo fixed vertically on the left using rotation
+- descriptor fixed top-right
+- content container `.desk` max width: `1200px`
+- notebook stack width cap: `560px`
+- torn-note sticker width: `380px`, positioned overlapping the notebook area via negative top margin
 
-```
-src/
-  components/
-    LogoAnimated.astro  -- Hero logo with CSS bounce animation (click to replay)
-    LogoStatic.astro    -- Footer logo, static SVG
-    Hero.astro          -- Animated logo + subtitle
-    ProjectCard.astro   -- Reusable project card (icon, name, tag, description, external link arrow)
-    Footer.astro        -- Static logo + copyright/contact line
-  layouts/
-    BaseLayout.astro    -- HTML shell, meta tags, OG tags, JSON-LD, global CSS import
-  pages/
-    index.astro         -- Main page composition
-  styles/
-    global.css          -- Design tokens, reset, typography, layout, animations
-  content/
-    blog/               -- Empty blog collection (prepared for future use)
-  content.config.ts     -- Blog collection schema (title, description, pubDate)
+Mobile (`<= 720px`):
 
-public/
-  favicon.svg           -- Finnvek F with turquoise dot, dark rounded background
-  apple-touch-icon.png  -- 180x180 PNG version of favicon
-  og-image.png          -- 1200x630 social sharing image (logo + subtitle)
-  knittools-icon.webp   -- KnitTools app icon for project card
-  hero-bg.webp          -- Full-page dot-pattern background image (fixed, covers viewport)
-  robots.txt            -- Allow all, points to sitemap
-```
+- logo becomes normal horizontal block near top
+- descriptor remains fixed, smaller
+- sticker becomes full-width below notebook content
 
-## Page Sections
+### Fonts actually defined in CSS
 
-1. **Hero** -- min-height 55vh, vertically centered. Animated FINNVEK logo (SVG, CSS-only, 456px max-width). Letters fade in staggered, turquoise dots bounce from above, F and E squish on impact. Click to replay. Subtitle: "Independent software from Turku, Finland" (24px, Sora 400).
+Self-hosted fonts from `src/styles/global.css`:
 
-2. **Projects** -- Section label "PROJECTS" (DM Mono 0.85rem, uppercase, --color-primary). Each letter drops from above with staggered bounce animation. KnitTools card with 72px app icon, translucent background (rgba + backdrop-filter blur), "Coming soon" badge, description, and external link arrow (top-right). "More apps coming soon" centered below with drop-in animation.
+- `Geist`
+- `Syne`
+- `Teko`
+- `Routed Gothic` regular
+- `Routed Gothic` italic
 
-3. **Footer** -- Static FINNVEK logo floats on background (links to page top, opacity hover effect). Info line ("© 2026 Finnvek · contact@finnvek.com · Turku, Finland") in a centered pill with translucent dark background (rgba(10,10,15,0.85), border-radius 8px). No full-width background or border-top.
+How they are used:
 
-## Logo
+- Base body/headings: `Geist`
+- Main product title: `Teko`
+- Descriptor: `Routed Gothic`, then `Syne`, then system fallback
+- Various labels/meta rows/footer: `Routed Gothic` with `var(--font-dm-mono)` / `DM Mono` / monospace fallback chain
 
-Custom Audiowide-based wordmark "FINNVEK" where the F and E have horizontal bars removed, replaced with turquoise (#1DB4A5) circles. Two variants:
+Important precision note:
 
-- **LogoAnimated** -- viewBox 0 0 402 62 (extra vertical space for dot bounce), 456px max-width. CSS keyframe animations: letter-in (staggered fade+scale), dot-f-bounce, dot-e-bounce, squish-f, squish-e. Click-to-replay via JS.
-- **LogoStatic** -- viewBox 0 0 402 52. No animation. 120px width for footer.
+- There is no self-hosted `DM Mono` font file in `public/fonts/`.
+- Current UI text that references `DM Mono` only does so through fallback font-family chains.
 
-Source files in project root: `finnvek-logo.svg` (static paths), `finnvek-logo-animation.html` (animation reference).
+## Components And Behavior
 
-## Animations
+### `Hero.astro`
 
-- **Page load:** Staggered fade-up (0.6s ease-out, 0.12s delay between sections)
-- **Logo:** Letter fade-in, dot bounce, letter squish (CSS-only, click to replay)
-- **"PROJECTS" label:** Each letter drops from above with staggered bounce (50ms intervals, cubic-bezier(0.34, 1.56, 0.64, 1))
-- **"More apps coming soon":** Drops in as a whole after PROJECTS letters complete (0.9s delay, ease-out)
-- **Card hover:** translateY(-2px), border brightens to #2A2A35
-- **External arrow hover:** Moves diagonally (2px right, 2px up), turns white
-- **Footer logo hover:** Opacity 0.7 to 1.0
-- **Footer email hover:** Turns white
-- **Text selection:** Turquoise highlight (rgba(29, 180, 165, 0.3))
+- Only wraps `LogoAnimated.astro`
+- Desktop logo container:
+  - `position: fixed`
+  - `width: 98.9vh`
+  - `transform: rotate(-90deg) translateX(-100%)`
+- Mobile logo container:
+  - `position: relative`
+  - `width: calc(100% - 2rem)`
+  - no rotation
 
-## Background
+### `LogoAnimated.astro`
 
-Fixed full-page background image (`hero-bg.webp`) with `background-attachment: fixed`. The dot-pattern stays in place while content scrolls over it. `--bg-base` (#0A0A0F) serves as fallback. No gradient overlay.
+- Inline SVG wordmark for `FINNVEK`
+- SVG `viewBox`: `0 0 402 62`
+- Letters animate in using CSS keyframes, not GSAP
+- Both turquoise dots animate via CSS keyframes, moving in from the right on both desktop and mobile
+- Replay mechanism:
+  - clicking the logo toggles `.replay`
+  - animation restarts by removing and reapplying animation styles
 
-## SEO & Meta
+### `ProjectCard.astro`
 
-- Canonical URL
-- Open Graph tags (title, description, type, url, image with dimensions)
-- Twitter card (summary_large_image with image)
-- theme-color (#0A0A0F)
-- apple-touch-icon (180x180)
-- JSON-LD Organization schema (name, url, description, email, address)
-- Auto-generated sitemap (sitemap-index.xml)
-- robots.txt (allow all)
+Current rendered product content:
 
-## Current State
+- Title: `KnitTools`
+- Description:
+  - `A pocket companion for knitters. Counts your rows, reads your patterns,`
+  - `and keeps your stash quietly in order. With voice and AI that speaks knitter.`
+  - `In eleven languages.`
+- Spec row:
+  - `Android`
+  - `11 languages`
+  - `Coming soon`
+- CTA area contains:
+  - waitlist form
+  - external link to `https://knittoolsapp.com`
 
-- KnitTools is listed with "Coming soon" badge -- not yet on Google Play or Amazon Appstore
-- Blog collection is defined but empty
-- No SSR needed -- purely static site
-- No Cloudflare adapter installed (not needed for static output)
+Waitlist form behavior:
+
+- One visible state in markup from first render: email input + submit button
+- No collapsed “open later” trigger state exists in current code
+- Validation is client-side with a regex
+- On valid submit:
+  - email is stored in browser `localStorage`
+  - key: `fv_waitlist_email`
+  - form enters visual success state
+  - button text changes to `You're in!`
+  - input and button are disabled
+- On invalid submit:
+  - button text changes to `Check your email`
+- On reload:
+  - saved email is restored from `localStorage`
+  - form is immediately shown in success state
+
+Critical implementation note:
+
+- The waitlist form does not submit to a backend.
+- No `fetch`, XHR, form `action`, or third-party form endpoint is implemented.
+- The current behavior is local-browser-only persistence.
+
+### `Footer.astro`
+
+Footer content:
+
+- `Finnvek`
+- `60.4518° N · 22.2666° E`
+- `contact@finnvek.com`
+- `Turku, Finland`
+
+Footer layout:
+
+- centered on desktop and mobile
+- wraps on small screens
+- coordinates move to their own row on mobile
+
+### `LogoStatic.astro`
+
+- Present in the repository
+- Not referenced anywhere in `src/`
+- Currently unused
+
+## Animation Model Actually Used
+
+Current implementation uses:
+
+- CSS keyframe animations
+- minimal vanilla DOM scripting for replay and waitlist state
+
+No current source file imports or uses GSAP.
+
+That means:
+
+- `gsap` is installed as a dependency
+- but it is not used by the current shipped source under `src/`
+
+Implemented visual motion:
+
+- logo letters slide in from the right
+- F and E letters briefly “squish” after dot impact
+- turquoise dots bounce from the right
+- generic `.reveal` fade-up animation for descriptor, sticker, footer, and note text
+- waitlist button pressed/success state transitions
+
+Not implemented in current source:
+
+- cursor grid reveal
+- card border trace animation
+- scroll-triggered GSAP sequences
+- app icon stamp/drop animation
+
+## SEO And Metadata
+
+From `BaseLayout.astro`:
+
+- canonical URL: `https://finnvek.com/`
+- description: `Independent software from Turku, Finland.`
+- Open Graph:
+  - title
+  - description
+  - type `website`
+  - url `https://finnvek.com`
+  - image `https://finnvek.com/og-image.png`
+  - image size `1200x630`
+- Twitter card: `summary_large_image`
+- theme-color: `#0A0A0F`
+- favicon: `/favicon.svg`
+- Apple touch icon: `/apple-touch-icon.png`
+- JSON-LD organization schema:
+  - name
+  - url
+  - description
+  - email
+  - locality/country
+
+## Build Output And Verified Behavior
+
+Verified with `npm run build` on 2026-04-22:
+
+- build succeeds
+- output mode is `static`
+- output directory is `dist/`
+- one page is built: `/index.html`
+- sitemap is generated:
+  - `dist/sitemap-0.xml`
+  - `dist/sitemap-index.xml`
+
+`public/robots.txt` currently contains:
+
+- `User-agent: *`
+- `Allow: /`
+- `Sitemap: https://finnvek.com/sitemap-index.xml`
+
+## Current Mismatches / Cleanup Candidates
+
+These are not guesses; they are direct mismatches between repository code/config and the previously documented state:
+
+- `PROJECT.md` previously described a dark editorial design, but current CSS implements a light paper/desk theme.
+- `PROJECT.md` previously described GSAP-driven animations, but current source uses CSS keyframes and vanilla JS only.
+- `gsap` remains installed but unused in `src/`.
+- `astro.config.mjs` still contains Google-font configuration for `Sora`, `DM Sans`, and `DM Mono`, but current UI does not visibly use `Sora` or `DM Sans`.
+- `LogoStatic.astro` is unused.
+- `public/hero-bg.webp` is present in the repo and copied to `dist/`, but no current source file references it.
+- Blog collection infrastructure exists, but there are no blog entries and no rendered blog route.
+- No hosting provider is provable from committed runtime config alone. The site is suitable for static hosting, but no Cloudflare-specific adapter or deployment config is committed in this repo.
+
+## Short Truth Summary
+
+As of the current codebase, this repository is a one-page static Astro marketing site for Finnvek with a notebook/paper visual style, one showcased product (`KnitTools`), a purely local `localStorage`-based waitlist interaction, SEO metadata and sitemap generation, and no backend or additional routed content pages.
