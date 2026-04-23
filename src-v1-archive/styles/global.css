@@ -1,0 +1,334 @@
+@font-face {
+  font-family: 'Geist';
+  font-display: swap;
+  src: url('/fonts/geist-variable.woff2') format('woff2-variations');
+  font-weight: 100 900;
+}
+
+@font-face {
+  font-family: 'Syne';
+  font-style: normal;
+  font-weight: 600 800;
+  font-display: swap;
+  src: url('/fonts/syne-700.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+  font-family: 'Syne';
+  font-style: normal;
+  font-weight: 600 800;
+  font-display: swap;
+  src: url('/fonts/syne-latin-ext.woff2') format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+
+@font-face {
+  font-family: 'Teko';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url('/fonts/teko-500.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Routed Gothic';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('/fonts/routed-gothic.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Routed Gothic';
+  font-style: italic;
+  font-weight: 400;
+  font-display: swap;
+  src: url('/fonts/routed-gothic-half-italic.ttf') format('truetype');
+}
+
+/* Design tokens — blueprint paper */
+:root {
+  --font-teko: 'Teko', sans-serif;
+
+  /* Paper surface */
+  --bg-base: #f3f3ee;
+  --bg-paper-2: #eceae2;
+  --white: #fafaf7;
+
+  /* Ink */
+  --color-primary: #0e0f10;
+  --color-secondary: #1b1d1f;
+  --color-muted: #7a7e85;
+  --color-dimmed: #a8abaf;
+
+  /* Accent */
+  --color-accent: #1DB4A5;
+  --color-accent-hover: #24D4C2;
+
+  /* Rules & grid */
+  --color-border: #c9ccd1;
+  --color-border-soft: #dddfe2;
+  --grid: #e5e6de;
+  --grid-major: #d3d4cb;
+}
+
+/* Reset */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+/* Base */
+html {
+  font-size: 16px;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  font-family: 'Geist', system-ui, sans-serif;
+  color: var(--color-primary);
+  background-color: var(--bg-paper-2);
+  line-height: 1.6;
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Soft paper noise / vignette across the page */
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+  background-image:
+    radial-gradient(transparent 60%, rgba(0, 0, 0, 0.035)),
+    repeating-linear-gradient(180deg, rgba(0, 0, 0, 0.008) 0 1px, transparent 1px 4px);
+  mix-blend-mode: multiply;
+}
+
+/* Typography */
+h1, h2, h3, h4 {
+  font-family: 'Geist', system-ui, sans-serif;
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+::selection {
+  background: var(--color-accent);
+  color: var(--bg-base);
+}
+
+a {
+  color: var(--color-accent);
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+a:hover {
+  color: var(--color-accent-hover);
+}
+
+/* Outer drafting-sheet frame — hairline rules on right and bottom only */
+.frame {
+  position: fixed;
+  top: 16px;
+  left: 16px;
+  right: 16px;
+  bottom: 16px;
+  border-right: 1px solid var(--color-border);
+  border-bottom: 1px solid var(--color-border);
+  pointer-events: none;
+  z-index: 3;
+}
+
+/* Vertical shell rule — right edge of the logo column (inside frame) */
+.frame-anchor {
+  position: fixed;
+  top: 16px;
+  bottom: 16px;
+  left: 112px;
+  width: 1px;
+  background: var(--color-border);
+  pointer-events: none;
+  z-index: 3;
+}
+
+/* Horizontal shell rule — below the top metadata row (inside frame, right of anchor) */
+.frame-topbar {
+  position: fixed;
+  top: 56px;
+  left: 112px;
+  right: 16px;
+  height: 1px;
+  background: var(--color-border);
+  pointer-events: none;
+  z-index: 3;
+}
+
+/* Grid paper — fills the framed interior (below topbar, right of anchor, inside outer frame) */
+.grid-paper {
+  position: fixed;
+  top: 56px;
+  left: 112px;
+  right: 16px;
+  bottom: 16px;
+  pointer-events: none;
+  z-index: 0;
+  background-color: var(--bg-base);
+  background-image:
+    linear-gradient(var(--grid) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid) 1px, transparent 1px),
+    linear-gradient(var(--grid-major) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid-major) 1px, transparent 1px);
+  background-size: 24px 24px, 24px 24px, 120px 120px, 120px 120px;
+  background-position: 0 0, 0 0, 0 0, 0 0;
+}
+
+/* Viewport-edge masks — hide content that scrolls outside the grid-paper bounds */
+.mask-top,
+.mask-bottom {
+  position: fixed;
+  left: 0;
+  right: 0;
+  background-color: var(--bg-paper-2);
+  pointer-events: none;
+  z-index: 3;
+}
+
+.mask-top {
+  top: 0;
+  height: 56px;
+}
+
+.mask-bottom {
+  bottom: 0;
+  height: 16px;
+}
+
+/* Desk — content working area sits on top of the grid paper */
+.desk {
+  position: relative;
+  z-index: 2;
+  margin: 48px clamp(40px, 5vw, 80px) 48px clamp(120px, 12vw, 160px);
+  padding: clamp(16px, 2vw, 24px) clamp(40px, 5vw, 72px);
+  display: grid;
+  gap: 32px;
+}
+
+/* Module — each content block sits flat on the paper */
+.module {
+  position: relative;
+}
+
+/* Top-right descriptor */
+.descriptor {
+  position: fixed;
+  top: 14px;
+  right: 18px;
+  font-family: 'Routed Gothic', 'Syne', system-ui, sans-serif;
+  font-weight: 400;
+  font-size: clamp(12px, 1.1vw, 15px);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--color-primary);
+  text-align: right;
+  line-height: 1.5;
+  z-index: 5;
+}
+
+/* Pulse keyframe kept for potential reuse */
+@keyframes pulse {
+  0%, 100% { opacity: 0.35; }
+  50%      { opacity: 1; }
+}
+
+/* Hand-drawn vertical divider — reusable inline SVG pipe */
+.hand-rule {
+  display: inline-block;
+  width: 3px;
+  height: 14px;
+  vertical-align: middle;
+  flex-shrink: 0;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 3 14'><path d='M 1.4 0.6 Q 2.2 3.5 1.4 7 Q 0.7 10.5 1.5 13.4' stroke='%23a8abaf' stroke-width='1' fill='none' stroke-linecap='round'/></svg>");
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+/* Section label */
+.slabel {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-family: 'Routed Gothic', var(--font-dm-mono), monospace;
+  font-size: 13px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--color-muted);
+}
+
+.slabel .dash {
+  color: var(--color-accent);
+  font-size: 14px;
+}
+
+.slabel .num {
+  color: var(--color-primary);
+  font-weight: 500;
+}
+
+/* Fade-up reveals */
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.reveal {
+  opacity: 0;
+  animation: fadeUp 600ms cubic-bezier(0.2, 0.7, 0.2, 1) forwards;
+}
+
+/* Mobile */
+@media (max-width: 720px) {
+  .frame {
+    top: 10px;
+    left: 10px;
+    right: 10px;
+    bottom: 10px;
+  }
+
+  .frame-anchor,
+  .frame-topbar {
+    display: none;
+  }
+
+  .grid-paper {
+    top: 10px;
+    left: 10px;
+    right: 10px;
+    bottom: 10px;
+  }
+
+  .desk {
+    margin: 32px 16px;
+    padding: 32px 22px;
+    gap: 40px;
+  }
+
+  .descriptor {
+    top: 12px;
+    right: 16px;
+    font-size: 9.5px;
+    letter-spacing: 0.16em;
+  }
+}

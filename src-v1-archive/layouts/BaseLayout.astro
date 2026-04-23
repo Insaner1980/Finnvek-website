@@ -1,0 +1,63 @@
+---
+import '../styles/global.css';
+
+interface Props {
+  title?: string;
+  description?: string;
+}
+
+const {
+  title = 'Finnvek',
+  description = 'Independent software from Turku, Finland.',
+} = Astro.props;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="preload" href="/fonts/geist-variable.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/fonts/teko-500.ttf" as="font" type="font/ttf" crossorigin />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="canonical" href="https://finnvek.com/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#0A0A0F" />
+    <meta name="description" content={description} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://finnvek.com" />
+    <meta property="og:image" content="https://finnvek.com/og-image.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content="https://finnvek.com/og-image.png" />
+    <meta name="generator" content={Astro.generator} />
+    <title>{title}</title>
+    <script type="application/ld+json" set:html={JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "name": "Finnvek",
+      "url": "https://finnvek.com",
+      "description": "Independent software from Turku, Finland.",
+      "email": "contact@finnvek.com",
+      "address": {
+        "@type": "PostalAddress",
+        "addressLocality": "Turku",
+        "addressCountry": "FI"
+      }
+    })} />
+  </head>
+  <body>
+    <div class="frame" aria-hidden="true"></div>
+    <div class="frame-anchor" aria-hidden="true"></div>
+    <div class="frame-topbar" aria-hidden="true"></div>
+    <div class="grid-paper" aria-hidden="true"></div>
+    <slot />
+    <div class="mask-top" aria-hidden="true"></div>
+    <div class="mask-bottom" aria-hidden="true"></div>
+  </body>
+</html>

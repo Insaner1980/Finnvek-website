@@ -1,0 +1,152 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Ruler from '../components/Ruler.astro';
+import ProjectCard from '../components/ProjectCard.astro';
+import Footer from '../components/Footer.astro';
+---
+
+<BaseLayout>
+  <Ruler />
+
+  <p class="descriptor reveal" style="animation-delay: 0.1s">
+    Independent software<br />from Turku, Finland
+  </p>
+
+  <main class="desk">
+    <section class="module product-row">
+      <div class="product-col">
+        <ProjectCard name="KnitTools" />
+      </div>
+
+      <aside class="spec-sheet reveal" style="animation-delay: 3.5s">
+        <h3 class="spec-sheet-title">Finnvek</h3>
+        <dl class="spec-list">
+          <div class="spec-row"><dt>Location</dt><dd>Turku, FI</dd></div>
+          <div class="spec-row"><dt>Lat</dt><dd>60.4518° N</dd></div>
+          <div class="spec-row"><dt>Long</dt><dd>22.2666° E</dd></div>
+          <div class="spec-row"><dt>Privacy</dt><dd>Yours</dd></div>
+          <div class="spec-row"><dt>Ads</dt><dd>None</dd></div>
+          <div class="spec-row"><dt>Tracking</dt><dd>None</dd></div>
+          <div class="spec-row"><dt>Lifespan</dt><dd>Kept</dd></div>
+          <div class="spec-row"><dt>Funding</dt><dd>Self</dd></div>
+        </dl>
+      </aside>
+    </section>
+
+    <div class="catalog-note reveal" style="animation-delay: 3.9s" role="separator">
+      <span class="line" aria-hidden="true"></span>
+      <span class="text">More apps on the drafting table</span>
+      <span class="line" aria-hidden="true"></span>
+    </div>
+
+    <div class="reveal" style="animation-delay: 4.1s">
+      <Footer />
+    </div>
+  </main>
+</BaseLayout>
+
+<style>
+  .catalog-note {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 18px;
+    padding-top: 16px;
+    padding-bottom: 8px;
+    font-family: 'Routed Gothic', var(--font-dm-mono), monospace;
+    font-size: 11px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--color-muted);
+  }
+
+  .catalog-note .line {
+    flex: 1 1 0;
+    max-width: 180px;
+    height: 1px;
+    background: var(--color-border);
+  }
+
+  @media (max-width: 720px) {
+    .catalog-note {
+      gap: 12px;
+    }
+
+    .catalog-note .line {
+      max-width: 60px;
+    }
+  }
+
+  .product-row {
+    display: grid;
+    grid-template-columns: 1fr 280px;
+    gap: 48px;
+    align-items: start;
+  }
+
+  .product-col {
+    min-width: 0;
+  }
+
+  .spec-sheet {
+    border: 1px solid var(--color-border);
+    background: var(--bg-base);
+    width: 100%;
+  }
+
+  .spec-sheet-title {
+    font-family: 'Routed Gothic', var(--font-dm-mono), monospace;
+    font-size: 12px;
+    font-weight: 400;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--color-primary);
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--color-border);
+    background: var(--bg-paper-2);
+    margin: 0;
+  }
+
+  .spec-list {
+    margin: 0;
+  }
+
+  .spec-row {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    align-items: center;
+    padding: 10px 16px;
+    border-bottom: 1px solid var(--color-border);
+    font-family: 'Routed Gothic', var(--font-dm-mono), monospace;
+  }
+
+  .spec-row:last-child {
+    border-bottom: none;
+  }
+
+  .spec-row dt {
+    font-size: 11px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--color-muted);
+  }
+
+  .spec-row dd {
+    font-size: 13px;
+    letter-spacing: 0.06em;
+    color: var(--color-primary);
+    text-align: right;
+    margin: 0;
+  }
+
+  @media (max-width: 900px) {
+    .product-row {
+      grid-template-columns: 1fr;
+      gap: 32px;
+    }
+
+    .spec-sheet {
+      max-width: 360px;
+    }
+  }
+</style>

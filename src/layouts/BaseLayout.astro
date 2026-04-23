@@ -1,4 +1,5 @@
 ---
+import { Font } from 'astro:assets';
 import '../styles/global.css';
 
 interface Props {
@@ -7,47 +8,42 @@ interface Props {
 }
 
 const {
-  title = 'Finnvek',
-  description = 'Independent software from Turku, Finland.',
+  title = 'Finnvek. Software that takes time. Made carefully.',
+  description = 'Independent software from Turku, Finland. One developer, building products with care. First app: KnitTools, coming soon.',
 } = Astro.props;
+
+const canonical = new URL(Astro.url.pathname, Astro.site).toString();
+const ogImage = new URL('/og-image.png', Astro.site).toString();
 ---
 
 <!doctype html>
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
-    <link rel="canonical" href="https://finnvek.com/" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="theme-color" content="#0A0A0F" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="generator" content={Astro.generator} />
     <meta name="description" content={description} />
+    <meta name="theme-color" content="#0C0C0C" />
+
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    <link rel="canonical" href={canonical} />
+
+    <meta property="og:type" content="website" />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
-    <meta property="og:type" content="website" />
-    <meta property="og:url" content="https://finnvek.com" />
-    <meta property="og:image" content="https://finnvek.com/og-image.png" />
-    <meta property="og:image:width" content="1200" />
-    <meta property="og:image:height" content="630" />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImage} />
+
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
-    <meta name="twitter:image" content="https://finnvek.com/og-image.png" />
-    <meta name="generator" content={Astro.generator} />
+    <meta name="twitter:image" content={ogImage} />
+
+    <Font cssVariable="--font-serif" preload />
+    <Font cssVariable="--font-sans" preload />
+
     <title>{title}</title>
-    <script type="application/ld+json" set:html={JSON.stringify({
-      "@context": "https://schema.org",
-      "@type": "Organization",
-      "name": "Finnvek",
-      "url": "https://finnvek.com",
-      "description": "Independent software from Turku, Finland.",
-      "email": "contact@finnvek.com",
-      "address": {
-        "@type": "PostalAddress",
-        "addressLocality": "Turku",
-        "addressCountry": "FI"
-      }
-    })} />
   </head>
   <body>
     <slot />

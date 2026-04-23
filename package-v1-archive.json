@@ -1,5 +1,5 @@
 {
-  "name": "finnvek",
+  "name": "finnvek-site",
   "type": "module",
   "version": "0.0.1",
   "engines": {
@@ -13,7 +13,7 @@
   },
   "dependencies": {
     "@astrojs/sitemap": "^3.7.2",
-    "astro": "^6.1.9",
+    "astro": "^6.1.5",
     "gsap": "^3.15.0"
   }
 }

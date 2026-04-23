@@ -1,107 +1,94 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-import Hero from '../components/Hero.astro';
-import ProjectCard from '../components/ProjectCard.astro';
-import Footer from '../components/Footer.astro';
 ---
 
 <BaseLayout>
-  <div class="fade-up fade-up-1">
-    <Hero />
-  </div>
+  <header class="site-header">
+    <a href="/" class="logo" aria-label="Finnvek home" data-hero-logo>
+      <svg width="402" height="52" viewBox="0 0 402 52" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <path d="M401.391 51.1095H388.418L367.852 30.508H361.418V21.297H367.852L388.418 0.69548H401.391L375.48 25.9025L401.391 51.1095ZM357.762 51.1095H348.621V0.69548H357.762V51.1095Z" fill="white"/>
+        <path d="M333.723 50.5236H300.746C299.48 50.5236 298.098 50.3009 296.598 49.8556C295.098 49.4103 293.703 48.6838 292.414 47.6759C291.148 46.6447 290.082 45.3205 289.215 43.7033C288.371 42.0627 287.949 40.0588 287.949 37.6916V4.71501C287.949 4.0822 288.066 3.48454 288.301 2.92204C288.535 2.35954 288.852 1.86736 289.25 1.44548C289.672 1.02361 290.164 0.69548 290.727 0.461105C291.289 0.22673 291.898 0.109543 292.555 0.109543H333.723V9.25017H297.09V37.6916C297.09 38.8869 297.406 39.8009 298.039 40.4338C298.672 41.0666 299.598 41.383 300.816 41.383H333.723V50.5236Z" fill="white"/>
+        <path d="M272.961 0.69548L249.09 49.3166C248.715 50.0666 248.152 50.6642 247.402 51.1095C246.676 51.5783 245.867 51.8127 244.977 51.8127C244.109 51.8127 243.301 51.5783 242.551 51.1095C241.824 50.6642 241.262 50.0666 240.863 49.3166L217.027 0.69548H227.258L244.977 37.0119L262.766 0.69548H272.961Z" fill="white"/>
+        <path d="M203.859 47.2072C203.859 47.8635 203.73 48.4728 203.473 49.0353C203.238 49.5978 202.91 50.09 202.488 50.5119C202.09 50.9103 201.609 51.2267 201.047 51.4611C200.484 51.6955 199.887 51.8127 199.254 51.8127C198.691 51.8127 198.117 51.7072 197.531 51.4963C196.969 51.2853 196.465 50.9455 196.02 50.4767L162.621 15.6017V51.1095H153.48V4.59783C153.48 3.66033 153.738 2.81658 154.254 2.06658C154.793 1.29314 155.473 0.71892 156.293 0.34392C157.16 -0.00764266 158.051 -0.0896739 158.965 0.0978261C159.879 0.261889 160.664 0.683764 161.32 1.36345L194.719 36.2033V0.695482H203.859V47.2072Z" fill="white"/>
+        <path d="M134.828 47.2072C134.828 47.8635 134.699 48.4728 134.441 49.0353C134.207 49.5978 133.879 50.09 133.457 50.5119C133.059 50.9103 132.578 51.2267 132.016 51.4611C131.453 51.6955 130.855 51.8127 130.223 51.8127C129.66 51.8127 129.086 51.7072 128.5 51.4963C127.938 51.2853 127.434 50.9455 126.988 50.4767L93.5898 15.6017V51.1095H84.4492V4.59783C84.4492 3.66033 84.707 2.81658 85.2227 2.06658C85.7617 1.29314 86.4414 0.71892 87.2617 0.34392C88.1289 -0.00764266 89.0195 -0.0896739 89.9336 0.0978261C90.8477 0.261889 91.6328 0.683764 92.2891 1.36345L125.688 36.2033V0.695482H134.828V47.2072Z" fill="white"/>
+        <path d="M65.7617 51.1095H56.6211V0.69548H65.7617V51.1095Z" fill="white"/>
+        <path d="M45.7734 9.83611H9.14062V51.1095H0V5.30095C0 4.66814 0.117188 4.07048 0.351562 3.50798C0.585938 2.94548 0.902344 2.45329 1.30078 2.03142C1.72266 1.60954 2.21484 1.28142 2.77734 1.04704C3.33984 0.812668 3.94922 0.69548 4.60547 0.69548H45.7734V9.83611Z" fill="white"/>
+        <circle cx="23.9492" cy="32.1095" r="11" fill="#1DB4A5" data-logo-dot/>
+        <circle cx="311.949" cy="25.1095" r="10" fill="#1DB4A5" data-logo-dot/>
+      </svg>
+    </a>
+  </header>
 
-  <section class="projects fade-up fade-up-2">
-    <div class="container">
-      <h2 class="section-label"><span class="drop drop-1">P</span><span class="drop drop-2">R</span><span class="drop drop-3">O</span><span class="drop drop-4">J</span><span class="drop drop-5">E</span><span class="drop drop-6">C</span><span class="drop drop-7">T</span><span class="drop drop-8">S</span></h2>
-      <div class="project-grid">
-        <ProjectCard
-          name="KnitTools"
-          description="KnitTools is a knitting companion for Android — project tracking with row counter and session history, five knitting calculators, yarn label scanning, Ravelry pattern search, and a full reference library. Privacy-first, no ads, no data collection. Coming soon on Google Play and Amazon Appstore."
-          url="https://knittoolsapp.com"
-          platform="Coming soon"
-          icon="/knittools-icon.webp"
-          iconAlt="KnitTools app icon"
-        />
+  <div class="page">
+    <section class="hero">
+      <div class="hero-label">Independent software. One developer</div>
+      <h1 class="serif">
+        <span class="hero-line-mask"><span class="hero-primary" data-hero-line>Software that</span></span>
+        <span class="hero-line-mask"><span class="hero-primary" data-hero-line>takes <span class="hero-accent">time.</span></span></span>
+        <span class="hero-line-mask"><span class="hero-secondary" data-hero-line>Made carefully.</span></span>
+      </h1>
+    </section>
+
+    <section class="about" data-about>
+      <h2 class="serif" data-about-line>Finnvek</h2>
+      <p data-about-line>Finnvek is independent software from Turku, Finland. I'm one developer, working on my own projects.</p>
+      <p data-about-line>It exists because some ideas were worth following, and I had the freedom to follow them. The kind of ideas that stay interesting for years, not weeks. The kind I care about enough to build carefully, without shortcuts or rushed releases.</p>
+      <p data-about-line>Every product is its own thing. No ads, no tracking. Made to work well, and to keep working for a long time.</p>
+      <p data-about-line>The first one is <span class="accent">KnitTools</span>. More are on the way.</p>
+      <div class="signature" data-about-line>&mdash; Emma</div>
+    </section>
+
+    <section class="knittools" data-knittools>
+      <div class="knittools-image" data-knittools-image data-parallax-wrap>
+        <img src="/knittools-phone.png" alt="KnitTools app on a phone" width="862" height="1825" />
       </div>
-      <p class="coming-soon">More apps coming soon</p>
-    </div>
-  </section>
-
-  <div class="fade-up fade-up-3">
-    <Footer />
+      <div class="knittools-content">
+        <div class="label" data-knittools-line>Coming soon</div>
+        <h2 class="serif" data-knittools-line>KnitTools</h2>
+        <p data-knittools-line>KnitTools is a pocket companion for knitters. It counts your rows, reads your patterns, and keeps your stash quietly in order, with voice and AI that speaks knitter. In eleven languages, for Android.</p>
+        <dl class="product-meta" data-knittools-line>
+          <div>
+            <dt>Status</dt>
+            <dd>Coming soon</dd>
+          </div>
+          <div>
+            <dt>Platform</dt>
+            <dd>Android</dd>
+          </div>
+          <div>
+            <dt>Languages</dt>
+            <dd>11</dd>
+          </div>
+        </dl>
+        <form class="notify-form" data-notify-form data-knittools-line>
+          <label class="visually-hidden" for="notify-email">Email address</label>
+          <input id="notify-email" name="email" type="email" placeholder="email address" autocomplete="email" required />
+          <button type="submit">Notify me at launch</button>
+        </form>
+        <div class="knittools-actions" data-knittools-line>
+          <a href="https://knittoolsapp.com" class="link-primary">knittoolsapp.com &rarr;</a>
+        </div>
+      </div>
+    </section>
   </div>
+
+  <footer class="site-footer" data-reveal>
+    <div class="footer-inner">
+      <div class="footer-brand">Finnvek</div>
+      <div class="footer-meta">
+        <div class="footer-facts">
+          <span>Turku, Finland</span>
+          <span>2026</span>
+        </div>
+        <div class="footer-links">
+          <a href="mailto:contact@finnvek.com">contact@finnvek.com</a>
+          <a href="/privacy">Privacy</a>
+        </div>
+      </div>
+    </div>
+  </footer>
 </BaseLayout>
 
-<style>
-  .projects {
-    padding: 1rem 0 1.5rem;
-  }
-
-  .section-label {
-    font-family: var(--font-dm-mono), monospace;
-    font-size: 0.85rem;
-    font-weight: 400;
-    text-transform: uppercase;
-    letter-spacing: 0.25em;
-    color: var(--color-primary);
-    margin-bottom: 1rem;
-  }
-
-  .drop {
-    display: inline-block;
-    opacity: 0;
-    animation: letterDrop 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
-  }
-
-  .drop-1 { animation-delay: 0.3s; }
-  .drop-2 { animation-delay: 0.35s; }
-  .drop-3 { animation-delay: 0.4s; }
-  .drop-4 { animation-delay: 0.45s; }
-  .drop-5 { animation-delay: 0.5s; }
-  .drop-6 { animation-delay: 0.55s; }
-  .drop-7 { animation-delay: 0.6s; }
-  .drop-8 { animation-delay: 0.65s; }
-
-  @keyframes letterDrop {
-    0% {
-      opacity: 0;
-      transform: translateY(-30px);
-    }
-    60% {
-      opacity: 1;
-      transform: translateY(3px);
-    }
-    80% {
-      transform: translateY(-2px);
-    }
-    100% {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-
-  .project-grid {
-    display: grid;
-    gap: 1rem;
-  }
-
-  .coming-soon {
-    font-size: 0.8rem;
-    color: var(--color-primary);
-    text-align: center;
-    margin-top: 1.5rem;
-    opacity: 0;
-    animation: textDrop 0.5s ease-out 0.9s forwards;
-  }
-
-  @keyframes textDrop {
-    0% {
-      opacity: 0;
-      transform: translateY(-20px);
-    }
-    100% {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-</style>
+<script>
+  import '../scripts/home-animations';
+</script>
