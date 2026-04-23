@@ -1,47 +1,10 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import HeroLogo from '../components/HeroLogo.astro';
 ---
 
 <BaseLayout>
-  <main class="stage">
-    <p class="hero">Finnvek</p>
-    <p class="phase-marker">PHASE 1 — FOUNDATION</p>
+  <main>
+    <HeroLogo />
   </main>
 </BaseLayout>
-
-<style>
-  .stage {
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 1.5rem;
-    padding: 0 2rem;
-  }
-
-  .hero {
-    margin: 0;
-    font-family: var(--font-display), system-ui, sans-serif;
-    font-weight: 700;
-    font-size: 3rem;
-    color: var(--color-text);
-    letter-spacing: -0.01em;
-  }
-
-  .phase-marker {
-    margin: 0;
-    font-family: var(--font-display), system-ui, sans-serif;
-    font-weight: 400;
-    font-size: 0.75rem;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    color: var(--color-muted);
-  }
-
-  @media (max-width: 640px) {
-    .stage {
-      padding: 0 1.25rem;
-    }
-  }
-</style>
