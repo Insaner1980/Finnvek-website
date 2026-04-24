@@ -183,12 +183,12 @@ const setupSectionLines = () => {
     gsap.set(line, { scaleX: 0 });
     gsap.to(line, {
       scaleX: 1,
-      duration: 0.8,
-      ease: 'power2.out',
+      ease: 'none',
       scrollTrigger: {
         trigger: line,
-        start: 'top 80%',
-        once: true,
+        start: 'top bottom',
+        end: 'top 40%',
+        scrub: 1.2,
       },
     });
   });
