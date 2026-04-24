@@ -223,6 +223,7 @@ img {
   height: 100%;
   object-fit: cover;
   display: block;
+  filter: contrast(1.25);
   mix-blend-mode: lighten;
 }
 
