@@ -181,14 +181,17 @@ const setupSectionLines = () => {
 
   sectionLines.forEach((line) => {
     gsap.set(line, { scaleX: 0 });
-    gsap.to(line, {
-      scaleX: 1,
-      ease: 'none',
-      scrollTrigger: {
-        trigger: line,
-        start: 'top bottom',
-        end: 'top 40%',
-        scrub: 1.2,
+    let maxProgress = 0;
+
+    ScrollTrigger.create({
+      trigger: line,
+      start: 'top bottom',
+      end: 'top 40%',
+      onUpdate: (self) => {
+        if (self.progress > maxProgress) {
+          maxProgress = self.progress;
+          gsap.set(line, { scaleX: maxProgress });
+        }
       },
     });
   });
