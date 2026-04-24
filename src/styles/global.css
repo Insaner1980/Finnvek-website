@@ -357,17 +357,16 @@ img {
 
 .notify-form button {
   background: transparent;
-  color: var(--color-accent);
+  color: var(--color-text);
   padding: 0 1rem;
   cursor: pointer;
   white-space: nowrap;
-  transition: background-color 150ms ease, color 150ms ease;
+  transition: color 150ms ease;
 }
 
 .notify-form button:hover,
 .notify-form button:focus-visible {
-  background: rgba(74, 157, 148, 0.1);
-  color: var(--color-accent-hover);
+  color: var(--color-accent);
   outline: none;
 }
 
