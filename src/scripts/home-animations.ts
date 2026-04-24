@@ -64,7 +64,7 @@ const setupHeroScrollReveal = () => {
   if (heroLogo) gsap.set(heroLogo, { autoAlpha: 0, y: -8 });
   if (logoDots.length > 0) {
     gsap.set(logoDots, {
-      y: -26,
+      y: -160,
       autoAlpha: 0,
       transformOrigin: '50% 50%',
     });
@@ -87,11 +87,11 @@ const setupHeroScrollReveal = () => {
       {
         y: 0,
         autoAlpha: 1,
-        duration: 0.62,
+        duration: 1.1,
         ease: 'bounce.out',
-        stagger: 0.06,
+        stagger: 0.14,
       },
-      heroLogo ? '-=0.18' : 0,
+      heroLogo ? '-=0.24' : 0,
     );
   }
 
