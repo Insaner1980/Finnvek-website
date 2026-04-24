@@ -1,10 +1,11 @@
 :root {
-  --color-bg: #0C0C0C;
+  --color-bg: #08080A;
+  --color-surface-footer: #0C0C0C;
   --color-text: #F0F0EC;
   --color-text-muted: #9A9A95;
   --color-text-dimmed: #5F5F5A;
-  --color-accent: #24D4C2;
-  --color-accent-hover: #3EE8D7;
+  --color-accent: #4A9D94;
+  --color-accent-hover: #5FBCB1;
   --color-border: #252525;
   --color-border-faint: #1A1A1A;
 
@@ -36,17 +37,13 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-.serif {
-  font-family: var(--font-serif), Georgia, serif;
-}
-
-.sans {
-  font-family: var(--font-sans), system-ui, sans-serif;
-}
-
 a {
   color: var(--color-accent);
   text-decoration: none;
+}
+
+[data-logo-dot] {
+  fill: var(--color-accent);
 }
 
 img {
@@ -94,59 +91,40 @@ img {
 }
 
 .hero {
-  min-height: 75vh;
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
   align-items: flex-start;
   text-align: left;
-  padding: 22vh 0 5rem;
+  padding: 14vh 0 3rem;
+  max-width: 720px;
 }
 
 .hero-label {
   margin-bottom: 1.75rem;
   font-family: var(--font-sans), system-ui, sans-serif;
-  font-size: 0.6875rem;
+  font-size: 0.75rem;
   font-weight: 500;
   line-height: 1;
-  letter-spacing: 0.14em;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: var(--color-text-dimmed);
+  color: var(--color-text-muted);
 }
 
 .hero h1 {
-  font-family: var(--font-serif), Georgia, serif;
-  font-weight: 400;
-  font-size: clamp(3.5rem, 8.2vw, 7rem);
-  line-height: 1;
-  letter-spacing: -0.025em;
+  font-family: var(--font-sans), system-ui, sans-serif;
+  font-weight: 500;
+  font-size: clamp(2rem, 3.2vw, 3rem);
+  line-height: 1.15;
+  letter-spacing: -0.01em;
   margin: 0;
-  max-width: 900px;
-}
-
-.hero-line-mask {
-  display: block;
-  overflow: hidden;
-  padding-bottom: 0.08em;
-}
-
-.hero-primary {
-  display: block;
+  max-width: 720px;
   color: var(--color-text);
 }
 
-.hero-secondary {
-  display: block;
-  color: var(--color-text-muted);
-  font-weight: 400;
-}
-
-.hero-accent {
-  color: var(--color-accent);
-}
-
 .about {
-  margin-top: 8rem;
+  margin-left: auto;
+  margin-right: 0;
   max-width: var(--container-about);
   font-size: 1.125rem;
   line-height: 1.65;
@@ -154,11 +132,11 @@ img {
 }
 
 .about h2 {
-  font-family: var(--font-serif), Georgia, serif;
+  font-family: var(--font-sans), system-ui, sans-serif;
   font-weight: 500;
-  font-size: clamp(2rem, 3vw, 2.5rem);
+  font-size: clamp(2rem, 3vw, 2.75rem);
   line-height: 1.1;
-  letter-spacing: -0.02em;
+  letter-spacing: -0.015em;
   color: var(--color-text);
   margin: 0 0 2rem 0;
 }
@@ -178,26 +156,23 @@ img {
 
 .signature {
   margin-top: 3rem;
-  font-family: var(--font-serif), Georgia, serif;
+  font-family: var(--font-sans), system-ui, sans-serif;
+  font-weight: 400;
   font-style: italic;
-  font-size: 1rem;
+  font-size: 0.95rem;
   color: var(--color-text-muted);
   letter-spacing: 0.01em;
 }
 
 .knittools {
-  margin-top: 9rem;
   display: grid;
   grid-template-columns: auto 1fr;
   gap: 5.5rem;
   align-items: start;
-  max-width: 980px;
-  margin-left: 12rem;
-  padding: 2rem 0;
 }
 
 .knittools-image {
-  padding-left: 2rem;
+  padding-left: 0;
 }
 
 .knittools-image img {
@@ -206,26 +181,25 @@ img {
 }
 
 .knittools-content {
-  padding-top: 1.25rem;
-  padding-left: 1.5rem;
+  padding-top: 0.5rem;
 }
 
 .knittools-content .label {
   font-family: var(--font-sans), system-ui, sans-serif;
-  font-size: 0.6875rem;
+  font-size: 0.75rem;
   font-weight: 500;
   text-transform: uppercase;
-  letter-spacing: 0.14em;
-  color: var(--color-text-dimmed);
+  letter-spacing: 0.12em;
+  color: var(--color-text-muted);
   margin-bottom: 1.25rem;
 }
 
 .knittools-content h2 {
-  font-family: var(--font-serif), Georgia, serif;
+  font-family: var(--font-sans), system-ui, sans-serif;
   font-weight: 500;
-  font-size: clamp(2.25rem, 4vw, 3rem);
+  font-size: clamp(2rem, 3vw, 2.75rem);
   line-height: 1.1;
-  letter-spacing: -0.02em;
+  letter-spacing: -0.015em;
   margin: 0 0 1.75rem 0;
   color: var(--color-text);
 }
@@ -264,7 +238,7 @@ img {
 .product-meta dt {
   font-size: 0.75rem;
   letter-spacing: 0.03em;
-  color: #5a5a55;
+  color: var(--color-text-dimmed);
 }
 
 .product-meta dd {
@@ -317,7 +291,7 @@ img {
 
 .notify-form button:hover,
 .notify-form button:focus-visible {
-  background: rgba(36, 212, 194, 0.08);
+  background: rgba(74, 157, 148, 0.1);
   color: var(--color-accent-hover);
   outline: none;
 }
@@ -347,9 +321,35 @@ img {
   border-bottom-color: var(--color-accent-hover);
 }
 
+.section-line-wrap {
+  width: 100%;
+  margin: 7rem 0 4rem;
+}
+
+.section-line {
+  height: 1px;
+  background-color: var(--color-border);
+  display: block;
+}
+
+.section-line--right {
+  margin-left: auto;
+  margin-right: 0;
+  width: calc(50% - 2rem);
+  transform-origin: right center;
+}
+
+.section-line--left {
+  margin-left: 0;
+  margin-right: auto;
+  width: calc(50% - 2rem);
+  transform-origin: left center;
+}
+
 .site-footer {
-  margin-top: 8rem;
-  padding: 5rem 0 3rem;
+  margin-top: 6rem;
+  padding: 4rem 0 3rem;
+  background-color: var(--color-surface-footer);
 }
 
 .footer-inner {
@@ -387,7 +387,7 @@ img {
 }
 
 .footer-facts {
-  color: #555550;
+  color: var(--color-text-dimmed);
 }
 
 .footer-links {
@@ -417,7 +417,7 @@ img {
 }
 
 .prose h1 {
-  font-family: var(--font-serif), Georgia, serif;
+  font-family: var(--font-sans), system-ui, sans-serif;
   font-weight: 500;
   font-size: 2rem;
   color: var(--color-text);
@@ -426,17 +426,21 @@ img {
 }
 
 @media (max-width: 768px) {
+  .about {
+    margin-left: 0;
+    margin-right: 0;
+    max-width: 100%;
+  }
+
   .knittools {
     grid-template-columns: 1fr;
     gap: 3rem;
-    margin-left: 0;
     text-align: center;
   }
 
   .knittools-image {
     display: flex;
     justify-content: center;
-    padding-left: 0;
   }
 
   .knittools-image img {
@@ -445,7 +449,6 @@ img {
 
   .knittools-content {
     padding-top: 0;
-    padding-left: 0;
   }
 
   .knittools-content p {
@@ -464,6 +467,14 @@ img {
     margin-right: auto;
     text-align: left;
   }
+
+  .section-line--right,
+  .section-line--left {
+    margin-left: 0;
+    margin-right: auto;
+    width: 40vw;
+    transform-origin: left center;
+  }
 }
 
 @media (max-width: 640px) {
@@ -481,26 +492,21 @@ img {
   }
 
   .hero {
-    min-height: 70vh;
-    padding: 18vh 0 3rem;
+    padding: 10vh 0 2rem;
   }
 
   .hero-label {
     margin-bottom: 1.25rem;
-    font-size: 0.625rem;
-    letter-spacing: 0.12em;
+    font-size: 0.6875rem;
+    letter-spacing: 0.1em;
   }
 
   .hero h1 {
-    font-size: clamp(2.5rem, 11vw, 4.5rem);
+    font-size: clamp(1.75rem, 6vw, 2.25rem);
   }
 
-  .about {
-    margin-top: 5rem;
-  }
-
-  .knittools {
-    margin-top: 6rem;
+  .section-line-wrap {
+    margin: 4rem 0 2.5rem;
   }
 
   .product-meta div {

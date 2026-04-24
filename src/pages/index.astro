@@ -13,38 +13,46 @@ import BaseLayout from '../layouts/BaseLayout.astro';
         <path d="M134.828 47.2072C134.828 47.8635 134.699 48.4728 134.441 49.0353C134.207 49.5978 133.879 50.09 133.457 50.5119C133.059 50.9103 132.578 51.2267 132.016 51.4611C131.453 51.6955 130.855 51.8127 130.223 51.8127C129.66 51.8127 129.086 51.7072 128.5 51.4963C127.938 51.2853 127.434 50.9455 126.988 50.4767L93.5898 15.6017V51.1095H84.4492V4.59783C84.4492 3.66033 84.707 2.81658 85.2227 2.06658C85.7617 1.29314 86.4414 0.71892 87.2617 0.34392C88.1289 -0.00764266 89.0195 -0.0896739 89.9336 0.0978261C90.8477 0.261889 91.6328 0.683764 92.2891 1.36345L125.688 36.2033V0.695482H134.828V47.2072Z" fill="white"/>
         <path d="M65.7617 51.1095H56.6211V0.69548H65.7617V51.1095Z" fill="white"/>
         <path d="M45.7734 9.83611H9.14062V51.1095H0V5.30095C0 4.66814 0.117188 4.07048 0.351562 3.50798C0.585938 2.94548 0.902344 2.45329 1.30078 2.03142C1.72266 1.60954 2.21484 1.28142 2.77734 1.04704C3.33984 0.812668 3.94922 0.69548 4.60547 0.69548H45.7734V9.83611Z" fill="white"/>
-        <circle cx="23.9492" cy="32.1095" r="11" fill="#1DB4A5" data-logo-dot/>
-        <circle cx="311.949" cy="25.1095" r="10" fill="#1DB4A5" data-logo-dot/>
+        <circle cx="23.9492" cy="32.1095" r="11" data-logo-dot/>
+        <circle cx="311.949" cy="25.1095" r="10" data-logo-dot/>
       </svg>
     </a>
   </header>
 
   <div class="page">
     <section class="hero">
-      <div class="hero-label">Independent software. One developer</div>
-      <h1 class="serif">
-        <span class="hero-line-mask"><span class="hero-primary" data-hero-line>Software that</span></span>
-        <span class="hero-line-mask"><span class="hero-primary" data-hero-line>takes <span class="hero-accent">time.</span></span></span>
-        <span class="hero-line-mask"><span class="hero-secondary" data-hero-line>Made carefully.</span></span>
-      </h1>
+      <div class="hero-label">Independent software from Turku, Finland</div>
+      <h1 data-hero-line>Software that's built to last.</h1>
     </section>
+  </div>
 
+  <div class="section-line-wrap">
+    <div class="section-line section-line--right" data-section-line></div>
+  </div>
+
+  <div class="page">
     <section class="about" data-about>
-      <h2 class="serif" data-about-line>Finnvek</h2>
+      <h2 data-about-line>Finnvek</h2>
       <p data-about-line>Finnvek is independent software from Turku, Finland. I'm one developer, working on my own projects.</p>
       <p data-about-line>It exists because some ideas were worth following, and I had the freedom to follow them. The kind of ideas that stay interesting for years, not weeks. The kind I care about enough to build carefully, without shortcuts or rushed releases.</p>
       <p data-about-line>Every product is its own thing. No ads, no tracking. Made to work well, and to keep working for a long time.</p>
       <p data-about-line>The first one is <span class="accent">KnitTools</span>. More are on the way.</p>
       <div class="signature" data-about-line>&mdash; Emma</div>
     </section>
+  </div>
 
+  <div class="section-line-wrap">
+    <div class="section-line section-line--left" data-section-line></div>
+  </div>
+
+  <div class="page">
     <section class="knittools" data-knittools>
       <div class="knittools-image" data-knittools-image data-parallax-wrap>
         <img src="/knittools-phone.png" alt="KnitTools app on a phone" width="862" height="1825" />
       </div>
       <div class="knittools-content">
         <div class="label" data-knittools-line>Coming soon</div>
-        <h2 class="serif" data-knittools-line>KnitTools</h2>
+        <h2 data-knittools-line>KnitTools</h2>
         <p data-knittools-line>KnitTools is a pocket companion for knitters. It counts your rows, reads your patterns, and keeps your stash quietly in order, with voice and AI that speaks knitter. In eleven languages, for Android.</p>
         <dl class="product-meta" data-knittools-line>
           <div>

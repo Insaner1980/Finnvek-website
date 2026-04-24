@@ -9,13 +9,13 @@ const heroLogo = document.querySelector<HTMLElement>('[data-hero-logo]');
 const logoDots = Array.from(document.querySelectorAll<SVGElement>('[data-logo-dot]'));
 const heroSection = document.querySelector<HTMLElement>('.hero');
 const heroLabel = document.querySelector<HTMLElement>('.hero-label');
-const heroLines = Array.from(document.querySelectorAll<HTMLElement>('[data-hero-line]'));
-const heroMasks = Array.from(document.querySelectorAll<HTMLElement>('.hero-line-mask'));
+const heroHeadline = document.querySelector<HTMLElement>('[data-hero-line]');
 const aboutSection = document.querySelector<HTMLElement>('[data-about]');
 const aboutLines = Array.from(document.querySelectorAll<HTMLElement>('[data-about-line]'));
 const knittoolsSection = document.querySelector<HTMLElement>('[data-knittools]');
 const knittoolsImage = document.querySelector<HTMLElement>('[data-knittools-image]');
 const knittoolsLines = Array.from(document.querySelectorAll<HTMLElement>('[data-knittools-line]'));
+const sectionLines = Array.from(document.querySelectorAll<HTMLElement>('[data-section-line]'));
 const revealItems = Array.from(document.querySelectorAll<HTMLElement>('[data-reveal]'));
 const parallaxWrap = document.querySelector<HTMLElement>('[data-parallax-wrap]');
 const parallaxImage = parallaxWrap?.querySelector<HTMLElement>('img');
@@ -59,7 +59,7 @@ const setupNotifyForm = () => {
 
 const setupHeroScrollReveal = () => {
   if (prefersReducedMotion) return;
-  if (!heroSection || (!heroLabel && heroLines.length === 0)) return;
+  if (!heroSection || (!heroLabel && !heroHeadline)) return;
 
   if (heroLogo) gsap.set(heroLogo, { autoAlpha: 0, y: -8 });
   if (logoDots.length > 0) {
@@ -70,8 +70,7 @@ const setupHeroScrollReveal = () => {
     });
   }
   if (heroLabel) gsap.set(heroLabel, { autoAlpha: 0, y: 10 });
-  if (heroMasks.length > 0) gsap.set(heroMasks, { autoAlpha: 1 });
-  if (heroLines.length > 0) gsap.set(heroLines, { yPercent: 118, autoAlpha: 1 });
+  if (heroHeadline) gsap.set(heroHeadline, { autoAlpha: 0, y: 16 });
 
   const timeline = gsap.timeline({
     defaults: { ease: 'power3.out' },
@@ -100,16 +99,8 @@ const setupHeroScrollReveal = () => {
     timeline.to(heroLabel, { autoAlpha: 1, y: 0, duration: 0.44 }, heroLogo ? '-=0.18' : 0);
   }
 
-  if (heroLines.length > 0) {
-    timeline.to(
-      heroLines,
-      {
-        yPercent: 0,
-        duration: 0.82,
-        stagger: 0.11,
-      },
-      heroLabel ? '-=0.08' : 0,
-    );
+  if (heroHeadline) {
+    timeline.to(heroHeadline, { autoAlpha: 1, y: 0, duration: 0.62 }, heroLabel ? '-=0.22' : 0);
   }
 };
 
@@ -180,6 +171,29 @@ const setupParallax = () => {
   });
 };
 
+const setupSectionLines = () => {
+  if (sectionLines.length === 0) return;
+
+  if (prefersReducedMotion) {
+    gsap.set(sectionLines, { scaleX: 1 });
+    return;
+  }
+
+  sectionLines.forEach((line) => {
+    gsap.set(line, { scaleX: 0 });
+    gsap.to(line, {
+      scaleX: 1,
+      duration: 0.8,
+      ease: 'power2.out',
+      scrollTrigger: {
+        trigger: line,
+        start: 'top 80%',
+        once: true,
+      },
+    });
+  });
+};
+
 const setupKnittoolsReveal = () => {
   if (prefersReducedMotion) return;
   if (!knittoolsSection || !knittoolsImage || knittoolsLines.length === 0) return;
@@ -212,6 +226,7 @@ const setupKnittoolsReveal = () => {
 setupNotifyForm();
 setupHeroScrollReveal();
 setupAboutReveal();
+setupSectionLines();
 setupScrollReveals();
 setupParallax();
 setupKnittoolsReveal();

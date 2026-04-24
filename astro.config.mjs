@@ -9,17 +9,10 @@ export default defineConfig({
   fonts: [
     {
       provider: fontProviders.google(),
-      name: 'Literata',
-      cssVariable: '--font-serif',
-      weights: [400, 500],
-      styles: ['normal'],
-    },
-    {
-      provider: fontProviders.google(),
       name: 'Figtree',
       cssVariable: '--font-sans',
-      weights: [300, 400, 500],
-      styles: ['normal'],
+      weights: [300, 400, 500, 600],
+      styles: ['normal', 'italic'],
     },
   ],
 });
