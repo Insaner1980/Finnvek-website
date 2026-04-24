@@ -10,6 +10,7 @@ const logoDots = Array.from(document.querySelectorAll<SVGElement>('[data-logo-do
 const heroSection = document.querySelector<HTMLElement>('.hero');
 const heroLabel = document.querySelector<HTMLElement>('.hero-label');
 const heroHeadline = document.querySelector<HTMLElement>('[data-hero-line]');
+const scrollCue = document.querySelector<HTMLElement>('[data-scroll-cue]');
 const aboutSection = document.querySelector<HTMLElement>('[data-about]');
 const aboutLines = Array.from(document.querySelectorAll<HTMLElement>('[data-about-line]'));
 const knittoolsSection = document.querySelector<HTMLElement>('[data-knittools]');
@@ -102,6 +103,27 @@ const setupHeroScrollReveal = () => {
   if (heroHeadline) {
     timeline.to(heroHeadline, { autoAlpha: 1, y: 0, duration: 0.62 }, heroLabel ? '-=0.22' : 0);
   }
+
+  if (scrollCue) {
+    timeline.to(scrollCue, { autoAlpha: 1, duration: 0.5 }, '+=0.4');
+  }
+};
+
+const setupScrollCueHide = () => {
+  if (!scrollCue) return;
+
+  if (prefersReducedMotion) {
+    gsap.set(scrollCue, { autoAlpha: 1 });
+  }
+
+  const hideOnScroll = () => {
+    if (window.scrollY > 80) {
+      gsap.to(scrollCue, { autoAlpha: 0, duration: 0.3, ease: 'power1.out' });
+      window.removeEventListener('scroll', hideOnScroll);
+    }
+  };
+
+  window.addEventListener('scroll', hideOnScroll, { passive: true });
 };
 
 const setupScrollReveals = () => {
@@ -228,6 +250,7 @@ const setupKnittoolsReveal = () => {
 
 setupNotifyForm();
 setupHeroScrollReveal();
+setupScrollCueHide();
 setupAboutReveal();
 setupSectionLines();
 setupScrollReveals();
