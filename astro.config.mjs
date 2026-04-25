@@ -9,9 +9,16 @@ export default defineConfig({
   fonts: [
     {
       provider: fontProviders.google(),
-      name: 'Figtree',
-      cssVariable: '--font-sans',
-      weights: [300, 400, 500, 600],
+      name: 'Boldonse',
+      cssVariable: '--font-display',
+      weights: [400],
+      styles: ['normal'],
+    },
+    {
+      provider: fontProviders.google(),
+      name: 'Newsreader',
+      cssVariable: '--font-body',
+      weights: ['400 700'],
       styles: ['normal', 'italic'],
     },
   ],

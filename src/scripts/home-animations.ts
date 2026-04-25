@@ -1,7 +1,8 @@
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { SplitText } from 'gsap/SplitText';
 
-gsap.registerPlugin(ScrollTrigger);
+gsap.registerPlugin(ScrollTrigger, SplitText);
 
 const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
@@ -10,7 +11,6 @@ const logoDots = Array.from(document.querySelectorAll<SVGElement>('[data-logo-do
 const heroSection = document.querySelector<HTMLElement>('.hero');
 const heroLabel = document.querySelector<HTMLElement>('.hero-label');
 const heroHeadline = document.querySelector<HTMLElement>('[data-hero-line]');
-const scrollCue = document.querySelector<HTMLElement>('[data-scroll-cue]');
 const aboutSection = document.querySelector<HTMLElement>('[data-about]');
 const aboutLines = Array.from(document.querySelectorAll<HTMLElement>('[data-about-line]'));
 const knittoolsSection = document.querySelector<HTMLElement>('[data-knittools]');
@@ -104,26 +104,6 @@ const setupHeroScrollReveal = () => {
     timeline.to(heroHeadline, { autoAlpha: 1, y: 0, duration: 0.62 }, heroLabel ? '-=0.22' : 0);
   }
 
-  if (scrollCue) {
-    timeline.to(scrollCue, { autoAlpha: 1, duration: 0.5 }, '+=0.4');
-  }
-};
-
-const setupScrollCueHide = () => {
-  if (!scrollCue) return;
-
-  if (prefersReducedMotion) {
-    gsap.set(scrollCue, { autoAlpha: 1 });
-  }
-
-  const hideOnScroll = () => {
-    if (window.scrollY > 80) {
-      gsap.to(scrollCue, { autoAlpha: 0, duration: 0.3, ease: 'power1.out' });
-      window.removeEventListener('scroll', hideOnScroll);
-    }
-  };
-
-  window.addEventListener('scroll', hideOnScroll, { passive: true });
 };
 
 const setupScrollReveals = () => {
@@ -149,29 +129,44 @@ const setupScrollReveals = () => {
 };
 
 const setupAboutReveal = () => {
-  if (prefersReducedMotion) return;
   if (!aboutSection || aboutLines.length === 0) return;
 
-  gsap.set(aboutLines, { autoAlpha: 0, y: 20 });
+  if (prefersReducedMotion) {
+    gsap.set(aboutLines, { autoAlpha: 1 });
+    return;
+  }
 
-  gsap.timeline({
-    defaults: { ease: 'none' },
-    scrollTrigger: {
-      trigger: aboutSection,
-      start: 'top 78%',
-      end: '+=420',
-      scrub: 0.9,
-    },
-  }).to(
-    aboutLines,
-    {
-      autoAlpha: 1,
-      y: 0,
-      duration: 0.18,
-      stagger: 0.14,
-    },
-    0,
+  const textEls = aboutSection.querySelectorAll<HTMLElement>(
+    'h2[data-about-line], p[data-about-line], .signature[data-about-line]',
   );
+  const aboutImage = aboutSection.querySelector<HTMLElement>('.about-image');
+
+  const splits = Array.from(textEls).map(
+    (el) => new SplitText(el, { type: 'words', wordsClass: 'split-word' }),
+  );
+  const allWords = splits.flatMap((s) => s.words as HTMLElement[]);
+
+  gsap.set(allWords, { autoAlpha: 0, y: 12, filter: 'blur(8px)' });
+  if (aboutImage) gsap.set(aboutImage, { autoAlpha: 0, y: 18, scale: 0.98 });
+
+  const tl = gsap.timeline({ delay: 0.6 });
+
+  tl.to(allWords, {
+    autoAlpha: 1,
+    y: 0,
+    filter: 'blur(0px)',
+    duration: 0.7,
+    ease: 'power2.out',
+    stagger: 0.015,
+  });
+
+  if (aboutImage) {
+    tl.to(
+      aboutImage,
+      { autoAlpha: 1, y: 0, scale: 1, duration: 0.9, ease: 'power2.out' },
+      0.15,
+    );
+  }
 };
 
 const setupParallax = () => {
@@ -220,37 +215,63 @@ const setupSectionLines = () => {
 };
 
 const setupKnittoolsReveal = () => {
-  if (prefersReducedMotion) return;
   if (!knittoolsSection || !knittoolsImage || knittoolsLines.length === 0) return;
 
-  gsap.set(knittoolsImage, { autoAlpha: 0, x: -18, y: 18 });
-  gsap.set(knittoolsLines, { autoAlpha: 0, y: 18 });
+  if (prefersReducedMotion) {
+    gsap.set([knittoolsImage, ...knittoolsLines], { autoAlpha: 1 });
+    return;
+  }
 
-  const timeline = gsap.timeline({
-    defaults: { ease: 'none' },
+  const textEls = knittoolsSection.querySelectorAll<HTMLElement>(
+    '.label[data-knittools-line], h2[data-knittools-line], p[data-knittools-line]',
+  );
+  const otherEls = knittoolsLines.filter((el) => !el.matches('.label, h2, p'));
+
+  const splits = Array.from(textEls).map(
+    (el) => new SplitText(el, { type: 'words', wordsClass: 'split-word' }),
+  );
+  const allWords = splits.flatMap((s) => s.words as HTMLElement[]);
+
+  gsap.set(allWords, { autoAlpha: 0, y: 12, filter: 'blur(8px)' });
+  gsap.set(otherEls, { autoAlpha: 0, y: 16 });
+  gsap.set(knittoolsImage, { autoAlpha: 0, scale: 0.96, transformOrigin: 'center center' });
+
+  const tl = gsap.timeline({
     scrollTrigger: {
       trigger: knittoolsSection,
-      start: 'top 78%',
-      end: '+=460',
-      scrub: 0.9,
+      start: 'top 75%',
+      once: true,
     },
   });
 
-  timeline.to(knittoolsImage, { autoAlpha: 1, x: 0, y: 0, duration: 0.24 }, 0).to(
-    knittoolsLines,
-    {
-      autoAlpha: 1,
-      y: 0,
-      duration: 0.14,
-      stagger: 0.11,
-    },
-    0.06,
-  );
+  tl.to(knittoolsImage, { autoAlpha: 1, scale: 1, duration: 0.9, ease: 'power2.out' }, 0)
+    .to(
+      allWords,
+      {
+        autoAlpha: 1,
+        y: 0,
+        filter: 'blur(0px)',
+        duration: 0.7,
+        ease: 'power2.out',
+        stagger: 0.014,
+      },
+      0.1,
+    )
+    .to(
+      otherEls,
+      {
+        autoAlpha: 1,
+        y: 0,
+        duration: 0.6,
+        ease: 'power2.out',
+        stagger: 0.06,
+      },
+      '-=0.3',
+    );
 };
 
 setupNotifyForm();
 setupHeroScrollReveal();
-setupScrollCueHide();
 setupAboutReveal();
 setupSectionLines();
 setupScrollReveals();
