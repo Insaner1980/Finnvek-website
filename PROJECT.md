@@ -4,353 +4,234 @@ Code-backed project summary for the current repository state in `/home/emma/dev/
 
 This document is intentionally strict: it describes what is verifiably implemented in code today, not what earlier design notes or plans may have intended.
 
+Last verified against the codebase: 2026-04-27.
+
 ## Overview
 
 - Public site URL configured in Astro: `https://finnvek.com`
 - Site type: static Astro site
-- Current routed pages in source: 1 (`src/pages/index.astro`)
-- Current built pages: 1 (`/index.html`)
+- Routed pages in source: 2 (`src/pages/index.astro`, `src/pages/privacy.astro`)
 - HTML language: `en`
-- Brand/contact values hard-coded in layout/footer:
+- Brand/contact values hard-coded in pages/footer:
   - Company name: `Finnvek`
   - Contact email: `contact@finnvek.com`
-  - Locality: `Turku, Finland`
-  - Footer coordinates: `60.4518° N · 22.2666° E`
+  - Locality on privacy page: `Turku, Finland`
+  - Footer year string: `2026`
 
 ## Runtime And Build Stack
 
-### Declared and installed dependencies
+### Declared dependencies (`package.json`)
 
-Exact installed top-level package versions (`npm ls --depth=0`):
-
-- `astro@6.1.5`
-- `@astrojs/sitemap@3.7.2`
-- `gsap@3.15.0`
+- `astro@^6.1.9`
+- `@astrojs/sitemap@^3.7.2`
+- `gsap@^3.15.0`
 
 ### Node requirement
-
-From `package.json`:
 
 - `node >=22.12.0`
 
 ### Scripts
 
-From `package.json`:
-
 | Command | Action |
 | --- | --- |
-| `npm run dev` | Runs `astro dev` |
-| `npm run build` | Runs `astro build` |
-| `npm run preview` | Runs `astro preview` |
-| `npm run astro` | Runs Astro CLI |
+| `npm run dev` | `astro dev` |
+| `npm run build` | `astro build` |
+| `npm run preview` | `astro preview` |
+| `npm run astro` | Astro CLI |
 
-### Astro configuration
-
-From `astro.config.mjs`:
+### Astro configuration (`astro.config.mjs`)
 
 - `site: 'https://finnvek.com'`
-- `output: 'static'`
+- `output`: not set (defaults to `static`)
 - `@astrojs/sitemap` integration enabled
-- `fonts` config exists for:
-  - `Sora` -> `--font-sora`
-  - `DM Sans` -> `--font-dm-sans`
-  - `DM Mono` -> `--font-dm-mono`
+- `fonts` config (Astro fonts API, Google provider):
+  - `Boldonse` -> `--font-display`, weights `[400]`, normal style
+  - `Newsreader` -> `--font-body`, weights `'400 700'` (variable range), styles `['normal', 'italic']`
 
-Important current-state note:
-
-- The source UI does not use `Sora` or `DM Sans`.
-- The emitted build CSS still uses fallbacks like `var(--font-dm-mono)`, but no explicit `--font-dm-mono` definition was found in built HTML/CSS.
-- The actual visible typography is primarily driven by self-hosted `@font-face` rules in `src/styles/global.css`, not by any visible Astro-generated font variable definitions.
+`BaseLayout.astro` preloads both font CSS variables via `<Font cssVariable="..." preload />` and additionally preloads the local logo font at `/fonts/first.ttf`.
 
 ## Actual Source Structure
 
 ```text
 src/
-  components/
-    Footer.astro
-    Hero.astro
-    LogoAnimated.astro
-    LogoStatic.astro
-    ProjectCard.astro
   layouts/
     BaseLayout.astro
   pages/
     index.astro
+    privacy.astro
+  scripts/
+    home-animations.ts
   styles/
     global.css
-  content/
-    blog/.gitkeep
-  content.config.ts
 
 public/
   apple-touch-icon.png
   favicon.svg
-  hero-bg.webp
-  knittools-icon.webp
-  og-image.png
+  finnvek-about.webp
+  finnvek-logo.svg
+  knittools-phone.png
+  laptop.webp
   robots.txt
   fonts/
-    geist-variable.woff2
-    routed-gothic.ttf
-    routed-gothic-half-italic.ttf
-    syne-700.woff2
-    syne-800.woff2
-    syne-latin-ext.woff2
-    teko-500.ttf
+    first.ttf
 ```
+
+There is no `src/components/` directory; page-level markup is inline in the `.astro` files. There is no `src/content/` directory and no `content.config.ts`; Astro content collections are not used.
+
+The repository root also contains parallel `*-v1-archive` artifacts (`src-v1-archive/`, `public-v1-archive/`, `astro.config-v1-archive.mjs`, `package-v1-archive.json`, `tsconfig-v1-archive.json`, `routed-gothic-ttf-v1.0.0/`). These are archived snapshots of the previous design and are not part of the current build.
 
 ## Routing And Content Model
 
 ### Routes
 
-Implemented route files:
-
 - `src/pages/index.astro` -> `/`
-
-No other pages are defined in `src/pages/`.
+- `src/pages/privacy.astro` -> `/privacy/`
 
 ### Content collections
 
-`src/content.config.ts` defines one Astro content collection:
-
-- `blog`
-  - loader: `glob({ base: './src/content/blog', pattern: '**/*.{md,mdx}' })`
-  - schema:
-    - `title: string`
-    - `description: string`
-    - `pubDate: date`
-    - `updatedDate?: date`
-
-Current actual content state:
-
-- `src/content/blog/` contains only `.gitkeep`
-- build emits a warning that no blog files match the configured pattern
-- no page currently renders or links blog content
+None.
 
 ## Page Composition
 
-The live page is composed as follows:
+### Index page (`/`)
 
-1. `BaseLayout.astro`
-2. `Hero.astro`
-3. A fixed descriptor paragraph: `Independent software / from Turku, Finland`
-4. Notebook-style main area (`main.desk`) containing:
-   - spiral ring decoration
-   - main paper pad
-   - `ProjectCard name="KnitTools"`
-   - note text: `More apps on the drafting table`
-5. A separate “sticker” aside listing four principles:
-   - `Privacy by default / yours`
-   - `No ads, no tracking / clean`
-   - `Made to last / kept`
-   - `Independent / self-funded`
-6. `Footer.astro`
+`src/pages/index.astro` renders inside `BaseLayout` and contains:
+
+1. `<header class="masthead">`
+   - Inline SVG `FINNVEK` wordmark (`[data-hero-logo]`, `viewBox="0 28 1000 150"`, `textLength="1000"` so the word stretches edge-to-edge of the SVG, font-family `--font-logo-stack` -> `'First', system-ui, sans-serif`, font-size 200px)
+   - `.masthead-tagline` with two `<span>` lines:
+     - `Independent software` (uppercase, large, letter-spacing 0.18em, scaled `clamp(2.5rem, 4vw, 4.5rem)`, top-margin `-0.55em` so it overlaps the bottom of the wordmark)
+     - `from Turku, Finland.` (uppercase, smaller, letter-spacing 0.22em, dimmed)
+2. `<section class="about" data-about>` — two-column grid (`1fr 1fr`):
+   - `.about-content`: `<h2 class="section-heading">About</h2>`, four paragraphs, and a `.signature` `— Emma`. Each text element carries `data-about-line`.
+   - `.about-image`: `<img src="/laptop.webp" width="448" height="557" loading="lazy" />` of "a dark workspace: laptop, coffee mug, and open notebook with a pencil." Also tagged `data-about-line`.
+3. `<hr class="section-divider" data-section-line />` — 1px horizontal rule between sections
+4. `<section class="knittools" data-knittools>` — two-column grid (`1fr 1fr`):
+   - `.knittools-image` (`[data-knittools-image][data-parallax-wrap]`): `<img src="/knittools-phone.png" width="862" height="1825" loading="lazy" />`
+   - `.knittools-content`: eyebrow `Coming soon`, `<h2>KnitTools</h2>`, description paragraph, `<dl class="info-table">` with `Status / Coming soon`, `Platform / Android`, `Languages / 11`, `<form class="notify-form" data-notify-form>` (email input + `Notify me at launch` button), and `<a class="link-primary" href="https://knittoolsapp.com">knittoolsapp.com →</a>`. Each child carries `data-knittools-line`.
+5. `<footer class="site-footer">`:
+   - `.footer-brand`: `FINNVEK` (logo font) + lowercase tagline `built to last`
+   - `.footer-meta`: `mailto:contact@finnvek.com`, `© 2026`, `/privacy`
+
+The page imports `../scripts/home-animations` via a `<script>` block.
+
+### Privacy page (`/privacy/`)
+
+`src/pages/privacy.astro` renders inside `BaseLayout` (with overridden `title` and `description`) and contains:
+
+- `<header class="site-header">` with the SVG-asset logo at `/finnvek-logo.svg`
+- `<div class="page"><section class="prose">` with `<h1>Privacy</h1>` and the placeholder text `Privacy policy coming with product launch.`
+- A bespoke footer (`.footer-brand` plain "Finnvek" + `.footer-meta` containing `Turku, Finland`, `2026`, `contact@finnvek.com`, `/privacy`)
+
+Mismatch note: the privacy footer markup does not match the index footer markup. There is no `.site-header`, `.page`, `.footer-facts`, or `.footer-links` selector in `src/styles/global.css`, so this page renders unstyled for those wrappers (only `.prose`, `.site-footer`, `.footer-inner`, `.footer-meta` get styled). The page also does not import `home-animations`.
 
 ## Visual System Actually Implemented
 
-### Theme direction
+### Theme
 
-The current site is not dark-only.
+Dark, black-and-white-only — no accent color is defined in the current CSS (the previous turquoise `--color-accent` is gone).
 
-It uses a light paper/desk visual system:
+CSS custom properties on `:root` in `src/styles/global.css`:
 
-- desk background: `--bg-desk: #cec9be`
-- paper background: `--bg-base: #f3f3ee`
-- white paper accent: `--white: #fafaf7`
-- primary text: `--color-primary: #0e0f10`
-- accent: `--color-accent: #1DB4A5`
+- `--color-bg: #08080A`
+- `--color-surface-footer: #0C0C0C`
+- `--color-text: #F0F0EC`
+- `--color-text-muted: #9A9A95`
+- `--color-text-dimmed: #5F5F5A`
+- `--color-border: #2A2A2A`
+- `--color-border-faint: #1A1A1A`
+- `--container-wide: 1180px`
+- `--container-prose: 720px`
+- `--gutter: 2.5rem` (collapses to `1.25rem` at `<= 640px`)
+- `--font-display-stack: var(--font-display), 'Boldonse', sans-serif`
+- `--font-body-stack: var(--font-body), Newsreader, Georgia, serif`
+- `--font-logo-stack: 'First', system-ui, sans-serif`
 
-The page includes paper/grid/noise textures via layered CSS backgrounds and a `body::before` overlay.
+There are no paper, grid, or noise textures in the current CSS.
+
+### Fonts actually used
+
+- Local `@font-face` "First" loaded from `/fonts/first.ttf` (`font-display: swap`) — used by the wordmark SVG `<text>` and the footer wordmark.
+- `Boldonse` is configured in `astro.config.mjs` and exposed as `--font-display`, but **no selector in `global.css` references `--font-display-stack` or `--font-display`**. The variable is currently unused at the CSS layer.
+- `Newsreader` (`--font-body`) is the body default and is also explicitly applied to the masthead tagline, section headings, paragraphs, signature, eyebrow, info table, notify form, link-primary, footer wordmark line-height context, and prose.
+- Section headings use `--font-body-stack` at weight 700 (Newsreader bold), not the Boldonse display face.
+- Font fallback chains resolve to `Georgia, serif` for body and `system-ui, sans-serif` for the logo face.
 
 ### Layout
 
-Desktop (`> 720px`):
+Desktop (`> 900px`):
 
-- logo fixed vertically on the left using rotation
-- descriptor fixed top-right
-- content container `.desk` max width: `1200px`
-- notebook stack width cap: `560px`
-- torn-note sticker width: `380px`, positioned overlapping the notebook area via negative top margin
+- `.about` and `.knittools` share `max-width: 1180px`, `padding: 0 var(--gutter)`, two-column grid `minmax(0, 1fr) minmax(0, 1fr)`, gap `clamp(2.5rem, 6vw, 5rem)`.
+- `.about` top margin `clamp(8rem, 16vw, 14rem)`.
+- `.about-content` max-width `36rem`; `.about-image` justify-self `end`, max-width `28rem`.
+- `.section-heading` `clamp(2.5rem, 7vw, 6.5rem)`, weight 700, letter-spacing `-0.02em`.
+- `.section-divider` 1px line, full container width minus gutters, `transform-origin: left center` (animated via `data-section-line`).
+- `.knittools` top margin `clamp(4rem, 8vw, 7rem)`; `.knittools-image` justify-self `start`, max-width `22rem`, inner img capped at 280px.
+- `.notify-form` is a single bordered grid (`1fr auto`) with input and button flush; max-width `30rem`.
+- `.site-footer` has its own background `#0C0C0C`, top margin `clamp(8rem, 16vw, 14rem)`, padding `clamp(3rem, 6vw, 5rem) 0 clamp(2rem, 4vw, 3rem)`. `.footer-inner` is a flex row with `space-between`, `align-items: flex-end`.
 
-Mobile (`<= 720px`):
+Tablet/small desktop (`<= 900px`):
 
-- logo becomes normal horizontal block near top
-- descriptor remains fixed, smaller
-- sticker becomes full-width below notebook content
+- `.about` and `.knittools` collapse to a single column with 2.5rem gap; `.about-image` and `.knittools-image` left-align, max-width 24rem.
 
-### Fonts actually defined in CSS
+Mobile (`<= 640px`):
 
-Self-hosted fonts from `src/styles/global.css`:
+- `--gutter` drops to `1.25rem`.
+- `.masthead-tagline` font-size `0.7rem` with letter-spacing `0.18em`.
+- `.about` top margin `5rem`.
+- `.section-heading` `clamp(2rem, 9vw, 3rem)`.
+- `.footer-inner` becomes a vertical stack, left-aligned.
+- `.info-row` becomes `1fr 1fr`.
+- `.notify-form` becomes single column; the input gets a bottom border instead of right border.
 
-- `Geist`
-- `Syne`
-- `Teko`
-- `Routed Gothic` regular
-- `Routed Gothic` italic
+## Behavior
 
-How they are used:
+### Notify form (`src/scripts/home-animations.ts`, `setupNotifyForm`)
 
-- Base body/headings: `Geist`
-- Main product title: `Teko`
-- Descriptor: `Routed Gothic`, then `Syne`, then system fallback
-- Various labels/meta rows/footer: `Routed Gothic` with `var(--font-dm-mono)` / `DM Mono` / monospace fallback chain
-
-Important precision note:
-
-- There is no self-hosted `DM Mono` font file in `public/fonts/`.
-- Current UI text that references `DM Mono` only does so through fallback font-family chains.
-
-## Components And Behavior
-
-### `Hero.astro`
-
-- Only wraps `LogoAnimated.astro`
-- Desktop logo container:
-  - `position: fixed`
-  - `width: 98.9vh`
-  - `transform: rotate(-90deg) translateX(-100%)`
-- Mobile logo container:
-  - `position: relative`
-  - `width: calc(100% - 2rem)`
-  - no rotation
-
-### `LogoAnimated.astro`
-
-- Inline SVG wordmark for `FINNVEK`
-- SVG `viewBox`: `0 0 402 62`
-- Letters animate in using CSS keyframes, not GSAP
-- Both turquoise dots animate via CSS keyframes, moving in from the right on both desktop and mobile
-- Replay mechanism:
-  - clicking the logo toggles `.replay`
-  - animation restarts by removing and reapplying animation styles
-
-### `ProjectCard.astro`
-
-Current rendered product content:
-
-- Title: `KnitTools`
-- Description:
-  - `A pocket companion for knitters. Counts your rows, reads your patterns,`
-  - `and keeps your stash quietly in order. With voice and AI that speaks knitter.`
-  - `In eleven languages.`
-- Spec row:
-  - `Android`
-  - `11 languages`
-  - `Coming soon`
-- CTA area contains:
-  - waitlist form
-  - external link to `https://knittoolsapp.com`
-
-Waitlist form behavior:
-
-- One visible state in markup from first render: email input + submit button
-- No collapsed “open later” trigger state exists in current code
-- Validation is client-side with a regex
+- Listens for `submit` on `[data-notify-form]`
+- Calls `notifyForm.reportValidity()` and bails on invalid input
 - On valid submit:
-  - email is stored in browser `localStorage`
-  - key: `fv_waitlist_email`
-  - form enters visual success state
-  - button text changes to `You're in!`
-  - input and button are disabled
-- On invalid submit:
-  - button text changes to `Check your email`
-- On reload:
-  - saved email is restored from `localStorage`
-  - form is immediately shown in success state
+  - replaces the form's children with a single `<span>You're in!</span>`
+  - adds class `is-complete` for styling
+  - if motion is allowed, plays a short GSAP timeline that fades the controls out, swaps content, then fades the success state in
+- `prefers-reduced-motion: reduce` skips the GSAP timeline and applies the success state directly
 
 Critical implementation note:
 
-- The waitlist form does not submit to a backend.
+- The notify form does not submit to a backend.
 - No `fetch`, XHR, form `action`, or third-party form endpoint is implemented.
-- The current behavior is local-browser-only persistence.
+- Submitted email values are not persisted anywhere — neither to a server nor to `localStorage`. Once the form is replaced, the email is gone.
 
-### `Footer.astro`
+### Animations (`src/scripts/home-animations.ts`)
 
-Footer content:
+Uses `gsap` with the `ScrollTrigger` and `SplitText` plugins. All scroll-triggered effects are gated by `prefers-reduced-motion: reduce`.
 
-- `Finnvek`
-- `60.4518° N · 22.2666° E`
-- `contact@finnvek.com`
-- `Turku, Finland`
+Implemented sequences:
 
-Footer layout:
+- `setupMastheadReveal` — on load, fades and slides the wordmark down from `y: -12`, then fades the masthead tagline up from `y: 8` (overlapping by 0.4s).
+- `setupAboutReveal` — once-fired ScrollTrigger at `top 80%`. SplitText splits each text-bearing `[data-about-line]` (heading, paragraphs, signature) into words; words animate from `autoAlpha: 0, y: 12, blur(8px)` to visible with a `0.015s` stagger. The about image fades and rises from `y: 18, scale: 0.98` in parallel.
+- `setupSectionLines` — for every `[data-section-line]`, scales the divider from `scaleX: 0` to `1` based on scroll progress between `top bottom` and `top 40%`, with monotonic-only progression (it never shrinks back).
+- `setupKnittoolsReveal` — once-fired ScrollTrigger at `top 75%`. The phone image scales+fades in (`0.96 -> 1`); SplitText words on eyebrow/heading/description fade in with blur cleanup; remaining `[data-knittools-line]` elements (info table, form, link) slide in from `y: 16` with a 0.06s stagger.
+- `setupParallax` — gated to `(min-width: 901px)` via `gsap.matchMedia()`. Applies a scrubbed `y: -18` translate to the KnitTools phone image as the wrap scrolls past.
 
-- centered on desktop and mobile
-- wraps on small screens
-- coordinates move to their own row on mobile
-
-### `LogoStatic.astro`
-
-- Present in the repository
-- Not referenced anywhere in `src/`
-- Currently unused
-
-## Animation Model Actually Used
-
-Current implementation uses:
-
-- CSS keyframe animations
-- minimal vanilla DOM scripting for replay and waitlist state
-
-No current source file imports or uses GSAP.
-
-That means:
-
-- `gsap` is installed as a dependency
-- but it is not used by the current shipped source under `src/`
-
-Implemented visual motion:
-
-- logo letters slide in from the right
-- F and E letters briefly “squish” after dot impact
-- turquoise dots bounce from the right
-- generic `.reveal` fade-up animation for descriptor, sticker, footer, and note text
-- waitlist button pressed/success state transitions
-
-Not implemented in current source:
-
-- cursor grid reveal
-- card border trace animation
-- scroll-triggered GSAP sequences
-- app icon stamp/drop animation
+There is no longer a separate `clock.ts` module, no `[data-logo-dot]` SVG circles, no `[data-reveal]` generic helper, and no eyebrow-on-hero animation — the index page no longer has a hero h1, only the wordmark masthead and the two content sections.
 
 ## SEO And Metadata
 
 From `BaseLayout.astro`:
 
-- canonical URL: `https://finnvek.com/`
-- description: `Independent software from Turku, Finland.`
-- Open Graph:
-  - title
-  - description
-  - type `website`
-  - url `https://finnvek.com`
-  - image `https://finnvek.com/og-image.png`
-  - image size `1200x630`
-- Twitter card: `summary_large_image`
-- theme-color: `#0A0A0F`
+- canonical URL: built dynamically from `Astro.url.pathname` and `Astro.site`
+- default title: `Finnvek. Software that's built to last.`
+- default description: `Independent software from Turku, Finland. One developer, building products with care. First app: KnitTools, coming soon.`
+- privacy page overrides title to `Privacy. Finnvek` and description to `Finnvek privacy policy.`
+- Open Graph: `type: website`, `title`, `description`, `url`. **No `og:image` is emitted.**
+- Twitter card: `summary` (text-only) with title and description. **No `twitter:image` is emitted.**
+- theme-color: `#08080A`
 - favicon: `/favicon.svg`
-- Apple touch icon: `/apple-touch-icon.png`
-- JSON-LD organization schema:
-  - name
-  - url
-  - description
-  - email
-  - locality/country
+- Apple touch icon: `/apple-touch-icon.png` (180×180)
+- No JSON-LD organization schema is emitted by the current layout.
 
-## Build Output And Verified Behavior
-
-Verified with `npm run build` on 2026-04-22:
-
-- build succeeds
-- output mode is `static`
-- output directory is `dist/`
-- one page is built: `/index.html`
-- sitemap is generated:
-  - `dist/sitemap-0.xml`
-  - `dist/sitemap-index.xml`
-
-`public/robots.txt` currently contains:
+`public/robots.txt`:
 
 - `User-agent: *`
 - `Allow: /`
@@ -358,17 +239,19 @@ Verified with `npm run build` on 2026-04-22:
 
 ## Current Mismatches / Cleanup Candidates
 
-These are not guesses; they are direct mismatches between repository code/config and the previously documented state:
+These are direct mismatches between repository code/config and current shipped behavior. They are not guesses.
 
-- `PROJECT.md` previously described a dark editorial design, but current CSS implements a light paper/desk theme.
-- `PROJECT.md` previously described GSAP-driven animations, but current source uses CSS keyframes and vanilla JS only.
-- `gsap` remains installed but unused in `src/`.
-- `astro.config.mjs` still contains Google-font configuration for `Sora`, `DM Sans`, and `DM Mono`, but current UI does not visibly use `Sora` or `DM Sans`.
-- `LogoStatic.astro` is unused.
-- `public/hero-bg.webp` is present in the repo and copied to `dist/`, but no current source file references it.
-- Blog collection infrastructure exists, but there are no blog entries and no rendered blog route.
-- No hosting provider is provable from committed runtime config alone. The site is suitable for static hosting, but no Cloudflare-specific adapter or deployment config is committed in this repo.
+- **Boldonse is configured but unused.** `astro.config.mjs` declares `Boldonse` as `--font-display` and `BaseLayout` preloads it, but no rule in `src/styles/global.css` consumes `--font-display(-stack)`. Either start using it for headings/eyebrows or drop it to save a font request.
+- **`privacy.astro` footer markup doesn't match its CSS.** It uses `.site-header`, `.page`, `.footer-facts`, `.footer-links`, none of which exist in `global.css`. The `.footer-brand` element is also a plain `<div>` text "Finnvek" rather than the index page's logo-font wordmark + tagline structure. Either align it with the index footer or add styles for these selectors.
+- **`finnvek-about.webp` is in `public/` but no page references it.** The about section uses `/laptop.webp` instead. Confirm which is the keeper and remove the other to avoid asset rot.
+- **`public/finnvek-logo.svg` is only referenced from `privacy.astro`.** The index page uses an inline `FINNVEK` SVG `<text>` rendered with the local "First" font.
+- **OG/Twitter images removed.** The page no longer ships any social preview image. If you want link-unfurl previews, add `og:image` and `twitter:image` (and switch the Twitter card back to `summary_large_image`) plus an asset in `public/`.
+- **No `dist/` is currently checked into the working tree** (it is gitignored / untracked). Provider-side build still works via `npm run build`.
+- **Loose markdown design specs at the repo root** (`finnvek-redesign*.md`, `finnvek-v2-*.md`, `finnvek-rollback-spec.md`, `finnvek-updates-spec.md`, `finnvektieto.md`, `finnvek-design-changes.md`, `finnvek-preview-spec.md`, `finnvek-v2-refinement-patch-01.md`, `hero-update.md`, `section-headings-update.md`, `typography-update.md`, `og-image-template.html`, `finnvek-logo-animation.html`, plus loose binaries `icon_splash_screen.webp`, `row-counter-knittools.png`, `laptop.png`, and the `first-font/` directory) are not used by the build. They live here as design notes / source assets and could move into a `docs/` or `design-notes/` folder.
+- **Parallel `*-v1-archive` artifacts** (`src-v1-archive/`, `public-v1-archive/`, `astro.config-v1-archive.mjs`, `package-v1-archive.json`, `tsconfig-v1-archive.json`, `routed-gothic-ttf-v1.0.0/`) are kept as snapshots of the previous design and are not wired into the current build.
+- **`README.md` is still the unmodified Astro minimal starter template.**
+- **No hosting provider is provable from committed runtime config alone.** No provider-specific adapter or deployment config is committed.
 
 ## Short Truth Summary
 
-As of the current codebase, this repository is a one-page static Astro marketing site for Finnvek with a notebook/paper visual style, one showcased product (`KnitTools`), a purely local `localStorage`-based waitlist interaction, SEO metadata and sitemap generation, and no backend or additional routed content pages.
+This repository is a small static Astro 6 site for Finnvek with two routes (`/` and `/privacy/`). The visual system is dark and monochrome — no accent color — built around three faces: a local custom font "First" (`first.ttf`) used for the giant edge-to-edge `FINNVEK` wordmark and the footer logo, `Newsreader` for everything else, and `Boldonse` declared but currently unused. The home page is a wordmark masthead with an overlapping uppercase tagline, a two-column About section with a laptop image, a 1px scrubbed divider, a two-column KnitTools section with a phone image and a non-persistent in-page notify form, and a contact-strip footer. GSAP + ScrollTrigger + SplitText drive the load and scroll reveals; the parallax effect is desktop-only (≥901px). There is no backend, no content collections, no localStorage persistence, no JSON-LD, and no social preview image.

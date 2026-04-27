@@ -3,84 +3,80 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 ---
 
 <BaseLayout>
-  <header class="site-header">
-    <a href="/" class="logo" aria-label="Finnvek home" data-hero-logo>FINNVEK</a>
+  <header class="topbar">
+    <a href="/" class="topbar-logo" aria-label="Finnvek home">FINNVEK</a>
+    <div class="topbar-meta">
+      <div class="topbar-meta-line1">Independent Software</div>
+      <div class="topbar-meta-line2">Turku, Finland.</div>
+    </div>
   </header>
 
-  <div class="page page--hero">
-    <section class="hero">
-      <div class="hero-label">Independent software from Turku, Finland</div>
-      <h1 data-hero-line>BUILT TO LAST.</h1>
-    </section>
-  </div>
+  <section class="hero">
+    <h1 class="hero-text">
+      <span class="hero-line1">Software made</span>
+      <span class="hero-line2">for <span class="years">years.</span></span>
+      <span class="italic">Not weeks.</span>
+    </h1>
+  </section>
 
-  <div class="page">
-    <section class="about" data-about>
-      <div class="about-content">
-        <h2 data-about-line>About</h2>
-        <p data-about-line>Finnvek is independent software from Turku, Finland. I'm one developer, working on my own projects.</p>
-        <p data-about-line>It exists because some ideas were worth following, and I had the freedom to follow them. The kind of ideas that stay interesting for years, not weeks. The kind I care about enough to build carefully, without shortcuts or rushed releases.</p>
-        <p data-about-line>Every product is its own thing. No ads, no tracking. Made to work well, and to keep working for a long time.</p>
-        <p data-about-line>The first one is <span class="accent">KnitTools</span>. More are on the way.</p>
-        <div class="signature" data-about-line>&mdash; Emma</div>
-      </div>
-      <div class="about-image" data-about-line>
-        <img src="/laptop.webp" alt="A dark workspace: laptop, coffee mug, and open notebook with a pencil." width="448" height="557" loading="lazy" />
-      </div>
-    </section>
-  </div>
+  <hr class="section-divider" data-section-line />
 
-  <div class="section-line-wrap">
-    <div class="section-line section-line--left" data-section-line></div>
-  </div>
+  <section class="about" data-about>
+    <div class="section-label" data-about-line>About</div>
+    <div class="about-body">
+      <h2 data-about-line>Built around <span class="italic">ideas worth following.</span></h2>
+      <p data-about-line>Finnvek is independent software from Turku, Finland. I'm one developer, working on my own projects.</p>
+      <p data-about-line>It exists because some ideas were worth following, and I had the freedom to follow them. The kind of ideas that stay interesting for <span class="years">years</span>, not weeks. The kind I care about enough to build carefully, without shortcuts or rushed releases.</p>
+      <p data-about-line>Every product is its own thing. No ads, no tracking. Made to work well, and to keep working for a long time.</p>
+      <p data-about-line>The first one is KnitTools. More are on the way.</p>
+      <div class="about-sig" data-about-line>Emma</div>
+    </div>
+  </section>
 
-  <div class="page">
-    <section class="knittools" data-knittools>
-      <div class="knittools-image" data-knittools-image data-parallax-wrap>
-        <img src="/knittools-phone.png" alt="KnitTools app on a phone" width="862" height="1825" />
-      </div>
-      <div class="knittools-content">
-        <div class="label" data-knittools-line>Coming soon</div>
+  <hr class="section-divider" data-section-line />
+
+  <section class="knit" data-knittools>
+    <div class="section-label" data-knittools-line>First app</div>
+    <div class="knit-content">
+      <div class="knit-text">
         <h2 data-knittools-line>KnitTools</h2>
         <p data-knittools-line>KnitTools is a pocket companion for knitters. It counts your rows, reads your patterns, and keeps your stash quietly in order, with voice and AI that speaks knitter. In eleven languages, for Android.</p>
-        <dl class="product-meta" data-knittools-line>
-          <div>
-            <dt>Status</dt>
-            <dd>Coming soon</dd>
-          </div>
-          <div>
-            <dt>Platform</dt>
-            <dd>Android</dd>
-          </div>
-          <div>
-            <dt>Languages</dt>
-            <dd>11</dd>
-          </div>
-        </dl>
-        <form class="notify-form" data-notify-form data-knittools-line>
+
+        <form class="notify" data-notify-form data-knittools-line>
           <label class="visually-hidden" for="notify-email">Email address</label>
           <input id="notify-email" name="email" type="email" placeholder="email address" autocomplete="email" required />
           <button type="submit">Notify me at launch</button>
         </form>
-        <div class="knittools-actions" data-knittools-line>
-          <a href="https://knittoolsapp.com" class="link-primary">knittoolsapp.com &rarr;</a>
+
+        <a href="https://knittoolsapp.com" class="knit-link" data-knittools-line>knittoolsapp.com &rarr;</a>
+      </div>
+
+      <div class="card" data-knittools-card>
+        <div class="card-mid">
+          <h3 class="card-title">KnitTools</h3>
+          <dl class="card-info">
+            <div><dt>Status</dt><dd>Coming soon</dd></div>
+            <div><dt>Platform</dt><dd>Android</dd></div>
+            <div><dt>Languages</dt><dd>11</dd></div>
+          </dl>
+        </div>
+        <div class="card-bottom">
+          <a class="card-url" href="https://knittoolsapp.com">knittoolsapp.com</a>
         </div>
       </div>
-    </section>
-  </div>
+    </div>
+  </section>
 
-  <footer class="site-footer" data-reveal>
+  <footer class="site-footer">
     <div class="footer-inner">
-      <div class="footer-brand">Finnvek</div>
+      <div class="footer-brand">
+        <div class="footer-wordmark">FINNVEK</div>
+        <div class="footer-tagline">built to last</div>
+      </div>
       <div class="footer-meta">
-        <div class="footer-facts">
-          <span>Turku, Finland</span>
-          <span>2026</span>
-        </div>
-        <div class="footer-links">
-          <a href="mailto:contact@finnvek.com">contact@finnvek.com</a>
-          <a href="/privacy">Privacy</a>
-        </div>
+        <a href="mailto:contact@finnvek.com">contact@finnvek.com</a>
+        <span>&copy; 2026</span>
+        <a href="/privacy">Privacy</a>
       </div>
     </div>
   </footer>

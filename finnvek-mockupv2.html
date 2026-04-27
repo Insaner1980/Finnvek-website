@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Finnvek — mockup v2</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400..700;1,6..72,400..700&family=Epilogue:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #08080A;
+    --surface-footer: #0C0C0C;
+    --text: #F0F0EC;
+    --text-muted: #9A9A95;
+    --text-dimmed: #5F5F5A;
+    --border: #2A2A2A;
+
+    /* red accent */
+    --red: #C8281E;
+    --red-dark: #8C1810;
+
+    --container: 1180px;
+    --gutter: 2.5rem;
+  }
+
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0;
+    padding: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Newsreader', serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* ---- top bar ---- */
+  .topbar {
+    max-width: var(--container);
+    margin: 0 auto;
+    padding: 1.75rem var(--gutter);
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+  }
+  .topbar-logo {
+    font-family: 'Epilogue', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 0.28em;
+    color: var(--text);
+    padding-top: 2px;
+  }
+  .topbar-meta {
+    text-align: right;
+    line-height: 1.3;
+  }
+  .topbar-meta-line1 {
+    font-family: 'Epilogue', sans-serif;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.22em;
+    color: var(--text);
+    text-transform: uppercase;
+  }
+  .topbar-meta-line2 {
+    font-family: 'Newsreader', serif;
+    font-style: italic;
+    font-size: 0.875rem;
+    color: var(--text-muted);
+    margin-top: 2px;
+  }
+
+  /* ---- hero ---- */
+  .hero {
+    max-width: var(--container);
+    margin: 0 auto;
+    padding: clamp(5rem, 12vw, 11rem) var(--gutter) clamp(7rem, 14vw, 13rem);
+  }
+  .hero-text {
+    font-family: 'Newsreader', serif;
+    font-size: clamp(2.75rem, 7.5vw, 6.5rem);
+    font-weight: 400;
+    line-height: 1.0;
+    letter-spacing: -0.025em;
+    color: var(--text);
+    margin: 0;
+    max-width: 18ch;
+  }
+  .hero-text .italic {
+    font-family: 'Epilogue', sans-serif;
+    font-style: italic;
+    color: var(--red);
+    display: block;
+    font-weight: 400;
+    letter-spacing: -0.02em;
+  }
+
+  /* ---- divider ---- */
+  .divider {
+    max-width: var(--container);
+    width: calc(100% - 2 * var(--gutter));
+    margin: 0 auto;
+    height: 1px;
+    background: var(--border);
+    border: 0;
+  }
+
+  /* ---- about ---- */
+  .about {
+    max-width: var(--container);
+    margin: 0 auto;
+    padding: clamp(4rem, 8vw, 7rem) var(--gutter) 0;
+    display: grid;
+    grid-template-columns: 200px 1fr;
+    gap: clamp(2rem, 5vw, 4rem);
+  }
+  .section-label {
+    font-family: 'Epilogue', sans-serif;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.28em;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    padding-top: 0.5rem;
+  }
+  .about-body {
+    max-width: 38rem;
+  }
+  .about-body h2 {
+    font-family: 'Newsreader', serif;
+    font-weight: 400;
+    font-size: clamp(2rem, 4vw, 3.25rem);
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+    margin: 0 0 2rem 0;
+    color: var(--text);
+  }
+  .about-body h2 .italic {
+    font-style: italic;
+    color: var(--text-muted);
+  }
+  .about-body p {
+    font-family: 'Newsreader', serif;
+    font-size: 1.0625rem;
+    line-height: 1.65;
+    color: var(--text);
+    margin: 0 0 1.25rem 0;
+  }
+  .about-body p:last-of-type { margin-bottom: 0; }
+  .about-sig {
+    margin-top: 2rem;
+    font-family: 'Newsreader', serif;
+    font-style: italic;
+    font-size: 0.95rem;
+    color: var(--text-muted);
+  }
+
+  /* ---- knittools ---- */
+  .knit {
+    max-width: var(--container);
+    margin: clamp(6rem, 10vw, 9rem) auto 0;
+    padding: 0 var(--gutter);
+    display: grid;
+    grid-template-columns: 200px 1fr;
+    gap: clamp(2rem, 5vw, 4rem);
+  }
+  .knit-content {
+    display: grid;
+    grid-template-columns: 1.1fr 1fr;
+    gap: clamp(2.5rem, 5vw, 4rem);
+    align-items: start;
+  }
+  .knit-text h2 {
+    font-family: 'Newsreader', serif;
+    font-weight: 400;
+    font-size: clamp(2.25rem, 4.5vw, 3.5rem);
+    line-height: 1.0;
+    letter-spacing: -0.02em;
+    margin: 0 0 1.5rem 0;
+    color: var(--text);
+  }
+  .knit-text p {
+    font-family: 'Newsreader', serif;
+    font-size: 1rem;
+    line-height: 1.6;
+    color: var(--text-muted);
+    margin: 0 0 2rem 0;
+    max-width: 28rem;
+  }
+  .notify {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    max-width: 26rem;
+    border: 1px solid var(--border);
+    margin-bottom: 1.25rem;
+  }
+  .notify input {
+    background: transparent;
+    border: 0;
+    border-right: 1px solid var(--border);
+    padding: 0 1rem;
+    height: 2.75rem;
+    color: var(--text);
+    font-family: 'Newsreader', serif;
+    font-size: 0.9375rem;
+  }
+  .notify input::placeholder { color: var(--text-muted); }
+  .notify button {
+    background: transparent;
+    border: 0;
+    color: var(--text);
+    padding: 0 1.25rem;
+    height: 2.75rem;
+    font-family: 'Epilogue', sans-serif;
+    font-size: 0.9375rem;
+    font-weight: 500;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background-color 150ms ease, color 150ms ease;
+  }
+  .notify button:hover { background: var(--text); color: var(--bg); }
+  .knit-link {
+    font-family: 'Newsreader', serif;
+    font-size: 0.9375rem;
+    color: var(--text);
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 2px;
+    text-decoration: none;
+    display: inline-block;
+  }
+
+  /* ---- red card ---- */
+  .card {
+    background: var(--red);
+    color: #FFF;
+    border-radius: 16px;
+    aspect-ratio: 1 / 1;
+    padding: 1.75rem;
+    display: grid;
+    grid-template-rows: auto 1fr;
+    gap: 2rem;
+    position: relative;
+  }
+  .card-mid {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+  }
+  .card-title {
+    font-family: 'Newsreader', serif;
+    font-weight: 400;
+    font-size: clamp(2rem, 4vw, 2.75rem);
+    line-height: 0.95;
+    letter-spacing: -0.02em;
+    margin: 0;
+    color: #FFF;
+  }
+  .card-info {
+    margin: 0;
+    padding: 0;
+    border-top: 1px solid rgba(255,255,255,0.22);
+  }
+  .card-info > div {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    padding: 0.65rem 0;
+    border-bottom: 1px solid rgba(255,255,255,0.22);
+  }
+  .card-info dt, .card-info dd {
+    margin: 0;
+    font-family: 'Newsreader', serif;
+    font-size: 0.875rem;
+    line-height: 1.3;
+  }
+  .card-info dt { color: rgba(255,255,255,0.72); font-weight: 400; }
+  .card-info dd { color: #FFF; font-weight: 500; }
+  .card-bottom {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    align-self: end;
+  }
+  .card-url {
+    font-family: 'Epilogue', sans-serif;
+    font-size: 11px;
+    color: #FFF;
+    font-weight: 500;
+    text-decoration: none;
+    letter-spacing: 0.05em;
+  }
+
+  /* ---- footer ---- */
+  .footer {
+    background: var(--surface-footer);
+    margin-top: clamp(7rem, 12vw, 10rem);
+    padding: clamp(2.5rem, 4vw, 3.5rem) 0 clamp(1.75rem, 3vw, 2.5rem);
+  }
+  .footer-inner {
+    max-width: var(--container);
+    margin: 0 auto;
+    padding: 0 var(--gutter);
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 2rem;
+  }
+  .footer-brand {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+  }
+  .footer-mark {
+    font-family: 'Epilogue', sans-serif;
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.28em;
+    color: var(--text);
+  }
+  .footer-tag {
+    font-family: 'Epilogue', sans-serif;
+    font-style: italic;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+  }
+  .footer-meta {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 0.3rem;
+    font-family: 'Epilogue', sans-serif;
+    font-size: 11px;
+    color: var(--text-muted);
+    letter-spacing: 0.05em;
+  }
+  .footer-meta a { color: var(--text-muted); text-decoration: none; }
+
+  /* ---- responsive ---- */
+  @media (max-width: 900px) {
+    .about, .knit { grid-template-columns: 1fr; }
+    .knit-content { grid-template-columns: 1fr; }
+    .card { aspect-ratio: 16 / 11; max-width: 26rem; }
+  }
+  @media (max-width: 640px) {
+    :root { --gutter: 1.25rem; }
+    .topbar { flex-direction: row; flex-wrap: wrap; }
+  }
+</style>
+</head>
+<body>
+
+<!-- top bar -->
+<div class="topbar">
+  <div class="topbar-logo">F I N N V E K</div>
+  <div class="topbar-meta">
+    <div class="topbar-meta-line1">Independent Software</div>
+    <div class="topbar-meta-line2">Turku, Finland.</div>
+  </div>
+</div>
+
+<!-- hero -->
+<div class="hero">
+  <h1 class="hero-text">
+    Software made for years.
+    <span class="italic">Not weeks.</span>
+  </h1>
+</div>
+
+<hr class="divider" />
+
+<!-- about -->
+<div class="about">
+  <div class="section-label">About</div>
+  <div class="about-body">
+    <h2>Built around <span class="italic">ideas worth following.</span></h2>
+    <p>Finnvek is independent software from Turku, Finland. I'm one developer, working on my own projects.</p>
+    <p>It exists because some ideas were worth following, and I had the freedom to follow them. The kind of ideas that stay interesting for years, not weeks. The kind I care about enough to build carefully, without shortcuts or rushed releases.</p>
+    <p>Every product is its own thing. No ads, no tracking. Made to work well, and to keep working for a long time.</p>
+    <p>The first one is KnitTools. More are on the way.</p>
+    <div class="about-sig">Emma</div>
+  </div>
+</div>
+
+<hr class="divider" style="margin-top: clamp(6rem, 10vw, 9rem);" />
+
+<!-- knittools -->
+<div class="knit">
+  <div class="section-label">First app</div>
+  <div class="knit-content">
+    <div class="knit-text">
+      <h2>KnitTools</h2>
+      <p>KnitTools is a pocket companion for knitters. It counts your rows, reads your patterns, and keeps your stash quietly in order, with voice and AI that speaks knitter. In eleven languages, for Android.</p>
+      <form class="notify" onsubmit="event.preventDefault();">
+        <input type="email" placeholder="email address" />
+        <button type="submit">Notify me at launch</button>
+      </form>
+      <a class="knit-link" href="#">knittoolsapp.com →</a>
+    </div>
+    <div class="card">
+      <div class="card-mid">
+        <h3 class="card-title">KnitTools</h3>
+        <dl class="card-info">
+          <div><dt>Status</dt><dd>Coming soon</dd></div>
+          <div><dt>Platform</dt><dd>Android</dd></div>
+          <div><dt>Languages</dt><dd>11</dd></div>
+        </dl>
+      </div>
+      <div class="card-bottom">
+        <a class="card-url" href="#">knittoolsapp.com</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- footer -->
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <div class="footer-mark">F I N N V E K</div>
+      <div class="footer-tag">built to last</div>
+    </div>
+    <div class="footer-meta">
+      <a href="#">contact@finnvek.com</a>
+      <span>© 2026</span>
+      <a href="#">Privacy</a>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
