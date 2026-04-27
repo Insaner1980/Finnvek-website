@@ -9,16 +9,16 @@ export default defineConfig({
   fonts: [
     {
       provider: fontProviders.google(),
-      name: 'Boldonse',
-      cssVariable: '--font-display',
-      weights: [400],
-      styles: ['normal'],
-    },
-    {
-      provider: fontProviders.google(),
       name: 'Newsreader',
       cssVariable: '--font-body',
       weights: ['400 700'],
+      styles: ['normal', 'italic'],
+    },
+    {
+      provider: fontProviders.google(),
+      name: 'Epilogue',
+      cssVariable: '--font-sans',
+      weights: ['400 500'],
       styles: ['normal', 'italic'],
     },
   ],

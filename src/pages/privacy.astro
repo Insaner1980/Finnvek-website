@@ -6,31 +6,29 @@ import BaseLayout from '../layouts/BaseLayout.astro';
   title="Privacy. Finnvek"
   description="Finnvek privacy policy."
 >
-  <header class="site-header">
-    <a href="/" class="logo" aria-label="Finnvek home">
-      <img src="/finnvek-logo.svg" alt="Finnvek" width="140" height="18" />
-    </a>
+  <header class="topbar">
+    <a href="/" class="topbar-logo" aria-label="Finnvek home">FINNVEK</a>
+    <div class="topbar-meta">
+      <div class="topbar-meta-line1">Independent Software</div>
+      <div class="topbar-meta-line2">Turku, Finland.</div>
+    </div>
   </header>
 
-  <div class="page">
-    <section class="prose">
-      <h1>Privacy</h1>
-      <p>Privacy policy coming with product launch.</p>
-    </section>
-  </div>
+  <section class="prose">
+    <h1>Privacy</h1>
+    <p>Privacy policy coming with product launch.</p>
+  </section>
 
   <footer class="site-footer">
     <div class="footer-inner">
-      <div class="footer-brand">Finnvek</div>
+      <div class="footer-brand">
+        <div class="footer-wordmark">FINNVEK</div>
+        <div class="footer-tagline">built to last</div>
+      </div>
       <div class="footer-meta">
-        <div class="footer-facts">
-          <span>Turku, Finland</span>
-          <span>2026</span>
-        </div>
-        <div class="footer-links">
-          <a href="mailto:contact@finnvek.com">contact@finnvek.com</a>
-          <a href="/privacy">Privacy</a>
-        </div>
+        <a href="mailto:contact@finnvek.com">contact@finnvek.com</a>
+        <span>&copy; 2026</span>
+        <a href="/privacy">Privacy</a>
       </div>
     </div>
   </footer>

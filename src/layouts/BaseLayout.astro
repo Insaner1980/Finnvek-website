@@ -37,8 +37,8 @@ const canonical = new URL(Astro.url.pathname, Astro.site).toString();
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
 
-    <Font cssVariable="--font-display" preload />
     <Font cssVariable="--font-body" preload />
+    <Font cssVariable="--font-sans" preload />
     <link rel="preload" href="/fonts/first.ttf" as="font" type="font/ttf" crossorigin />
 
     <title>{title}</title>
