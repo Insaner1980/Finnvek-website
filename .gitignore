@@ -22,3 +22,9 @@ pnpm-debug.log*
 
 # jetbrains setting folder
 .idea/
+
+# downloaded font sources (käytetyt tiedostot kopioitu public/fonts/-kansioon)
+/resmont/
+/theleagueof-league-gothic/
+/first-font/
+/routed-gothic-ttf-v1.0.0/
