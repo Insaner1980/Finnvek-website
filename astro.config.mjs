@@ -9,7 +9,7 @@ export default defineConfig({
   fonts: [
     {
       provider: fontProviders.google(),
-      name: 'Newsreader',
+      name: 'IBM Plex Sans',
       cssVariable: '--font-body',
       weights: ['400 700'],
       styles: ['normal', 'italic'],
