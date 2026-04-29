@@ -7,7 +7,9 @@ gsap.registerPlugin(ScrollTrigger, SplitText);
 const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 const topbar = document.querySelector<HTMLElement>('.topbar');
-const heroText = document.querySelector<HTMLElement>('.hero-text');
+const heroMeta = document.querySelector<HTMLElement>('.hero-meta');
+const heroWordmark = document.querySelector<HTMLElement>('.hero-wordmark');
+const heroTagline = document.querySelector<HTMLElement>('.hero-tagline');
 const aboutSection = document.querySelector<HTMLElement>('[data-about]');
 const aboutLines = Array.from(document.querySelectorAll<HTMLElement>('[data-about-line]'));
 const knittoolsSection = document.querySelector<HTMLElement>('[data-knittools]');
@@ -16,15 +18,76 @@ const knittoolsLines = Array.from(document.querySelectorAll<HTMLElement>('[data-
 const sectionLines = Array.from(document.querySelectorAll<HTMLElement>('[data-section-line]'));
 const notifyForm = document.querySelector<HTMLFormElement>('[data-notify-form]');
 
+const API_ENDPOINT = 'https://api.finnvek.com/subscribe';
+
 const setupNotifyForm = () => {
   if (!notifyForm) return;
 
-  notifyForm.addEventListener('submit', (event) => {
+  const submitBtn = notifyForm.querySelector<HTMLButtonElement>('button[type="submit"]');
+  const emailInput = notifyForm.querySelector<HTMLInputElement>('input[name="email"]');
+  const honeypot = notifyForm.querySelector<HTMLInputElement>('input[name="website"]');
+  const errorEl = document.querySelector<HTMLElement>('[data-notify-error]');
+  const originalBtnText = submitBtn?.textContent ?? 'Notify me at launch';
+
+  const showError = (message: string) => {
+    if (submitBtn) {
+      submitBtn.disabled = false;
+      submitBtn.textContent = originalBtnText;
+    }
+    if (errorEl) {
+      errorEl.textContent = message;
+      errorEl.hidden = false;
+    }
+  };
+
+  const hideError = () => {
+    if (errorEl) {
+      errorEl.textContent = '';
+      errorEl.hidden = true;
+    }
+  };
+
+  notifyForm.addEventListener('submit', async (event) => {
     event.preventDefault();
 
     if (!notifyForm.reportValidity()) return;
 
-    const complete = () => {
+    hideError();
+
+    if (submitBtn) {
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Sending…';
+    }
+
+    let success = false;
+    let errorMessage = 'Something went wrong. Please try again.';
+
+    try {
+      const res = await fetch(API_ENDPOINT, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          email: emailInput?.value.trim() ?? '',
+          source: 'finnvek',
+          website: honeypot?.value ?? '',
+        }),
+      });
+      const data = (await res.json().catch(() => ({}))) as { success?: boolean; error?: string };
+      if (res.ok && data.success) {
+        success = true;
+      } else if (data.error) {
+        errorMessage = data.error;
+      }
+    } catch {
+      errorMessage = 'Network error. Please check your connection.';
+    }
+
+    if (!success) {
+      showError(errorMessage);
+      return;
+    }
+
+    const finalize = () => {
       const message = document.createElement('span');
       message.textContent = "You're in!";
       notifyForm.replaceChildren(message);
@@ -32,7 +95,7 @@ const setupNotifyForm = () => {
     };
 
     if (prefersReducedMotion) {
-      complete();
+      finalize();
       return;
     }
 
@@ -47,26 +110,31 @@ const setupNotifyForm = () => {
         stagger: 0.03,
         ease: 'power1.out',
       })
-      .add(complete)
+      .add(finalize)
       .fromTo(notifyForm, { autoAlpha: 0, y: 8 }, { autoAlpha: 1, y: 0, duration: 0.36, ease: 'power2.out' });
   });
 };
 
 const setupTopbarHeroReveal = () => {
-  if (!topbar && !heroText) return;
+  const heroEls = [heroMeta, heroWordmark, heroTagline].filter(Boolean) as HTMLElement[];
+  if (!topbar && heroEls.length === 0) return;
 
   if (prefersReducedMotion) {
     if (topbar) gsap.set(topbar, { autoAlpha: 1 });
-    if (heroText) gsap.set(heroText, { autoAlpha: 1, y: 0 });
+    if (heroEls.length) gsap.set(heroEls, { autoAlpha: 1, y: 0 });
     return;
   }
 
   if (topbar) gsap.set(topbar, { autoAlpha: 0 });
-  if (heroText) gsap.set(heroText, { autoAlpha: 0, y: 16 });
+  if (heroMeta) gsap.set(heroMeta, { autoAlpha: 0, y: 8 });
+  if (heroWordmark) gsap.set(heroWordmark, { autoAlpha: 0, y: 20 });
+  if (heroTagline) gsap.set(heroTagline, { autoAlpha: 0, y: 14 });
 
   const tl = gsap.timeline({ defaults: { ease: 'power2.out' }, delay: 0.1 });
   if (topbar) tl.to(topbar, { autoAlpha: 1, duration: 0.5 });
-  if (heroText) tl.to(heroText, { autoAlpha: 1, y: 0, duration: 0.6 }, '-=0.3');
+  if (heroMeta) tl.to(heroMeta, { autoAlpha: 1, y: 0, duration: 0.5 }, 0);
+  if (heroWordmark) tl.to(heroWordmark, { autoAlpha: 1, y: 0, duration: 0.8 }, 0.15);
+  if (heroTagline) tl.to(heroTagline, { autoAlpha: 1, y: 0, duration: 0.6 }, 0.45);
 };
 
 const setupAboutReveal = () => {
