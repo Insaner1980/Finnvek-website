@@ -1,11 +1,18 @@
 ---
-import BaseLayout from '../layouts/BaseLayout.astro';
+import BaseLayout from './BaseLayout.astro';
+
+interface Props {
+  title?: string;
+  description?: string;
+}
+
+const {
+  title = 'Privacy Policy. Finnvek',
+  description = 'Privacy policy for Finnvek, finnvek.com, knittoolsapp.com, and KnitTools.',
+} = Astro.props;
 ---
 
-<BaseLayout
-  title="Privacy. Finnvek"
-  description="Finnvek privacy policy."
->
+<BaseLayout title={title} description={description}>
   <header class="topbar">
     <a href="/" class="topbar-logo" aria-label="Finnvek home">FINNVEK</a>
     <div class="topbar-meta">
@@ -14,9 +21,8 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     </div>
   </header>
 
-  <section class="prose">
-    <h1>Privacy</h1>
-    <p>Privacy policy coming with product launch.</p>
+  <section class="prose privacy-policy">
+    <slot />
   </section>
 
   <footer class="site-footer">
