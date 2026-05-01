@@ -31,8 +31,8 @@
   --color-border: #2A2A2A;
   --color-border-faint: #1A1A1A;
 
-  --red: #C8281E;
-  --red-dark: #8C1810;
+  --red: #D9A24E;
+  --red-dark: #A9782E;
 
   --container-wide: 1180px;
   --container-prose: 720px;
@@ -217,7 +217,7 @@ img {
 
 .years {
   font-style: italic;
-  font-weight: 700;
+  font-weight: 500;
   color: var(--red);
 }
 
@@ -379,9 +379,11 @@ img {
 .notify button {
   font-family: var(--font-sans-stack);
   font-weight: 500;
+  letter-spacing: 0.08em;
   padding: 0 1.25rem;
   cursor: pointer;
   white-space: nowrap;
+  text-transform: uppercase;
   transition: background-color 150ms ease, color 150ms ease;
 }
 
@@ -413,16 +415,20 @@ img {
   display: inline-block;
   font-family: var(--font-sans-stack);
   font-weight: 500;
-  font-size: 0.9375rem;
-  color: var(--color-text);
-  border-bottom: 1px solid var(--color-border);
-  padding-bottom: 2px;
-  transition: border-color 150ms ease;
+  font-size: 0.75rem;
+  line-height: 1.2;
+  letter-spacing: 0.16em;
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  border-bottom: 1px solid transparent;
+  padding-bottom: 0.25rem;
+  transition: border-color 150ms ease, color 150ms ease;
 }
 
 .knit-link:hover,
 .knit-link:focus-visible {
-  border-bottom-color: var(--color-text);
+  color: var(--red);
+  border-bottom-color: var(--red);
   outline: none;
 }
 
@@ -430,7 +436,7 @@ img {
 
 .card {
   background: var(--red);
-  color: #FFF;
+  color: var(--color-bg);
   border-radius: 16px;
   aspect-ratio: 1 / 1;
   padding: 1.75rem;
@@ -453,13 +459,13 @@ img {
   line-height: 0.95;
   letter-spacing: -0.02em;
   margin: 0;
-  color: #FFF;
+  color: var(--color-bg);
 }
 
 .card-info {
   margin: 0;
   padding: 0;
-  border-top: 1px solid rgba(255, 255, 255, 0.22);
+  border-top: 1px solid rgba(8, 8, 10, 0.24);
 }
 
 .card-info > div {
@@ -467,7 +473,7 @@ img {
   justify-content: space-between;
   align-items: baseline;
   padding: 0.65rem 0;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.22);
+  border-bottom: 1px solid rgba(8, 8, 10, 0.24);
 }
 
 .card-info dt,
@@ -484,11 +490,11 @@ img {
   font-size: 0.75rem;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.72);
+  color: rgba(8, 8, 10, 0.72);
 }
 
 .card-info dd {
-  color: #FFF;
+  color: var(--color-bg);
   font-weight: 500;
 }
 
@@ -502,7 +508,7 @@ img {
 .card-url {
   font-family: var(--font-sans-stack);
   font-size: 11px;
-  color: #FFF;
+  color: var(--color-bg);
   font-weight: 500;
   text-decoration: none;
   letter-spacing: 0.05em;
@@ -589,6 +595,84 @@ img {
   color: var(--color-text);
   margin: 0 0 1.5rem 0;
   letter-spacing: -0.01em;
+}
+
+.prose h2,
+.prose h3,
+.prose h4,
+.prose h5 {
+  color: var(--color-text);
+  letter-spacing: -0.01em;
+}
+
+.prose h2 {
+  font-family: var(--font-display-stack);
+  font-weight: 400;
+  font-size: clamp(1.8rem, 4vw, 2.5rem);
+  line-height: 1.02;
+  margin: 3rem 0 1rem 0;
+}
+
+.prose h3 {
+  font-family: var(--font-sans-stack);
+  font-weight: 600;
+  font-size: 0.9rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  margin: 2rem 0 0.75rem 0;
+}
+
+.prose h4 {
+  font-family: var(--font-body-stack);
+  font-weight: 700;
+  font-size: 1.1rem;
+  margin: 1.75rem 0 0.5rem 0;
+}
+
+.prose h5 {
+  font-family: var(--font-sans-stack);
+  font-weight: 600;
+  font-size: 0.8rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  margin: 1.5rem 0 0.5rem 0;
+}
+
+.prose p,
+.prose ul,
+.prose ol {
+  margin: 0 0 1rem 0;
+}
+
+.prose ul,
+.prose ol {
+  padding-left: 1.2rem;
+}
+
+.prose li + li {
+  margin-top: 0.45rem;
+}
+
+.prose strong {
+  color: var(--color-text);
+}
+
+.prose hr {
+  border: 0;
+  height: 1px;
+  margin: 2.75rem 0;
+  background: var(--color-border-faint);
+}
+
+.prose-kicker {
+  font-family: var(--font-sans-stack);
+  font-weight: 500;
+  font-size: 0.75rem;
+  line-height: 1.2;
+  letter-spacing: 0.18em;
+  color: var(--red);
+  text-transform: uppercase;
+  margin-bottom: 1rem;
 }
 
 .prose a {
