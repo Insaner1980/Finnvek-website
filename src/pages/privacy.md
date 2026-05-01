@@ -1,6 +1,6 @@
 ---
 layout: ../layouts/PolicyLayout.astro
-title: Privacy Policy. Finnvek
+title: Finnvek
 description: Privacy policy for Finnvek, finnvek.com, knittoolsapp.com, and KnitTools.
 ---
 
