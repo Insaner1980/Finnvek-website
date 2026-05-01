@@ -148,7 +148,7 @@ We do not email subscribers about every small wording change.
 
 ## Per-app details
 
-### KnitTools
+<h3 id="knittools">KnitTools</h3>
 
 KnitTools is a knitting companion app for Android, distributed through Google Play.
 
