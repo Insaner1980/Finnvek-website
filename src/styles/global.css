@@ -702,7 +702,7 @@ img {
   .hero {
     grid-template-columns: 1fr;
     grid-template-rows: auto 1fr auto;
-    row-gap: 2.5rem;
+    row-gap: 2rem;
     min-height: 100vh;
     min-height: 100dvh;
     padding: 1.5rem 1.25rem;
@@ -710,19 +710,28 @@ img {
 
   .hero-meta {
     grid-column: 1;
+    max-width: 100%;
+  }
+
+  .hero-meta-line1 {
+    font-size: 0.75rem;
+    letter-spacing: 0.16em;
   }
 
   .hero-wordmark {
     grid-column: 1;
     align-self: center;
-    font-size: clamp(2.75rem, 14vw, 5.5rem);
+    justify-self: stretch;
+    max-width: 100%;
+    font-size: clamp(2rem, 9.5vw, 3rem);
     line-height: 0.95;
   }
 
   .hero-tagline {
     grid-column: 1;
-    justify-self: end;
-    font-size: clamp(1.25rem, 5.5vw, 1.875rem);
+    justify-self: stretch;
+    max-width: 100%;
+    font-size: clamp(1.15rem, 5vw, 1.625rem);
   }
 }
 
