@@ -1,0 +1,4 @@
+Contact: mailto:contact@finnvek.com
+Expires: 2027-04-30T21:00:00Z
+Preferred-Languages: en, fi
+Canonical: https://finnvek.com/.well-known/security.txt
