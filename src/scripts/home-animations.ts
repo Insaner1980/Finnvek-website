@@ -19,6 +19,7 @@ const sectionLines = Array.from(document.querySelectorAll<HTMLElement>('[data-se
 const notifyForm = document.querySelector<HTMLFormElement>('[data-notify-form]');
 
 const API_ENDPOINT = 'https://api.finnvek.com/subscribe';
+const SUBSCRIBE_TIMEOUT_MS = 10000;
 
 const setupNotifyForm = () => {
   if (!notifyForm) return;
@@ -62,10 +63,14 @@ const setupNotifyForm = () => {
     let success = false;
     let errorMessage = 'Something went wrong. Please try again.';
 
+    const controller = new AbortController();
+    const timeoutId = window.setTimeout(() => controller.abort(), SUBSCRIBE_TIMEOUT_MS);
+
     try {
       const res = await fetch(API_ENDPOINT, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
+        signal: controller.signal,
         body: JSON.stringify({
           email: emailInput?.value.trim() ?? '',
           source: 'finnvek',
@@ -78,8 +83,14 @@ const setupNotifyForm = () => {
       } else if (data.error) {
         errorMessage = data.error;
       }
-    } catch {
-      errorMessage = 'Network error. Please check your connection.';
+    } catch (error) {
+      if (error instanceof DOMException && error.name === 'AbortError') {
+        errorMessage = 'Request timed out. Please try again.';
+      } else {
+        errorMessage = 'Network error. Please check your connection.';
+      }
+    } finally {
+      window.clearTimeout(timeoutId);
     }
 
     if (!success) {
