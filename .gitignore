@@ -23,6 +23,10 @@ pnpm-debug.log*
 # jetbrains setting folder
 .idea/
 
+# AI-työkalujen lokaalit asetukset
+.claude/
+AGENTS.md
+
 # downloaded font sources (käytetyt tiedostot kopioitu public/fonts/-kansioon)
 /resmont/
 /theleagueof-league-gothic/
