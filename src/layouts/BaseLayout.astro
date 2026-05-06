@@ -43,6 +43,7 @@ const canonical = new URL(Astro.url.pathname, Astro.site).toString();
     <link rel="preload" href="/fonts/league-gothic/leaguegothic-regular-webfont.woff" as="font" type="font/woff" crossorigin />
 
     <title>{title}</title>
+    <!-- Cloudflare Web Analytics --><script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "2c45e2210a1147fdb2bbc259393c28a2"}'></script><!-- End Cloudflare Web Analytics -->
   </head>
   <body>
     <slot />
