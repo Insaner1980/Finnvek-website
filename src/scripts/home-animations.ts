@@ -7,14 +7,15 @@ gsap.registerPlugin(ScrollTrigger, SplitText);
 const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 const topbar = document.querySelector<HTMLElement>('.topbar');
+const heroSection = document.querySelector<HTMLElement>('.hero');
 const heroMeta = document.querySelector<HTMLElement>('.hero-meta');
 const heroWordmark = document.querySelector<HTMLElement>('.hero-wordmark');
 const heroTagline = document.querySelector<HTMLElement>('.hero-tagline');
+const heroScrollCue = document.querySelector<HTMLElement>('.hero-scroll-cue');
+const siteFooter = document.querySelector<HTMLElement>('.site-footer');
 const aboutSection = document.querySelector<HTMLElement>('[data-about]');
 const aboutLines = Array.from(document.querySelectorAll<HTMLElement>('[data-about-line]'));
-const knittoolsSection = document.querySelector<HTMLElement>('[data-knittools]');
-const knittoolsCard = document.querySelector<HTMLElement>('[data-knittools-card]');
-const knittoolsLines = Array.from(document.querySelectorAll<HTMLElement>('[data-knittools-line]'));
+const productSections = Array.from(document.querySelectorAll<HTMLElement>('[data-product]'));
 const sectionLines = Array.from(document.querySelectorAll<HTMLElement>('[data-section-line]'));
 const notifyForm = document.querySelector<HTMLFormElement>('[data-notify-form]');
 
@@ -138,14 +139,120 @@ const setupTopbarHeroReveal = () => {
 
   if (topbar) gsap.set(topbar, { autoAlpha: 0 });
   if (heroMeta) gsap.set(heroMeta, { autoAlpha: 0, y: 8 });
-  if (heroWordmark) gsap.set(heroWordmark, { autoAlpha: 0, y: 20 });
   if (heroTagline) gsap.set(heroTagline, { autoAlpha: 0, y: 14 });
+  if (heroScrollCue) gsap.set(heroScrollCue, { autoAlpha: 0 });
+
+  let wordmarkChars: HTMLElement[] = [];
+  if (heroWordmark) {
+    const split = new SplitText(heroWordmark, { type: 'chars', charsClass: 'split-char' });
+    wordmarkChars = split.chars as HTMLElement[];
+    gsap.set(wordmarkChars, { autoAlpha: 0, y: 26 });
+  }
 
   const tl = gsap.timeline({ defaults: { ease: 'power2.out' }, delay: 0.1 });
   if (topbar) tl.to(topbar, { autoAlpha: 1, duration: 0.5 });
   if (heroMeta) tl.to(heroMeta, { autoAlpha: 1, y: 0, duration: 0.5 }, 0);
-  if (heroWordmark) tl.to(heroWordmark, { autoAlpha: 1, y: 0, duration: 0.8 }, 0.15);
-  if (heroTagline) tl.to(heroTagline, { autoAlpha: 1, y: 0, duration: 0.6 }, 0.45);
+  if (wordmarkChars.length) {
+    tl.to(wordmarkChars, {
+      autoAlpha: 1,
+      y: 0,
+      duration: 1.0,
+      ease: 'power3.out',
+      stagger: 0.09,
+    }, 0.15);
+  }
+  if (heroTagline) tl.to(heroTagline, { autoAlpha: 1, y: 0, duration: 0.6 }, 0.9);
+  if (heroScrollCue) tl.to(heroScrollCue, { autoAlpha: 1, duration: 0.6 }, 1.4);
+  if (wordmarkChars.length) {
+    tl.to(wordmarkChars, {
+      color: '#D9A24E',
+      duration: 0.45,
+      ease: 'sine.inOut',
+      stagger: 0.07,
+      yoyo: true,
+      repeat: 1,
+    }, 1.8);
+  }
+};
+
+const setupHeroMouseParallax = () => {
+  if (prefersReducedMotion || !heroSection) return;
+  if (!window.matchMedia('(pointer: fine)').matches) return;
+  if (!heroWordmark && !heroTagline) return;
+
+  gsap.delayedCall(2.4, () => {
+    const movers: Array<{ x: (v: number) => void; y: (v: number) => void; fx: number; fy: number }> = [];
+
+    if (heroWordmark) {
+      movers.push({
+        x: gsap.quickTo(heroWordmark, 'x', { duration: 0.8, ease: 'power3.out' }),
+        y: gsap.quickTo(heroWordmark, 'y', { duration: 0.8, ease: 'power3.out' }),
+        fx: 6,
+        fy: 4,
+      });
+    }
+
+    if (heroTagline) {
+      movers.push({
+        x: gsap.quickTo(heroTagline, 'x', { duration: 0.8, ease: 'power3.out' }),
+        y: gsap.quickTo(heroTagline, 'y', { duration: 0.8, ease: 'power3.out' }),
+        fx: -5,
+        fy: -3,
+      });
+    }
+
+    if (!heroSection) return;
+
+    heroSection.addEventListener('mousemove', (event) => {
+      const rect = heroSection.getBoundingClientRect();
+      const nx = ((event.clientX - rect.left) / rect.width) * 2 - 1;
+      const ny = ((event.clientY - rect.top) / rect.height) * 2 - 1;
+      movers.forEach((m) => {
+        m.x(nx * m.fx);
+        m.y(ny * m.fy);
+      });
+    });
+
+    heroSection.addEventListener('mouseleave', () => {
+      movers.forEach((m) => {
+        m.x(0);
+        m.y(0);
+      });
+    });
+  });
+};
+
+const setupLocalTime = () => {
+  const timeEl = document.querySelector<HTMLElement>('[data-local-time]');
+  if (!timeEl) return;
+
+  const formatter = new Intl.DateTimeFormat('fi-FI', {
+    hour: '2-digit',
+    minute: '2-digit',
+    timeZone: 'Europe/Helsinki',
+  });
+
+  const update = () => {
+    timeEl.textContent = ` — ${formatter.format(new Date())}`;
+  };
+
+  update();
+  window.setInterval(update, 30000);
+};
+
+const setupScrollCueFade = () => {
+  if (prefersReducedMotion || !heroSection || !heroScrollCue) return;
+
+  gsap.to(heroScrollCue, {
+    autoAlpha: 0,
+    ease: 'none',
+    scrollTrigger: {
+      trigger: heroSection,
+      start: 'top top',
+      end: '25% top',
+      scrub: true,
+    },
+  });
 };
 
 const setupAboutReveal = () => {
@@ -157,8 +264,9 @@ const setupAboutReveal = () => {
   }
 
   const textEls = aboutSection.querySelectorAll<HTMLElement>(
-    'h2[data-about-line], p[data-about-line], .about-sig[data-about-line], .section-label[data-about-line]',
+    'h2[data-about-line], p[data-about-line], .section-label[data-about-line]',
   );
+  const signature = aboutSection.querySelector<HTMLElement>('.about-sig');
 
   const splits = Array.from(textEls).map(
     (el) => new SplitText(el, { type: 'words', wordsClass: 'split-word' }),
@@ -166,14 +274,17 @@ const setupAboutReveal = () => {
   const allWords = splits.flatMap((s) => s.words as HTMLElement[]);
 
   gsap.set(allWords, { autoAlpha: 0, y: 12, filter: 'blur(8px)' });
+  if (signature) gsap.set(signature, { autoAlpha: 0, x: -16 });
 
-  gsap.timeline({
+  const tl = gsap.timeline({
     scrollTrigger: {
       trigger: aboutSection,
       start: 'top 80%',
       once: true,
     },
-  }).to(allWords, {
+  });
+
+  tl.to(allWords, {
     autoAlpha: 1,
     y: 0,
     filter: 'blur(0px)',
@@ -181,6 +292,15 @@ const setupAboutReveal = () => {
     ease: 'power2.out',
     stagger: 0.015,
   });
+
+  if (signature) {
+    tl.to(signature, {
+      autoAlpha: 1,
+      x: 0,
+      duration: 0.8,
+      ease: 'power2.out',
+    }, '+=0.4');
+  }
 };
 
 const setupSectionLines = () => {
@@ -209,61 +329,164 @@ const setupSectionLines = () => {
   });
 };
 
-const setupKnittoolsReveal = () => {
-  if (!knittoolsSection || knittoolsLines.length === 0) return;
+const setupProductReveals = () => {
+  productSections.forEach((section) => {
+    const lines = Array.from(section.querySelectorAll<HTMLElement>('[data-product-line]'));
+    const logo = section.querySelector<HTMLElement>('[data-product-logo]');
+    const name = section.querySelector<HTMLElement>('.product-name');
+    if (lines.length === 0 && !logo && !name) return;
+
+    if (prefersReducedMotion) {
+      if (lines.length) gsap.set(lines, { autoAlpha: 1 });
+      if (logo) gsap.set(logo, { autoAlpha: 1, scale: 1, x: 0, y: 0, rotation: 0 });
+      if (name) gsap.set(name, { autoAlpha: 1, y: 0 });
+      return;
+    }
+
+    const textEls = section.querySelectorAll<HTMLElement>(
+      'p[data-product-line], .section-label[data-product-line]',
+    );
+    const otherEls = lines.filter((el) => !el.matches('p, .section-label'));
+    const logoRises = logo?.hasAttribute('data-logo-rise') ?? false;
+    const logoRolls = logo?.hasAttribute('data-logo-roll') ?? false;
+
+    const splits = Array.from(textEls).map(
+      (el) => new SplitText(el, { type: 'words', wordsClass: 'split-word' }),
+    );
+    const allWords = splits.flatMap((s) => s.words as HTMLElement[]);
+
+    gsap.set(allWords, { autoAlpha: 0, y: 12, filter: 'blur(8px)' });
+    gsap.set(otherEls, { autoAlpha: 0, y: 16 });
+    if (logo) {
+      if (logoRolls) {
+        gsap.set(logo, { autoAlpha: 0, x: 150, rotation: 240, transformOrigin: 'center center' });
+      } else if (logoRises) {
+        gsap.set(logo, { autoAlpha: 0, y: 30 });
+      } else {
+        gsap.set(logo, { autoAlpha: 0, scale: 0.98, transformOrigin: 'center center' });
+      }
+    }
+    if (name) gsap.set(name, { autoAlpha: 0, y: 10 });
+
+    const tl = gsap.timeline({
+      scrollTrigger: {
+        trigger: section,
+        start: 'top 75%',
+        once: true,
+      },
+    });
+
+    tl.to(allWords, {
+      autoAlpha: 1,
+      y: 0,
+      filter: 'blur(0px)',
+      duration: 0.7,
+      ease: 'power2.out',
+      stagger: 0.014,
+    }, 0);
+
+    if (logo) {
+      if (logoRolls) {
+        tl.to(logo, { autoAlpha: 1, duration: 0.35, ease: 'none' }, 0.1);
+        tl.to(logo, { x: 0, rotation: 0, duration: 1.6, ease: 'power2.out' }, 0.1);
+      } else if (logoRises) {
+        tl.to(logo, { autoAlpha: 1, y: 0, duration: 1.1, ease: 'power3.out' }, 0.1);
+      } else {
+        tl.to(logo, { autoAlpha: 1, scale: 1, duration: 0.9, ease: 'power2.out' }, 0.1);
+      }
+    }
+
+    if (name) {
+      tl.to(name, { autoAlpha: 1, y: 0, duration: 0.5, ease: 'power2.out' }, logoRolls ? 0.9 : 0.55);
+    }
+
+    tl.to(otherEls, {
+      autoAlpha: 1,
+      y: 0,
+      duration: 0.6,
+      ease: 'power2.out',
+      stagger: 0.06,
+    }, '-=0.3');
+  });
+};
+
+const setupLogoMotion = () => {
+  if (prefersReducedMotion) return;
+
+  document.querySelectorAll<HTMLElement>('[data-logo-stamp]').forEach((logo) => {
+    const lockup = logo.closest<HTMLElement>('[data-product-lockup]');
+    if (!lockup) return;
+    let stampTl: gsap.core.Timeline | null = null;
+
+    lockup.addEventListener('mouseenter', () => {
+      stampTl?.kill();
+      stampTl = gsap
+        .timeline()
+        .to(lockup, { scale: 0.95, duration: 0.12, ease: 'power2.in' })
+        .to(lockup, { scale: 1, duration: 0.45, ease: 'back.out(2.5)' });
+    });
+  });
+
+  document.querySelectorAll<HTMLElement>('[data-logo-nudge]').forEach((logo) => {
+    const lockup = logo.closest<HTMLElement>('[data-product-lockup]');
+    if (!lockup) return;
+    let nudgeTl: gsap.core.Timeline | null = null;
+
+    lockup.addEventListener('mouseenter', () => {
+      nudgeTl?.kill();
+      nudgeTl = gsap
+        .timeline()
+        .to(logo, { y: -7, duration: 0.18, ease: 'power2.out' })
+        .to(logo, { y: 0, duration: 0.5, ease: 'back.out(2)' });
+    });
+
+    lockup.addEventListener('mouseleave', () => {
+      nudgeTl?.kill();
+      nudgeTl = null;
+      gsap.to(logo, { y: 0, duration: 0.25, ease: 'power2.out' });
+    });
+  });
+};
+
+const setupFooterReveal = () => {
+  if (!siteFooter) return;
+
+  const wordmark = siteFooter.querySelector<HTMLElement>('.footer-wordmark');
+  const tagline = siteFooter.querySelector<HTMLElement>('.footer-tagline');
+  const metaEls = Array.from(siteFooter.querySelectorAll<HTMLElement>('.footer-meta > *'));
+  const els = [wordmark, tagline, ...metaEls].filter(Boolean) as HTMLElement[];
+  if (els.length === 0) return;
 
   if (prefersReducedMotion) {
-    gsap.set(knittoolsLines, { autoAlpha: 1 });
-    if (knittoolsCard) gsap.set(knittoolsCard, { autoAlpha: 1, scale: 1 });
+    gsap.set(els, { autoAlpha: 1, y: 0 });
     return;
   }
 
-  const textEls = knittoolsSection.querySelectorAll<HTMLElement>(
-    'h2[data-knittools-line], p[data-knittools-line], .section-label[data-knittools-line]',
-  );
-  const otherEls = knittoolsLines.filter((el) => !el.matches('h2, p, .section-label'));
-
-  const splits = Array.from(textEls).map(
-    (el) => new SplitText(el, { type: 'words', wordsClass: 'split-word' }),
-  );
-  const allWords = splits.flatMap((s) => s.words as HTMLElement[]);
-
-  gsap.set(allWords, { autoAlpha: 0, y: 12, filter: 'blur(8px)' });
-  gsap.set(otherEls, { autoAlpha: 0, y: 16 });
-  if (knittoolsCard) gsap.set(knittoolsCard, { autoAlpha: 0, scale: 0.98, transformOrigin: 'center center' });
+  gsap.set(els, { autoAlpha: 0, y: 12 });
 
   const tl = gsap.timeline({
     scrollTrigger: {
-      trigger: knittoolsSection,
-      start: 'top 75%',
+      trigger: siteFooter,
+      start: 'top 92%',
       once: true,
     },
+    defaults: { ease: 'power2.out' },
   });
 
-  tl.to(allWords, {
-    autoAlpha: 1,
-    y: 0,
-    filter: 'blur(0px)',
-    duration: 0.7,
-    ease: 'power2.out',
-    stagger: 0.014,
-  }, 0);
-
-  if (knittoolsCard) {
-    tl.to(knittoolsCard, { autoAlpha: 1, scale: 1, duration: 0.9, ease: 'power2.out' }, 0.1);
+  if (wordmark) tl.to(wordmark, { autoAlpha: 1, y: 0, duration: 0.5 }, 0);
+  if (tagline) tl.to(tagline, { autoAlpha: 1, y: 0, duration: 0.5 }, 0.25);
+  if (metaEls.length) {
+    tl.to(metaEls, { autoAlpha: 1, y: 0, duration: 0.5, stagger: 0.08 }, 0.15);
   }
-
-  tl.to(otherEls, {
-    autoAlpha: 1,
-    y: 0,
-    duration: 0.6,
-    ease: 'power2.out',
-    stagger: 0.06,
-  }, '-=0.3');
 };
 
 setupNotifyForm();
 setupTopbarHeroReveal();
+setupScrollCueFade();
+setupHeroMouseParallax();
+setupLocalTime();
 setupAboutReveal();
 setupSectionLines();
-setupKnittoolsReveal();
+setupProductReveals();
+setupLogoMotion();
+setupFooterReveal();

@@ -4,12 +4,17 @@ import BaseLayout from './BaseLayout.astro';
 interface Props {
   title?: string;
   description?: string;
+  frontmatter?: {
+    title?: string;
+    description?: string;
+  };
 }
 
-const {
-  title = 'Finnvek',
-  description = 'Privacy policy for Finnvek, finnvek.com, knittoolsapp.com, and KnitTools.',
-} = Astro.props;
+const title = Astro.props.title ?? Astro.props.frontmatter?.title ?? 'Finnvek';
+const description =
+  Astro.props.description ??
+  Astro.props.frontmatter?.description ??
+  'Privacy policy for Finnvek, finnvek.com, knittoolsapp.com, and KnitTools.';
 ---
 
 <BaseLayout title={title} description={description}>
@@ -32,9 +37,9 @@ const {
         <div class="footer-tagline">built to last</div>
       </div>
       <div class="footer-meta">
-        <a href="mailto:contact@finnvek.com">contact@finnvek.com</a>
-        <span>&copy; 2026</span>
+        <a href="mailto:contact@finnvek.com">Contact</a>
         <a href="/privacy">Privacy Policy</a>
+        <span>&copy; 2026</span>
       </div>
     </div>
   </footer>

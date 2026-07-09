@@ -6,7 +6,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
   <section class="hero">
     <div class="hero-meta">
       <div class="hero-meta-line1">Independent Software</div>
-      <div class="hero-meta-line2">Turku, Finland.</div>
+      <div class="hero-meta-line2">Turku, Finland<span class="hero-meta-time" data-local-time>.</span></div>
     </div>
 
     <a href="/" class="hero-wordmark" aria-label="Finnvek home">FINNVEK</a>
@@ -15,6 +15,8 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       <span class="hero-tagline-line">Software made for <span class="years">years.</span></span>
       <span class="hero-tagline-line">Not weeks.</span>
     </h1>
+
+    <div class="hero-scroll-cue" aria-hidden="true"></div>
   </section>
 
   <hr class="section-divider" data-section-line />
@@ -26,19 +28,23 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       <p data-about-line>Finnvek is independent software from Turku, Finland. I'm one developer, working on my own projects.</p>
       <p data-about-line>It exists because some ideas were worth following, and I had the freedom to follow them. The kind of ideas that stay interesting for <span class="years">years</span>, not weeks. The kind I care about enough to build carefully, without shortcuts or rushed releases.</p>
       <p data-about-line>Every product is its own thing. No ads, no tracking. Made to work well, and to keep working for a long time.</p>
-      <p data-about-line>The first one is KnitTools. More are on the way.</p>
+      <p data-about-line>The first two are KnitTools and runcheck. More are on the way.</p>
       <div class="about-sig" data-about-line>Emma</div>
     </div>
   </section>
 
-  <section class="knit" data-knittools>
-    <div class="section-label" data-knittools-line>Currently</div>
-    <div class="knit-content">
-      <div class="knit-text">
-        <h2 data-knittools-line>KnitTools</h2>
-        <p data-knittools-line>KnitTools is a pocket companion for knitters. It counts your rows, reads your patterns, and keeps your stash quietly in order, with voice and AI that speaks knitter. In eleven languages, for Android.</p>
+  <section class="product product--mirror" data-product>
+    <div class="section-label" data-product-line>In the works</div>
+    <div class="product-content">
+      <a href="https://knittoolsapp.com" class="product-lockup" data-product-lockup aria-label="KnitTools — knittoolsapp.com">
+        <img src="/images/knittools.webp" alt="" width="500" height="500" loading="lazy" decoding="async" data-product-logo data-logo-roll data-logo-stamp />
+        <h2 class="product-name product-name--knittools">KnitTools</h2>
+      </a>
 
-        <form class="notify" data-notify-form data-knittools-line>
+      <div class="product-text">
+        <p data-product-line>KnitTools is a pocket companion for knitters. It counts your rows, keeps your patterns one tap away, and your yarn, notes, and progress photos quietly in order. In eleven languages, for Android.</p>
+
+        <form class="notify" data-notify-form data-product-line>
           <label class="visually-hidden" for="notify-email">Email address</label>
           <label class="visually-hidden" for="notify-website">Leave this field empty</label>
           <input
@@ -54,21 +60,23 @@ import BaseLayout from '../layouts/BaseLayout.astro';
         </form>
         <p class="notify-error" data-notify-error role="alert" aria-live="polite" hidden></p>
 
-        <a href="https://knittoolsapp.com" class="knit-link" data-knittools-line>knittoolsapp.com &rarr;</a>
+        <a href="https://knittoolsapp.com" class="product-link" data-product-line>knittoolsapp.com <span class="link-arrow">&rarr;</span></a>
       </div>
+    </div>
+  </section>
 
-      <div class="card" data-knittools-card>
-        <div class="card-mid">
-          <h3 class="card-title">KnitTools</h3>
-          <dl class="card-info">
-            <div><dt>Status</dt><dd>Coming soon</dd></div>
-            <div><dt>Platform</dt><dd>Android</dd></div>
-            <div><dt>Languages</dt><dd>11</dd></div>
-          </dl>
-        </div>
-        <div class="card-bottom">
-          <a class="card-url" href="https://knittoolsapp.com">knittoolsapp.com</a>
-        </div>
+  <section class="product" data-product>
+    <div class="section-label" aria-hidden="true"></div>
+    <div class="product-content">
+      <a href="https://runcheckapp.com" class="product-lockup" data-product-lockup aria-label="runcheck — runcheckapp.com">
+        <img src="/images/runcheck.webp" alt="" width="1254" height="1254" loading="lazy" decoding="async" data-product-logo data-logo-rise data-logo-nudge />
+        <h2 class="product-name product-name--runcheck">runcheck</h2>
+      </a>
+
+      <div class="product-text">
+        <p data-product-line>runcheck shows your phone's real condition. It checks battery, network, thermals, and storage, and turns the raw numbers into one clear health score. It warns you before small problems become annoying ones. For Android.</p>
+
+        <a href="https://runcheckapp.com" class="product-link" data-product-line>runcheckapp.com <span class="link-arrow">&rarr;</span></a>
       </div>
     </div>
   </section>
@@ -80,9 +88,9 @@ import BaseLayout from '../layouts/BaseLayout.astro';
         <div class="footer-tagline">built to last</div>
       </div>
       <div class="footer-meta">
-        <a href="mailto:contact@finnvek.com">contact@finnvek.com</a>
-        <span>&copy; 2026</span>
+        <a href="mailto:contact@finnvek.com">Contact</a>
         <a href="/privacy">Privacy Policy</a>
+        <span>&copy; 2026</span>
       </div>
     </div>
   </footer>
