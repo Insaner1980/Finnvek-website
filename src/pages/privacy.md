@@ -22,7 +22,7 @@ Here is what that means in practice:
 - I do not sell, rent, or share personal data with data brokers.
 - I do not operate user accounts for these apps. There is no Finnvek server that stores your app data.
 - The data your app creates lives on your device. If you uninstall the app, it goes with it.
-- A few features, like AI assistance and connecting to Ravelry, need to talk to other companies' servers. When that happens, this policy says which company, why it happens, and links to their privacy policy.
+- A few features and services, like connecting to Ravelry or sending crash reports, need to talk to other companies' servers. When that happens, this policy says which company, why it happens, and links to their privacy policy.
 
 The rest of this page goes through all of this in detail, app by app.
 
@@ -187,15 +187,14 @@ The vast majority of what KnitTools does happens entirely on your phone or table
 - Saved patterns from Ravelry
 - Pattern annotations
 - Reminders
-- App settings, including theme, language, units, and voice settings
+- App settings, including theme, language, and units
 
 If you uninstall KnitTools or clear its data in Android settings, all of this is gone. I do not have a backup. I do not have a copy.
 
 #### Permissions and why the app asks for them
 
-- **Internet**: needed to talk to Ravelry, Firebase AI, Firebase Crashlytics, and the Google Play Store. Without internet, the app still works for everything that does not depend on those services.
+- **Internet**: needed to talk to Ravelry, Firebase Crashlytics, and the Google Play Store. Without internet, the app still works for everything that does not depend on those services.
 - **Camera**: used only when you choose to scan a yarn label or a printed pattern. The app does not access the camera in the background.
-- **Microphone**: used only when you turn on voice commands or start a Gemini Live voice session. The app does not listen in the background.
 - **Vibrate**: used for haptic feedback when you tap the counter. No data leaves your device.
 
 #### When KnitTools talks to other companies
@@ -226,51 +225,22 @@ Crashlytics may automatically send diagnostic information to Google Firebase whe
 
 I use this information to find and fix bugs. I do not attach your project content, yarn data, pattern notes, photos, Ravelry account details, or email address to Crashlytics reports.
 
-##### Firebase AI and Google Cloud Gemini
-
-KnitTools includes some optional AI features, such as pattern parsing, project summaries, yarn label analysis, and voice command interpretation. These are part of the Pro tier and only run when you trigger them.
-
-These features send the relevant data, for example the text of a pattern you want analyzed or a photo of a yarn label, to Google's Firebase AI Logic service, which forwards it to Gemini models running on Google Cloud servers.
-
-Google's terms apply to anything sent to their servers:
-
-- [Google Privacy Policy](https://policies.google.com/privacy)
-- [Firebase Privacy and Security](https://firebase.google.com/support/privacy)
-- [Gemini API additional terms](https://ai.google.dev/gemini-api/terms)
-
-KnitTools uses the paid tier of the Gemini Developer API through the Firebase Blaze plan. Under Google's current terms for the paid tier, prompts and responses sent through this tier are not used to train Google's models. If Google's terms change, I will update this section.
-
-You can avoid sending anything to Google through these AI features by simply not using the AI features. The rest of KnitTools works without them.
-
-##### Gemini Live voice
-
-If you enable the natural voice mode in KnitTools voice settings, the app uses Google's Gemini Live API. While a voice session is active, your microphone audio is streamed to Google's servers in real time, and Google's voice response is streamed back.
-
-This only happens during an active voice session that you started. Closing the session stops the stream. The app does not record audio in the background.
-
-The same Google terms linked above apply. If you would rather not send audio to Google, you can use the device voice mode instead, which uses a smaller on-device pipeline.
-
 ##### Google Play
 
 When you buy KnitTools Pro, the purchase goes through Google Play Billing. I never see your card details. Google Play tells the app only whether you have a valid Pro purchase.
 
 KnitTools also uses Google Play's In-App Update and In-App Review features, which are part of Google Play Services on your device. These are governed by Google's privacy policy: [https://policies.google.com/privacy](https://policies.google.com/privacy).
 
-##### On-device ML Kit
-
-KnitTools uses Google's ML Kit for on-device text recognition and on-device language model features. These run locally on your phone. Photos and text processed by on-device ML Kit do not leave your device through these features. If you separately use a cloud AI feature on the same content, that is covered above.
-
 #### How long data is kept
 
 - **On your device**: until you delete it, uninstall the app, or clear app storage
 - **Ravelry tokens**: until you sign out or clear app storage
 - **Crash reports**: Firebase Crashlytics keeps crash stack traces and associated identifiers for 90 days before starting deletion from live and backup systems
-- **Cloud AI prompts and responses**: governed by Google's retention policies
 - **Google Play purchase records**: governed by Google Play's policies
 
 #### International data transfers
 
-When KnitTools talks to Google's services or Ravelry, your data is sent to those companies' servers. Google operates globally and may process data in the United States and other countries. Ravelry is based in the United States.
+When KnitTools talks to Firebase Crashlytics, Google Play, or Ravelry, your data is sent to those companies' servers. Google operates globally and may process data in the United States and other countries. Ravelry is based in the United States.
 
 These companies provide their own GDPR-compliant transfer mechanisms, such as Standard Contractual Clauses or equivalent. See their privacy policies for details.
 
@@ -279,7 +249,7 @@ These companies provide their own GDPR-compliant transfer mechanisms, such as St
 For users in the EEA, my legal bases are:
 
 - **Performance of a contract**: running the free and paid features you use, and processing your Pro purchase
-- **Consent**: for AI features, microphone use, camera use, and website analytics cookies where consent is required by law
+- **Consent**: for camera use and website analytics cookies where consent is required by law
 - **Legitimate interest**: keeping the app stable, diagnosing crashes, checking for app updates, and protecting the websites from abuse
 
 You can withdraw consent for any optional feature simply by not using it, or by turning it off in settings.
