@@ -177,7 +177,7 @@ const setupTopbarHeroReveal = () => {
 
 const setupHeroMouseParallax = () => {
   if (prefersReducedMotion || !heroSection) return;
-  if (!window.matchMedia('(pointer: fine)').matches) return;
+  if (!window.matchMedia('(min-width: 761px) and (pointer: fine)').matches) return;
   if (!heroWordmark && !heroTagline) return;
 
   gsap.delayedCall(2.4, () => {
