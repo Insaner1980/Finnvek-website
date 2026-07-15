@@ -392,7 +392,8 @@ img {
   outline-offset: 10px;
 }
 
-.product-lockup img {
+.product-lockup img,
+.product-lockup svg {
   width: clamp(140px, 18vw, 210px);
   height: auto;
 }
@@ -415,6 +416,18 @@ img {
   font-weight: 600;
   font-size: clamp(1.7rem, 3.2vw, 2.35rem);
   letter-spacing: -0.01em;
+}
+
+.product-name--dbcheck {
+  font-family: var(--font-body-stack);
+  font-weight: 600;
+  font-size: clamp(1.9rem, 3.5vw, 2.6rem);
+  letter-spacing: -0.035em;
+}
+
+.product-name--dbcheck em {
+  font-style: normal;
+  color: var(--color-text-muted);
 }
 
 .product--mirror .product-content {
@@ -739,7 +752,8 @@ img {
     order: 2;
   }
 
-  .product-lockup img {
+  .product-lockup img,
+  .product-lockup svg {
     width: clamp(120px, 30vw, 170px);
   }
 }

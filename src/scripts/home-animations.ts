@@ -329,6 +329,12 @@ const setupSectionLines = () => {
   });
 };
 
+const getLogoPulseBars = (logo: HTMLElement): SVGRectElement[] => {
+  const bars = Array.from(logo.querySelectorAll<SVGRectElement>('[data-logo-pulse-bars] rect'));
+  const centerOutOrder = [2, 1, 3, 0, 4];
+  return centerOutOrder.map((index) => bars[index]).filter((bar): bar is SVGRectElement => Boolean(bar));
+};
+
 const setupProductReveals = () => {
   productSections.forEach((section) => {
     const lines = Array.from(section.querySelectorAll<HTMLElement>('[data-product-line]'));
@@ -336,9 +342,13 @@ const setupProductReveals = () => {
     const name = section.querySelector<HTMLElement>('.product-name');
     if (lines.length === 0 && !logo && !name) return;
 
+    const logoPulses = logo?.hasAttribute('data-logo-pulse') ?? false;
+    const pulseBars = logo && logoPulses ? getLogoPulseBars(logo) : [];
+
     if (prefersReducedMotion) {
       if (lines.length) gsap.set(lines, { autoAlpha: 1 });
       if (logo) gsap.set(logo, { autoAlpha: 1, scale: 1, x: 0, y: 0, rotation: 0 });
+      if (pulseBars.length) gsap.set(pulseBars, { scaleY: 1 });
       if (name) gsap.set(name, { autoAlpha: 1, y: 0 });
       return;
     }
@@ -360,6 +370,9 @@ const setupProductReveals = () => {
     if (logo) {
       if (logoRolls) {
         gsap.set(logo, { autoAlpha: 0, x: 150, rotation: 240, transformOrigin: 'center center' });
+      } else if (logoPulses) {
+        gsap.set(logo, { autoAlpha: 0, scale: 0.97, transformOrigin: 'center center' });
+        gsap.set(pulseBars, { scaleY: 0.08, transformOrigin: '50% 50%' });
       } else if (logoRises) {
         gsap.set(logo, { autoAlpha: 0, y: 30 });
       } else {
@@ -389,6 +402,14 @@ const setupProductReveals = () => {
       if (logoRolls) {
         tl.to(logo, { autoAlpha: 1, duration: 0.35, ease: 'none' }, 0.1);
         tl.to(logo, { x: 0, rotation: 0, duration: 1.6, ease: 'power2.out' }, 0.1);
+      } else if (logoPulses) {
+        tl.to(logo, { autoAlpha: 1, scale: 1, duration: 0.65, ease: 'power2.out' }, 0.1);
+        tl.to(pulseBars, {
+          scaleY: 1,
+          duration: 0.55,
+          ease: 'back.out(1.7)',
+          stagger: 0.065,
+        }, 0.18);
       } else if (logoRises) {
         tl.to(logo, { autoAlpha: 1, y: 0, duration: 1.1, ease: 'power3.out' }, 0.1);
       } else {
@@ -397,7 +418,8 @@ const setupProductReveals = () => {
     }
 
     if (name) {
-      tl.to(name, { autoAlpha: 1, y: 0, duration: 0.5, ease: 'power2.out' }, logoRolls ? 0.9 : 0.55);
+      const nameRevealStart = logoRolls ? 0.9 : logoPulses ? 0.72 : 0.55;
+      tl.to(name, { autoAlpha: 1, y: 0, duration: 0.5, ease: 'power2.out' }, nameRevealStart);
     }
 
     tl.to(otherEls, {
@@ -444,6 +466,30 @@ const setupLogoMotion = () => {
       nudgeTl?.kill();
       nudgeTl = null;
       gsap.to(logo, { y: 0, duration: 0.25, ease: 'power2.out' });
+    });
+  });
+
+  document.querySelectorAll<HTMLElement>('[data-logo-pulse]').forEach((logo) => {
+    const lockup = logo.closest<HTMLElement>('[data-product-lockup]');
+    const pulseBars = getLogoPulseBars(logo);
+    if (!lockup || pulseBars.length === 0) return;
+    let pulseTl: gsap.core.Timeline | null = null;
+
+    const playPulse = () => {
+      pulseTl?.kill();
+      gsap.set(pulseBars, { scaleY: 1, transformOrigin: '50% 50%' });
+      pulseTl = gsap
+        .timeline()
+        .to(pulseBars, { scaleY: 1.12, duration: 0.16, ease: 'power2.out', stagger: 0.045 })
+        .to(pulseBars, { scaleY: 1, duration: 0.32, ease: 'back.out(1.8)', stagger: 0.035 }, '<0.06');
+    };
+
+    lockup.addEventListener('mouseenter', playPulse);
+    lockup.addEventListener('focus', playPulse);
+    lockup.addEventListener('mouseleave', () => {
+      pulseTl?.kill();
+      pulseTl = null;
+      gsap.to(pulseBars, { scaleY: 1, duration: 0.2, ease: 'power2.out', overwrite: true });
     });
   });
 };
