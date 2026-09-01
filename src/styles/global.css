@@ -378,6 +378,23 @@ img {
   font-weight: 700;
 }
 
+.about-apps a {
+  color: inherit;
+  border-bottom: 1px solid transparent;
+  transition: border-color 150ms ease, color 150ms ease;
+}
+
+.about-apps a:hover,
+.about-apps a:focus-visible {
+  color: var(--red);
+  border-bottom-color: var(--red);
+}
+
+.about-apps a:focus-visible {
+  outline: 1px solid var(--color-text);
+  outline-offset: 3px;
+}
+
 /* ----- Products ----- */
 
 .product {
@@ -562,22 +579,6 @@ img {
   color: var(--red);
   border-bottom-color: var(--red);
   outline: none;
-}
-
-.product-link .link-arrow {
-  display: inline-block;
-  transition: transform 180ms ease;
-}
-
-.product-link:hover .link-arrow,
-.product-link:focus-visible .link-arrow {
-  transform: translateX(4px);
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .product-link .link-arrow {
-    transition: none;
-  }
 }
 
 /* ----- Footer ----- */
