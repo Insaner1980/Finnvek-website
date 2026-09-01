@@ -1,0 +1,71 @@
+---
+import { Picture } from 'astro:assets';
+import portrait from '../assets/emma-hotakainen-aircraft.png';
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const description =
+  "Hi, I'm Emma Hotakainen. Finnvek is just the name I put on the things I build. I make Android apps because I like turning ideas into things that actually work.";
+---
+
+<BaseLayout title="About | Finnvek" description={description}>
+  <header class="topbar">
+    <a href="/" class="topbar-logo about-topbar-logo" aria-label="Finnvek home">FINNVEK</a>
+    <div class="topbar-meta">
+      <div class="topbar-meta-line1">Independent Software</div>
+      <div class="topbar-meta-line2">Turku, Finland.</div>
+    </div>
+  </header>
+
+  <main class="about-page">
+    <article class="about-article">
+      <div class="about-intro">
+        <h1>About</h1>
+        <p>Hi, I'm Emma Hotakainen. Finnvek is just the name I put on the things I build. I make Android apps because I like turning ideas into things that actually work. Most of them start with something I think would be useful, something I wish existed or something I think could be done better. Then I tend to keep working on them until all the little details feel right.</p>
+      </div>
+
+      <div class="about-portrait">
+        <Picture
+          src={portrait}
+          formats={['avif', 'webp']}
+          fallbackFormat="png"
+          widths={[360, 540, 720, portrait.width]}
+          sizes="(max-width: 640px) calc(100vw - 2.5rem), (max-width: 64rem) 32rem, 25rem"
+          layout="constrained"
+          fit="contain"
+          quality="high"
+          priority
+          alt="Emma Hotakainen seated inside a small aircraft."
+        />
+      </div>
+
+      <div class="about-details">
+        <p>I'm currently developing four Android apps:</p>
+
+        <ul class="about-apps">
+          <li><strong>KnitTools:</strong> keeping track of knitting and crochet projects, rows, yarn and all the other details that come with a project.</li>
+          <li><strong>runcheck:</strong> understanding what's going on with your Android phone, from battery and storage to network and performance.</li>
+          <li><strong>dBcheck:</strong> measuring sound levels and making sense of everyday noise exposure.</li>
+          <li><strong>fonecheck:</strong> a more comprehensive Android diagnostics app for checking and understanding what's happening on your device.</li>
+        </ul>
+
+        <p>I design, build and test every app myself and every decision about what goes in and what stays out is mine. I'd rather make something straightforward that does its job well than add features because an app is expected to have them. None of them have ads. Some of the apps also have articles and guides around them. I research and review that content and try to make it genuinely useful rather than filling a site with things that have already been said a thousand times.</p>
+
+			<p>I'm based in Turku, Finland. Finnvek isn't a company with a team behind it. It's just me, building things and seeing where they go.</p>
+      </div>
+    </article>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div class="footer-brand">
+        <div class="footer-wordmark">FINNVEK</div>
+        <div class="footer-tagline">built to last</div>
+      </div>
+      <div class="footer-meta">
+        <a href="mailto:contact@finnvek.com">Contact</a>
+        <a href="/privacy">Privacy Policy</a>
+        <span>&copy; 2026</span>
+      </div>
+    </div>
+  </footer>
+</BaseLayout>

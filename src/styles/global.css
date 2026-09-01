@@ -360,6 +360,103 @@ img {
   color: var(--color-text-muted);
 }
 
+/* ----- About page ----- */
+
+.about-topbar-logo:focus-visible {
+  outline: 1px solid var(--color-text);
+  outline-offset: 6px;
+}
+
+.about-page {
+  max-width: var(--container-wide);
+  margin: clamp(5rem, 10vw, 8rem) auto 0;
+  padding: 0 var(--gutter);
+}
+
+.about-article {
+  display: grid;
+  grid-template-columns: minmax(0, 1.45fr) minmax(16rem, 0.85fr);
+  grid-template-areas:
+    'intro portrait'
+    'details portrait';
+  column-gap: clamp(3rem, 7vw, 6rem);
+  align-items: start;
+}
+
+.about-intro {
+  grid-area: intro;
+  max-width: 38rem;
+  min-width: 0;
+}
+
+.about-intro h1 {
+  margin: 0 0 2rem;
+  font-family: var(--font-display-stack);
+  font-weight: 400;
+  font-size: 4rem;
+  line-height: 1;
+  letter-spacing: -0.01em;
+  color: var(--color-text);
+}
+
+.about-intro p,
+.about-details p,
+.about-apps {
+  font-family: var(--font-body-stack);
+  font-size: 1.0625rem;
+  line-height: 1.65;
+}
+
+.about-intro p {
+  margin: 0;
+  color: var(--color-text);
+}
+
+.about-portrait {
+  grid-area: portrait;
+  width: 100%;
+  max-width: 25rem;
+  min-width: 0;
+  justify-self: end;
+}
+
+.about-portrait img {
+  width: 100%;
+  height: auto;
+}
+
+.about-details {
+  grid-area: details;
+  max-width: 38rem;
+  min-width: 0;
+  margin-top: 2rem;
+}
+
+.about-details p {
+  margin: 0 0 1.25rem;
+  color: var(--color-text-muted);
+}
+
+.about-details p:last-child {
+  margin-bottom: 0;
+}
+
+.about-apps {
+  margin: 0 0 2.5rem;
+  padding: 0;
+  list-style: none;
+  color: var(--color-text-muted);
+}
+
+.about-apps li + li {
+  margin-top: 1.25rem;
+}
+
+.about-apps strong {
+  color: var(--color-text);
+  font-weight: 700;
+}
+
 /* ----- Products ----- */
 
 .product {
@@ -730,6 +827,27 @@ img {
 
 /* ----- Responsive ----- */
 
+@media (max-width: 64rem) {
+  .about-article {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas:
+      'intro'
+      'portrait'
+      'details';
+  }
+
+  .about-portrait {
+    width: 100%;
+    max-width: 32rem;
+    margin: 2.5rem 0;
+    justify-self: start;
+  }
+
+  .about-details {
+    margin-top: 0;
+  }
+}
+
 @media (max-width: 900px) {
   .about,
   .product {
@@ -802,6 +920,20 @@ img {
 @media (max-width: 640px) {
   :root {
     --gutter: 1.25rem;
+  }
+
+  .about-page {
+    margin-top: 4rem;
+  }
+
+  .about-intro h1 {
+    margin-bottom: 1.5rem;
+    font-size: 3.25rem;
+  }
+
+  .about-portrait {
+    max-width: none;
+    margin: 2rem 0;
   }
 
   .topbar {
