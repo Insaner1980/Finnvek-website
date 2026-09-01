@@ -20,6 +20,45 @@ const notifyForm = document.querySelector<HTMLFormElement>('[data-notify-form]')
 const API_ENDPOINT = 'https://api.finnvek.com/subscribe';
 const SUBSCRIBE_TIMEOUT_MS = 10000;
 
+const showHeroWithoutMotion = (heroEls: HTMLElement[]) => {
+  if (topbar) gsap.set(topbar, { autoAlpha: 1 });
+  if (heroEls.length) gsap.set(heroEls, { autoAlpha: 1, y: 0 });
+};
+
+const prepareHeroWordmark = () => {
+  if (!heroWordmark) return [];
+
+  const split = new SplitText(heroWordmark, { type: 'chars', charsClass: 'split-char' });
+  const chars = split.chars as HTMLElement[];
+  gsap.set(chars, { autoAlpha: 0, y: 26 });
+  return chars;
+};
+
+const addHeroWordmarkReveal = (timeline: gsap.core.Timeline, chars: HTMLElement[]) => {
+  if (chars.length === 0) return;
+
+  timeline.to(chars, {
+    autoAlpha: 1,
+    y: 0,
+    duration: 1.0,
+    ease: 'power3.out',
+    stagger: 0.09,
+  }, 0.15);
+};
+
+const addHeroWordmarkPulse = (timeline: gsap.core.Timeline, chars: HTMLElement[]) => {
+  if (chars.length === 0) return;
+
+  timeline.to(chars, {
+    color: '#D9A24E',
+    duration: 0.45,
+    ease: 'sine.inOut',
+    stagger: 0.07,
+    yoyo: true,
+    repeat: 1,
+  }, 1.8);
+};
+
 const setupNotifyForm = () => {
   if (!notifyForm) return;
 
@@ -130,8 +169,7 @@ const setupTopbarHeroReveal = () => {
   if (!topbar && heroEls.length === 0) return;
 
   if (prefersReducedMotion) {
-    if (topbar) gsap.set(topbar, { autoAlpha: 1 });
-    if (heroEls.length) gsap.set(heroEls, { autoAlpha: 1, y: 0 });
+    showHeroWithoutMotion(heroEls);
     return;
   }
 
@@ -140,37 +178,15 @@ const setupTopbarHeroReveal = () => {
   if (heroTagline) gsap.set(heroTagline, { autoAlpha: 0, y: 14 });
   if (heroScrollCue) gsap.set(heroScrollCue, { autoAlpha: 0 });
 
-  let wordmarkChars: HTMLElement[] = [];
-  if (heroWordmark) {
-    const split = new SplitText(heroWordmark, { type: 'chars', charsClass: 'split-char' });
-    wordmarkChars = split.chars as HTMLElement[];
-    gsap.set(wordmarkChars, { autoAlpha: 0, y: 26 });
-  }
+  const wordmarkChars = prepareHeroWordmark();
 
   const tl = gsap.timeline({ defaults: { ease: 'power2.out' }, delay: 0.1 });
   if (topbar) tl.to(topbar, { autoAlpha: 1, duration: 0.5 });
   if (heroMeta) tl.to(heroMeta, { autoAlpha: 1, y: 0, duration: 0.5 }, 0);
-  if (wordmarkChars.length) {
-    tl.to(wordmarkChars, {
-      autoAlpha: 1,
-      y: 0,
-      duration: 1.0,
-      ease: 'power3.out',
-      stagger: 0.09,
-    }, 0.15);
-  }
+  addHeroWordmarkReveal(tl, wordmarkChars);
   if (heroTagline) tl.to(heroTagline, { autoAlpha: 1, y: 0, duration: 0.6 }, 0.9);
   if (heroScrollCue) tl.to(heroScrollCue, { autoAlpha: 1, duration: 0.6 }, 1.4);
-  if (wordmarkChars.length) {
-    tl.to(wordmarkChars, {
-      color: '#D9A24E',
-      duration: 0.45,
-      ease: 'sine.inOut',
-      stagger: 0.07,
-      yoyo: true,
-      repeat: 1,
-    }, 1.8);
-  }
+  addHeroWordmarkPulse(tl, wordmarkChars);
 };
 
 const setupHeroMouseParallax = () => {
@@ -296,6 +312,91 @@ const getSignalLogoParts = (logo: HTMLElement) => {
   };
 };
 
+type SignalLogoParts = ReturnType<typeof getSignalLogoParts>;
+
+const showProductWithoutMotion = (
+  lines: HTMLElement[],
+  logo: HTMLElement | null,
+  name: HTMLElement | null,
+  signalParts: SignalLogoParts | null,
+) => {
+  if (lines.length) gsap.set(lines, { autoAlpha: 1 });
+  if (logo) gsap.set(logo, { autoAlpha: 1, scale: 1, x: 0, y: 0, rotation: 0 });
+  if (signalParts) gsap.set(signalParts.all, { autoAlpha: 1, scale: 1, scaleY: 1, x: 0 });
+  if (name) gsap.set(name, { autoAlpha: 1, y: 0 });
+};
+
+const setInitialProductLogoState = (
+  logo: HTMLElement | null,
+  logoRolls: boolean,
+  logoSignals: boolean,
+  logoRises: boolean,
+  signalParts: SignalLogoParts | null,
+) => {
+  if (!logo) return;
+
+  if (logoRolls) {
+    gsap.set(logo, { autoAlpha: 0, x: 150, rotation: 240, transformOrigin: 'center center' });
+    return;
+  }
+  if (logoSignals && signalParts) {
+    gsap.set(logo, { autoAlpha: 0, scale: 0.94, rotation: -4, transformOrigin: 'center center' });
+    gsap.set(signalParts.divider, { autoAlpha: 0, scaleY: 0.16, transformOrigin: '50% 50%' });
+    gsap.set(signalParts.letterD, { autoAlpha: 0, scale: 0.82, x: 18, transformOrigin: '50% 50%' });
+    gsap.set(signalParts.letterB, { autoAlpha: 0, scale: 0.82, x: -18, transformOrigin: '50% 50%' });
+    gsap.set(signalParts.ticks, { autoAlpha: 0, scaleY: 0.18, transformOrigin: '50% 50%' });
+    return;
+  }
+  if (logoRises) {
+    gsap.set(logo, { autoAlpha: 0, y: 30 });
+    return;
+  }
+  gsap.set(logo, { autoAlpha: 0, scale: 0.98, transformOrigin: 'center center' });
+};
+
+const addProductLogoReveal = (
+  timeline: gsap.core.Timeline,
+  logo: HTMLElement | null,
+  logoRolls: boolean,
+  logoSignals: boolean,
+  logoRises: boolean,
+  signalParts: SignalLogoParts | null,
+) => {
+  if (!logo) return;
+
+  if (logoRolls) {
+    timeline.to(logo, { autoAlpha: 1, duration: 0.35, ease: 'none' }, 0.1);
+    timeline.to(logo, { x: 0, rotation: 0, duration: 1.6, ease: 'power2.out' }, 0.1);
+    return;
+  }
+  if (logoSignals && signalParts) {
+    timeline.to(logo, { autoAlpha: 1, scale: 1, rotation: 0, duration: 0.78, ease: 'power3.out' }, 0.1);
+    timeline.to(signalParts.divider, { autoAlpha: 1, scaleY: 1, duration: 0.56, ease: 'back.out(1.8)' }, 0.14);
+    timeline.to(
+      signalParts.letters,
+      { autoAlpha: 1, scale: 1, x: 0, duration: 0.64, ease: 'back.out(1.7)', stagger: 0.07 },
+      0.24,
+    );
+    timeline.to(
+      signalParts.ticks,
+      { autoAlpha: 1, scaleY: 1, duration: 0.5, ease: 'back.out(2)', stagger: 0.08 },
+      0.42,
+    );
+    return;
+  }
+  if (logoRises) {
+    timeline.to(logo, { autoAlpha: 1, y: 0, duration: 1.1, ease: 'power3.out' }, 0.1);
+    return;
+  }
+  timeline.to(logo, { autoAlpha: 1, scale: 1, duration: 0.9, ease: 'power2.out' }, 0.1);
+};
+
+const getProductNameRevealStart = (logoRolls: boolean, logoSignals: boolean) => {
+  if (logoRolls) return 0.9;
+  if (logoSignals) return 0.82;
+  return 0.55;
+};
+
 const setupProductReveals = () => {
   productSections.forEach((section) => {
     const lines = Array.from(section.querySelectorAll<HTMLElement>('[data-product-line]'));
@@ -307,10 +408,7 @@ const setupProductReveals = () => {
     const signalParts = logo && logoSignals ? getSignalLogoParts(logo) : null;
 
     if (prefersReducedMotion) {
-      if (lines.length) gsap.set(lines, { autoAlpha: 1 });
-      if (logo) gsap.set(logo, { autoAlpha: 1, scale: 1, x: 0, y: 0, rotation: 0 });
-      if (signalParts) gsap.set(signalParts.all, { autoAlpha: 1, scale: 1, scaleY: 1, x: 0 });
-      if (name) gsap.set(name, { autoAlpha: 1, y: 0 });
+      showProductWithoutMotion(lines, logo, name, signalParts);
       return;
     }
 
@@ -328,21 +426,7 @@ const setupProductReveals = () => {
 
     gsap.set(allWords, { autoAlpha: 0, y: 12, filter: 'blur(8px)' });
     gsap.set(otherEls, { autoAlpha: 0, y: 16 });
-    if (logo) {
-      if (logoRolls) {
-        gsap.set(logo, { autoAlpha: 0, x: 150, rotation: 240, transformOrigin: 'center center' });
-      } else if (logoSignals && signalParts) {
-        gsap.set(logo, { autoAlpha: 0, scale: 0.94, rotation: -4, transformOrigin: 'center center' });
-        gsap.set(signalParts.divider, { autoAlpha: 0, scaleY: 0.16, transformOrigin: '50% 50%' });
-        gsap.set(signalParts.letterD, { autoAlpha: 0, scale: 0.82, x: 18, transformOrigin: '50% 50%' });
-        gsap.set(signalParts.letterB, { autoAlpha: 0, scale: 0.82, x: -18, transformOrigin: '50% 50%' });
-        gsap.set(signalParts.ticks, { autoAlpha: 0, scaleY: 0.18, transformOrigin: '50% 50%' });
-      } else if (logoRises) {
-        gsap.set(logo, { autoAlpha: 0, y: 30 });
-      } else {
-        gsap.set(logo, { autoAlpha: 0, scale: 0.98, transformOrigin: 'center center' });
-      }
-    }
+    setInitialProductLogoState(logo, logoRolls, logoSignals, logoRises, signalParts);
     if (name) gsap.set(name, { autoAlpha: 0, y: 10 });
 
     const tl = gsap.timeline({
@@ -362,32 +446,10 @@ const setupProductReveals = () => {
       stagger: 0.014,
     }, 0);
 
-    if (logo) {
-      if (logoRolls) {
-        tl.to(logo, { autoAlpha: 1, duration: 0.35, ease: 'none' }, 0.1);
-        tl.to(logo, { x: 0, rotation: 0, duration: 1.6, ease: 'power2.out' }, 0.1);
-      } else if (logoSignals && signalParts) {
-        tl.to(logo, { autoAlpha: 1, scale: 1, rotation: 0, duration: 0.78, ease: 'power3.out' }, 0.1);
-        tl.to(signalParts.divider, { autoAlpha: 1, scaleY: 1, duration: 0.56, ease: 'back.out(1.8)' }, 0.14);
-        tl.to(
-          signalParts.letters,
-          { autoAlpha: 1, scale: 1, x: 0, duration: 0.64, ease: 'back.out(1.7)', stagger: 0.07 },
-          0.24,
-        );
-        tl.to(
-          signalParts.ticks,
-          { autoAlpha: 1, scaleY: 1, duration: 0.5, ease: 'back.out(2)', stagger: 0.08 },
-          0.42,
-        );
-      } else if (logoRises) {
-        tl.to(logo, { autoAlpha: 1, y: 0, duration: 1.1, ease: 'power3.out' }, 0.1);
-      } else {
-        tl.to(logo, { autoAlpha: 1, scale: 1, duration: 0.9, ease: 'power2.out' }, 0.1);
-      }
-    }
+    addProductLogoReveal(tl, logo, logoRolls, logoSignals, logoRises, signalParts);
 
     if (name) {
-      const nameRevealStart = logoRolls ? 0.9 : logoSignals ? 0.82 : 0.55;
+      const nameRevealStart = getProductNameRevealStart(logoRolls, logoSignals);
       tl.to(name, { autoAlpha: 1, y: 0, duration: 0.5, ease: 'power2.out' }, nameRevealStart);
     }
 
