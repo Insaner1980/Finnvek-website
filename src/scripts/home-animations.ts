@@ -13,8 +13,6 @@ const heroWordmark = document.querySelector<HTMLElement>('.hero-wordmark');
 const heroTagline = document.querySelector<HTMLElement>('.hero-tagline');
 const heroScrollCue = document.querySelector<HTMLElement>('.hero-scroll-cue');
 const siteFooter = document.querySelector<HTMLElement>('.site-footer');
-const aboutSection = document.querySelector<HTMLElement>('[data-about]');
-const aboutLines = Array.from(document.querySelectorAll<HTMLElement>('[data-about-line]'));
 const productSections = Array.from(document.querySelectorAll<HTMLElement>('[data-product]'));
 const sectionLines = Array.from(document.querySelectorAll<HTMLElement>('[data-section-line]'));
 const notifyForm = document.querySelector<HTMLFormElement>('[data-notify-form]');
@@ -253,54 +251,6 @@ const setupScrollCueFade = () => {
       scrub: true,
     },
   });
-};
-
-const setupAboutReveal = () => {
-  if (!aboutSection || aboutLines.length === 0) return;
-
-  if (prefersReducedMotion) {
-    gsap.set(aboutLines, { autoAlpha: 1 });
-    return;
-  }
-
-  const textEls = aboutSection.querySelectorAll<HTMLElement>(
-    'h2[data-about-line], p[data-about-line], .section-label[data-about-line]',
-  );
-  const signature = aboutSection.querySelector<HTMLElement>('.about-sig');
-
-  const splits = Array.from(textEls).map(
-    (el) => new SplitText(el, { type: 'words', wordsClass: 'split-word' }),
-  );
-  const allWords = splits.flatMap((s) => s.words as HTMLElement[]);
-
-  gsap.set(allWords, { autoAlpha: 0, y: 12, filter: 'blur(8px)' });
-  if (signature) gsap.set(signature, { autoAlpha: 0, x: -16 });
-
-  const tl = gsap.timeline({
-    scrollTrigger: {
-      trigger: aboutSection,
-      start: 'top 80%',
-      once: true,
-    },
-  });
-
-  tl.to(allWords, {
-    autoAlpha: 1,
-    y: 0,
-    filter: 'blur(0px)',
-    duration: 0.7,
-    ease: 'power2.out',
-    stagger: 0.015,
-  });
-
-  if (signature) {
-    tl.to(signature, {
-      autoAlpha: 1,
-      x: 0,
-      duration: 0.8,
-      ease: 'power2.out',
-    }, '+=0.4');
-  }
 };
 
 const setupSectionLines = () => {
@@ -562,7 +512,6 @@ setupTopbarHeroReveal();
 setupScrollCueFade();
 setupHeroMouseParallax();
 setupLocalTime();
-setupAboutReveal();
 setupSectionLines();
 setupProductReveals();
 setupLogoMotion();

@@ -221,7 +221,6 @@ img {
   font-size: 0.8125rem;
   letter-spacing: 0.22em;
   color: var(--color-text);
-  text-transform: uppercase;
 }
 
 .hero-meta-line2 {
@@ -308,56 +307,6 @@ img {
   color: var(--color-text-muted);
   text-transform: uppercase;
   padding-top: 0.5rem;
-}
-
-/* ----- About ----- */
-
-.about {
-  max-width: var(--container-wide);
-  margin: 0 auto;
-  padding: clamp(4rem, 8vw, 7rem) var(--gutter) 0;
-  display: grid;
-  grid-template-columns: 200px 1fr;
-  gap: clamp(2rem, 5vw, 4rem);
-  align-items: start;
-}
-
-.about-body {
-  max-width: 38rem;
-}
-
-.about-body h2 {
-  font-family: var(--font-display-stack);
-  font-weight: 400;
-  font-size: clamp(2rem, 4vw, 3.25rem);
-  line-height: 1.05;
-  letter-spacing: -0.02em;
-  margin: 0 0 2rem 0;
-  color: var(--color-text);
-}
-
-.about-body h2 .years {
-  margin-right: 0.08em;
-}
-
-.about-body p {
-  font-family: var(--font-body-stack);
-  font-size: 1.0625rem;
-  line-height: 1.65;
-  color: var(--color-text);
-  margin: 0 0 1.25rem 0;
-}
-
-.about-body p:last-of-type {
-  margin-bottom: 0;
-}
-
-.about-sig {
-  margin-top: 2rem;
-  font-family: var(--font-body-stack);
-  font-style: italic;
-  font-size: 0.95rem;
-  color: var(--color-text-muted);
 }
 
 /* ----- About page ----- */
@@ -849,7 +798,6 @@ img {
 }
 
 @media (max-width: 900px) {
-  .about,
   .product {
     grid-template-columns: 1fr;
   }
