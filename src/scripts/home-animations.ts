@@ -8,7 +8,6 @@ const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)
 
 const topbar = document.querySelector<HTMLElement>('.topbar');
 const heroSection = document.querySelector<HTMLElement>('.hero');
-const heroMeta = document.querySelector<HTMLElement>('.hero-meta');
 const heroWordmark = document.querySelector<HTMLElement>('.hero-wordmark');
 const heroTagline = document.querySelector<HTMLElement>('.hero-tagline');
 const heroScrollCue = document.querySelector<HTMLElement>('.hero-scroll-cue');
@@ -165,7 +164,7 @@ const setupNotifyForm = () => {
 };
 
 const setupTopbarHeroReveal = () => {
-  const heroEls = [heroMeta, heroWordmark, heroTagline].filter(Boolean) as HTMLElement[];
+  const heroEls = [heroWordmark, heroTagline].filter(Boolean) as HTMLElement[];
   if (!topbar && heroEls.length === 0) return;
 
   if (prefersReducedMotion) {
@@ -174,7 +173,6 @@ const setupTopbarHeroReveal = () => {
   }
 
   if (topbar) gsap.set(topbar, { autoAlpha: 0 });
-  if (heroMeta) gsap.set(heroMeta, { autoAlpha: 0, y: 8 });
   if (heroTagline) gsap.set(heroTagline, { autoAlpha: 0, y: 14 });
   if (heroScrollCue) gsap.set(heroScrollCue, { autoAlpha: 0 });
 
@@ -182,7 +180,6 @@ const setupTopbarHeroReveal = () => {
 
   const tl = gsap.timeline({ defaults: { ease: 'power2.out' }, delay: 0.1 });
   if (topbar) tl.to(topbar, { autoAlpha: 1, duration: 0.5 });
-  if (heroMeta) tl.to(heroMeta, { autoAlpha: 1, y: 0, duration: 0.5 }, 0);
   addHeroWordmarkReveal(tl, wordmarkChars);
   if (heroTagline) tl.to(heroTagline, { autoAlpha: 1, y: 0, duration: 0.6 }, 0.9);
   if (heroScrollCue) tl.to(heroScrollCue, { autoAlpha: 1, duration: 0.6 }, 1.4);
@@ -234,24 +231,6 @@ const setupHeroMouseParallax = () => {
       });
     });
   });
-};
-
-const setupLocalTime = () => {
-  const timeEl = document.querySelector<HTMLElement>('[data-local-time]');
-  if (!timeEl) return;
-
-  const formatter = new Intl.DateTimeFormat('fi-FI', {
-    hour: '2-digit',
-    minute: '2-digit',
-    timeZone: 'Europe/Helsinki',
-  });
-
-  const update = () => {
-    timeEl.textContent = ` — ${formatter.format(new Date())}`;
-  };
-
-  update();
-  window.setInterval(update, 30000);
 };
 
 const setupScrollCueFade = () => {
@@ -573,7 +552,6 @@ setupNotifyForm();
 setupTopbarHeroReveal();
 setupScrollCueFade();
 setupHeroMouseParallax();
-setupLocalTime();
 setupSectionLines();
 setupProductReveals();
 setupLogoMotion();
