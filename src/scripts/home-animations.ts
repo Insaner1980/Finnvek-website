@@ -299,6 +299,8 @@ const getRuncheckLogoParts = (logo: HTMLElement) => ({
   svg: logo.querySelector<SVGSVGElement>('svg'),
 });
 
+type RuncheckLogoParts = ReturnType<typeof getRuncheckLogoParts>;
+
 const showProductWithoutMotion = (
   lines: HTMLElement[],
   logo: HTMLElement | null,
@@ -376,10 +378,85 @@ const addProductLogoReveal = (
   timeline.to(logo, { autoAlpha: 1, scale: 1, duration: 0.9, ease: 'power2.out' }, 0.1);
 };
 
-const getProductNameRevealStart = (logoRolls: boolean, logoSignals: boolean) => {
+const getProductNameRevealStart = (
+  logoRuncheck: boolean,
+  logoRolls: boolean,
+  logoSignals: boolean,
+) => {
+  if (logoRuncheck) return 0.95;
   if (logoRolls) return 0.9;
   if (logoSignals) return 0.82;
   return 0.55;
+};
+
+const showRuncheckWithoutMotion = (parts: RuncheckLogoParts | null) => {
+  if (!parts) return;
+  gsap.set([parts.hook, parts.arrow].filter(Boolean), { autoAlpha: 1, y: 0 });
+};
+
+const setInitialProductLogoRevealState = (
+  logo: HTMLElement | null,
+  logoRuncheck: boolean,
+  logoRolls: boolean,
+  logoSignals: boolean,
+  logoRises: boolean,
+  signalParts: SignalLogoParts | null,
+  runcheckParts: RuncheckLogoParts | null,
+) => {
+  if (logoRuncheck && runcheckParts?.hook && runcheckParts.arrow) {
+    gsap.set(logo, { autoAlpha: 1, scale: 1, x: 0, y: 0, rotation: 0 });
+    gsap.set(runcheckParts.hook, { autoAlpha: 0, y: -58 });
+    gsap.set(runcheckParts.arrow, { autoAlpha: 0, y: 620 });
+    return;
+  }
+  setInitialProductLogoState(logo, logoRolls, logoSignals, logoRises, signalParts);
+};
+
+const addRuncheckLogoReveal = (
+  timeline: gsap.core.Timeline,
+  parts: RuncheckLogoParts,
+) => {
+  if (!parts.hook || !parts.arrow) return false;
+
+  timeline.to(parts.hook, {
+    autoAlpha: 1,
+    y: 0,
+    duration: 0.85,
+    ease: 'power3.out',
+  }, 0.1);
+  timeline.to(parts.arrow, {
+    autoAlpha: 1,
+    y: 0,
+    duration: 1,
+    ease: 'power3.out',
+  }, 0.3);
+  if (parts.svg) {
+    timeline.to(parts.svg, {
+      filter: 'drop-shadow(0 0 1.9rem rgba(57, 167, 228, 0.85))',
+      duration: 0.65,
+      ease: 'sine.inOut',
+    }, 0.95);
+    timeline.to(parts.svg, {
+      filter: 'drop-shadow(0 0 0.85rem rgba(57, 167, 228, 0.45))',
+      duration: 0.85,
+      ease: 'sine.inOut',
+    }, 1.6);
+  }
+  return true;
+};
+
+const addProductLogoRevealToTimeline = (
+  timeline: gsap.core.Timeline,
+  logo: HTMLElement | null,
+  logoRuncheck: boolean,
+  logoRolls: boolean,
+  logoSignals: boolean,
+  logoRises: boolean,
+  signalParts: SignalLogoParts | null,
+  runcheckParts: RuncheckLogoParts | null,
+) => {
+  if (logoRuncheck && runcheckParts && addRuncheckLogoReveal(timeline, runcheckParts)) return;
+  addProductLogoReveal(timeline, logo, logoRolls, logoSignals, logoRises, signalParts);
 };
 
 const setupProductReveals = () => {
@@ -389,16 +466,14 @@ const setupProductReveals = () => {
     const name = section.querySelector<HTMLElement>('.product-name');
     if (lines.length === 0 && !logo && !name) return;
 
-    const logoSignals = logo?.hasAttribute('data-logo-signal') ?? false;
+    const logoSignals = logo?.dataset.logoSignal !== undefined;
     const signalParts = logo && logoSignals ? getSignalLogoParts(logo) : null;
-    const logoRuncheck = logo?.hasAttribute('data-logo-runcheck') ?? false;
+    const logoRuncheck = logo?.dataset.logoRuncheck !== undefined;
     const runcheckParts = logo && logoRuncheck ? getRuncheckLogoParts(logo) : null;
 
     if (prefersReducedMotion) {
       showProductWithoutMotion(lines, logo, name, signalParts);
-      if (runcheckParts) {
-        gsap.set([runcheckParts.hook, runcheckParts.arrow].filter(Boolean), { autoAlpha: 1, y: 0 });
-      }
+      showRuncheckWithoutMotion(runcheckParts);
       return;
     }
 
@@ -406,8 +481,8 @@ const setupProductReveals = () => {
       'p[data-product-line], .section-label[data-product-line]',
     );
     const otherEls = lines.filter((el) => !el.matches('p, .section-label'));
-    const logoRises = logo?.hasAttribute('data-logo-rise') ?? false;
-    const logoRolls = logo?.hasAttribute('data-logo-roll') ?? false;
+    const logoRises = logo?.dataset.logoRise !== undefined;
+    const logoRolls = logo?.dataset.logoRoll !== undefined;
 
     const splits = Array.from(textEls).map(
       (el) => new SplitText(el, { type: 'words', wordsClass: 'split-word' }),
@@ -416,19 +491,21 @@ const setupProductReveals = () => {
 
     gsap.set(allWords, { autoAlpha: 0, y: 12, filter: 'blur(8px)' });
     if (otherEls.length) gsap.set(otherEls, { autoAlpha: 0, y: 16 });
-    if (logoRuncheck && runcheckParts?.hook && runcheckParts.arrow) {
-      gsap.set(logo, { autoAlpha: 1, scale: 1, x: 0, y: 0, rotation: 0 });
-      gsap.set(runcheckParts.hook, { autoAlpha: 0, y: -58 });
-      gsap.set(runcheckParts.arrow, { autoAlpha: 0, y: 620 });
-    } else {
-      setInitialProductLogoState(logo, logoRolls, logoSignals, logoRises, signalParts);
-    }
+    setInitialProductLogoRevealState(
+      logo,
+      logoRuncheck,
+      logoRolls,
+      logoSignals,
+      logoRises,
+      signalParts,
+      runcheckParts,
+    );
     if (name) gsap.set(name, { autoAlpha: 0, y: 10 });
 
     const tl = gsap.timeline({
       scrollTrigger: {
         trigger: section,
-        start: section.hasAttribute('data-first-product') ? 'top 95%' : 'top 75%',
+        start: section.dataset.firstProduct !== undefined ? 'top 95%' : 'top 75%',
         once: true,
       },
     });
@@ -442,37 +519,19 @@ const setupProductReveals = () => {
       stagger: 0.014,
     }, 0);
 
-    if (logoRuncheck && runcheckParts?.hook && runcheckParts.arrow) {
-      tl.to(runcheckParts.hook, {
-        autoAlpha: 1,
-        y: 0,
-        duration: 0.85,
-        ease: 'power3.out',
-      }, 0.1);
-      tl.to(runcheckParts.arrow, {
-        autoAlpha: 1,
-        y: 0,
-        duration: 1,
-        ease: 'power3.out',
-      }, 0.3);
-      if (runcheckParts.svg) {
-        tl.to(runcheckParts.svg, {
-          filter: 'drop-shadow(0 0 1.9rem rgba(57, 167, 228, 0.85))',
-          duration: 0.65,
-          ease: 'sine.inOut',
-        }, 0.95);
-        tl.to(runcheckParts.svg, {
-          filter: 'drop-shadow(0 0 0.85rem rgba(57, 167, 228, 0.45))',
-          duration: 0.85,
-          ease: 'sine.inOut',
-        }, 1.6);
-      }
-    } else {
-      addProductLogoReveal(tl, logo, logoRolls, logoSignals, logoRises, signalParts);
-    }
+    addProductLogoRevealToTimeline(
+      tl,
+      logo,
+      logoRuncheck,
+      logoRolls,
+      logoSignals,
+      logoRises,
+      signalParts,
+      runcheckParts,
+    );
 
     if (name) {
-      const nameRevealStart = logoRuncheck ? 0.95 : getProductNameRevealStart(logoRolls, logoSignals);
+      const nameRevealStart = getProductNameRevealStart(logoRuncheck, logoRolls, logoSignals);
       tl.to(name, { autoAlpha: 1, y: 0, duration: 0.5, ease: 'power2.out' }, nameRevealStart);
     }
 
