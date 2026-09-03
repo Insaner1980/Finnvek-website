@@ -448,14 +448,13 @@ const addRuncheckLogoReveal = (
 const addProductLogoRevealToTimeline = (
   timeline: gsap.core.Timeline,
   logo: HTMLElement | null,
-  logoRuncheck: boolean,
   logoRolls: boolean,
   logoSignals: boolean,
   logoRises: boolean,
   signalParts: SignalLogoParts | null,
   runcheckParts: RuncheckLogoParts | null,
 ) => {
-  if (logoRuncheck && runcheckParts && addRuncheckLogoReveal(timeline, runcheckParts)) return;
+  if (runcheckParts && addRuncheckLogoReveal(timeline, runcheckParts)) return;
   addProductLogoReveal(timeline, logo, logoRolls, logoSignals, logoRises, signalParts);
 };
 
@@ -522,7 +521,6 @@ const setupProductReveals = () => {
     addProductLogoRevealToTimeline(
       tl,
       logo,
-      logoRuncheck,
       logoRolls,
       logoSignals,
       logoRises,
