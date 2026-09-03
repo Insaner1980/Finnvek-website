@@ -293,6 +293,12 @@ const getSignalLogoParts = (logo: HTMLElement) => {
 
 type SignalLogoParts = ReturnType<typeof getSignalLogoParts>;
 
+const getRuncheckLogoParts = (logo: HTMLElement) => ({
+  hook: logo.querySelector<SVGGElement>('.rc-hook'),
+  arrow: logo.querySelector<SVGGElement>('.rc-arrow'),
+  svg: logo.querySelector<SVGSVGElement>('svg'),
+});
+
 const showProductWithoutMotion = (
   lines: HTMLElement[],
   logo: HTMLElement | null,
@@ -385,9 +391,14 @@ const setupProductReveals = () => {
 
     const logoSignals = logo?.hasAttribute('data-logo-signal') ?? false;
     const signalParts = logo && logoSignals ? getSignalLogoParts(logo) : null;
+    const logoRuncheck = logo?.hasAttribute('data-logo-runcheck') ?? false;
+    const runcheckParts = logo && logoRuncheck ? getRuncheckLogoParts(logo) : null;
 
     if (prefersReducedMotion) {
       showProductWithoutMotion(lines, logo, name, signalParts);
+      if (runcheckParts) {
+        gsap.set([runcheckParts.hook, runcheckParts.arrow].filter(Boolean), { autoAlpha: 1, y: 0 });
+      }
       return;
     }
 
@@ -404,14 +415,20 @@ const setupProductReveals = () => {
     const allWords = splits.flatMap((s) => s.words as HTMLElement[]);
 
     gsap.set(allWords, { autoAlpha: 0, y: 12, filter: 'blur(8px)' });
-    gsap.set(otherEls, { autoAlpha: 0, y: 16 });
-    setInitialProductLogoState(logo, logoRolls, logoSignals, logoRises, signalParts);
+    if (otherEls.length) gsap.set(otherEls, { autoAlpha: 0, y: 16 });
+    if (logoRuncheck && runcheckParts?.hook && runcheckParts.arrow) {
+      gsap.set(logo, { autoAlpha: 1, scale: 1, x: 0, y: 0, rotation: 0 });
+      gsap.set(runcheckParts.hook, { autoAlpha: 0, y: -58 });
+      gsap.set(runcheckParts.arrow, { autoAlpha: 0, y: 620 });
+    } else {
+      setInitialProductLogoState(logo, logoRolls, logoSignals, logoRises, signalParts);
+    }
     if (name) gsap.set(name, { autoAlpha: 0, y: 10 });
 
     const tl = gsap.timeline({
       scrollTrigger: {
         trigger: section,
-        start: 'top 75%',
+        start: section.hasAttribute('data-first-product') ? 'top 95%' : 'top 75%',
         once: true,
       },
     });
@@ -425,20 +442,49 @@ const setupProductReveals = () => {
       stagger: 0.014,
     }, 0);
 
-    addProductLogoReveal(tl, logo, logoRolls, logoSignals, logoRises, signalParts);
+    if (logoRuncheck && runcheckParts?.hook && runcheckParts.arrow) {
+      tl.to(runcheckParts.hook, {
+        autoAlpha: 1,
+        y: 0,
+        duration: 0.85,
+        ease: 'power3.out',
+      }, 0.1);
+      tl.to(runcheckParts.arrow, {
+        autoAlpha: 1,
+        y: 0,
+        duration: 1,
+        ease: 'power3.out',
+      }, 0.3);
+      if (runcheckParts.svg) {
+        tl.to(runcheckParts.svg, {
+          filter: 'drop-shadow(0 0 1.9rem rgba(57, 167, 228, 0.85))',
+          duration: 0.65,
+          ease: 'sine.inOut',
+        }, 0.95);
+        tl.to(runcheckParts.svg, {
+          filter: 'drop-shadow(0 0 0.85rem rgba(57, 167, 228, 0.45))',
+          duration: 0.85,
+          ease: 'sine.inOut',
+        }, 1.6);
+      }
+    } else {
+      addProductLogoReveal(tl, logo, logoRolls, logoSignals, logoRises, signalParts);
+    }
 
     if (name) {
-      const nameRevealStart = getProductNameRevealStart(logoRolls, logoSignals);
+      const nameRevealStart = logoRuncheck ? 0.95 : getProductNameRevealStart(logoRolls, logoSignals);
       tl.to(name, { autoAlpha: 1, y: 0, duration: 0.5, ease: 'power2.out' }, nameRevealStart);
     }
 
-    tl.to(otherEls, {
-      autoAlpha: 1,
-      y: 0,
-      duration: 0.6,
-      ease: 'power2.out',
-      stagger: 0.06,
-    }, '-=0.3');
+    if (otherEls.length) {
+      tl.to(otherEls, {
+        autoAlpha: 1,
+        y: 0,
+        duration: 0.6,
+        ease: 'power2.out',
+        stagger: 0.06,
+      }, '-=0.3');
+    }
   });
 };
 

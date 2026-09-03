@@ -1,0 +1,40 @@
+---
+interface Props {
+  home?: boolean;
+  current?: 'about';
+}
+
+const { home = false, current } = Astro.props;
+---
+
+<header class:list={['site-header', { 'site-header--home': home }]} data-site-header>
+  <div class="site-header-inner">
+    <a href="/" class="topbar-logo" aria-label="Finnvek home" data-animated-topbar-logo>FINNVEK</a>
+
+    <button
+      class="menu-toggle"
+      type="button"
+      aria-expanded="false"
+      aria-controls="primary-navigation"
+      aria-label="Open navigation menu"
+      data-menu-toggle
+    >
+      <span class="menu-toggle-icon" aria-hidden="true">
+        <span></span>
+        <span></span>
+        <span></span>
+      </span>
+    </button>
+
+    <nav id="primary-navigation" class="site-nav" aria-label="Primary navigation">
+      <a class="site-link" href="/#apps">Apps</a>
+      <a class="site-link" href="/about/" aria-current={current === 'about' ? 'page' : undefined}>About</a>
+      <a class="site-link" href="mailto:contact@finnvek.com">Contact</a>
+    </nav>
+  </div>
+</header>
+
+<script>
+  import '../scripts/brand-link-animations';
+  import '../scripts/site-header';
+</script>

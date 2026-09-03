@@ -95,16 +95,16 @@ Google states that Firebase Crashlytics keeps crash stack traces and associated 
 
 ## KnitTools
 
-KnitTools is a knitting companion app for Android.
+KnitTools is a knitting and crochet companion app for Android.
 
 ### Data stored on your device
 
 KnitTools stores the following data locally:
 
-- knitting projects and project settings
+- knitting and crochet projects and project settings
 - row, stitch, and custom counters
 - project notes and reminders
-- knitting session history
+- knitting and crochet session history
 - progress photos and yarn photos
 - yarn stash cards
 - saved pattern files and Ravelry pattern metadata

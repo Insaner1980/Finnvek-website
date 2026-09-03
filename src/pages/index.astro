@@ -1,9 +1,14 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import DbcheckLogo from '../assets/dbcheck-logo.svg';
+import SiteFooter from '../components/SiteFooter.astro';
+import SiteHeader from '../components/SiteHeader.astro';
+import runcheckLogo from '../../runcheck-logo.svg?raw';
 ---
 
 <BaseLayout>
+  <SiteHeader home />
+
   <section class="hero">
     <a href="/" class="hero-wordmark" aria-label="Finnvek home">FINNVEK</a>
 
@@ -15,9 +20,9 @@ import DbcheckLogo from '../assets/dbcheck-logo.svg';
     <div class="hero-scroll-cue" aria-hidden="true"></div>
   </section>
 
-  <hr class="section-divider" data-section-line />
+  <hr id="apps" class="section-divider" data-section-line />
 
-  <section class="product product--mirror" data-product>
+  <section class="product product--mirror" data-product data-first-product>
     <div class="section-label" data-product-line>In the works</div>
     <div class="product-content">
       <a href="https://knittoolsapp.com" class="product-lockup" data-product-lockup aria-label="KnitTools — knittoolsapp.com">
@@ -53,7 +58,13 @@ import DbcheckLogo from '../assets/dbcheck-logo.svg';
     <div class="section-label" aria-hidden="true"></div>
     <div class="product-content">
       <a href="https://runcheckapp.com" class="product-lockup" data-product-lockup aria-label="runcheck — runcheckapp.com">
-        <img src="/images/runcheck.webp" alt="" width="1254" height="1254" loading="lazy" decoding="async" data-product-logo data-logo-rise data-logo-nudge />
+        <span
+          class="product-logo product-logo--runcheck"
+          aria-hidden="true"
+          data-product-logo
+          data-logo-runcheck
+          set:html={runcheckLogo}
+        />
         <h2 class="product-name product-name--runcheck">runcheck</h2>
       </a>
 
@@ -81,20 +92,20 @@ import DbcheckLogo from '../assets/dbcheck-logo.svg';
     </div>
   </section>
 
-  <footer class="site-footer">
-    <div class="footer-inner">
-      <div class="footer-brand">
-        <div class="footer-wordmark">FINNVEK</div>
-        <div class="footer-tagline">built to last</div>
+  <section class="product" data-product>
+    <div class="section-label" aria-hidden="true"></div>
+    <div class="product-content">
+      <div class="product-lockup product-lockup--text">
+        <h2 class="product-name product-name--fonecheck">fonecheck</h2>
       </div>
-      <div class="footer-meta">
-        <a href="/about/">About</a>
-        <a href="mailto:contact@finnvek.com">Contact</a>
-        <a href="/privacy">Privacy Policy</a>
-        <span>&copy; 2026</span>
+
+      <div class="product-text">
+        <p data-product-line>fonecheck is a more comprehensive Android diagnostics app for checking and understanding what's happening on your device.</p>
       </div>
     </div>
-  </footer>
+  </section>
+
+  <SiteFooter />
 </BaseLayout>
 
 <script>

@@ -1,5 +1,7 @@
 ---
 import BaseLayout from './BaseLayout.astro';
+import SiteFooter from '../components/SiteFooter.astro';
+import SiteHeader from '../components/SiteHeader.astro';
 
 interface Props {
   title?: string;
@@ -18,30 +20,11 @@ const description =
 ---
 
 <BaseLayout title={title} description={description}>
-  <header class="topbar">
-    <a href="/" class="topbar-logo" aria-label="Finnvek home">FINNVEK</a>
-    <div class="topbar-meta">
-      <div class="topbar-meta-line1">Independent Software</div>
-      <div class="topbar-meta-line2">Turku, Finland.</div>
-    </div>
-  </header>
+  <SiteHeader />
 
   <section class="prose privacy-policy">
     <slot />
   </section>
 
-  <footer class="site-footer">
-    <div class="footer-inner">
-      <div class="footer-brand">
-        <div class="footer-wordmark">FINNVEK</div>
-        <div class="footer-tagline">built to last</div>
-      </div>
-      <div class="footer-meta">
-        <a href="/about/">About</a>
-        <a href="mailto:contact@finnvek.com">Contact</a>
-        <a href="/privacy">Privacy Policy</a>
-        <span>&copy; 2026</span>
-      </div>
-    </div>
-  </footer>
+  <SiteFooter current="privacy" />
 </BaseLayout>
