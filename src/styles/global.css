@@ -79,6 +79,10 @@ body {
   -webkit-tap-highlight-color: transparent;
 }
 
+html {
+  overflow-x: clip;
+}
+
 body {
   overflow-x: clip;
   font-family: var(--font-body-stack);
@@ -752,6 +756,7 @@ img {
   font-size: 0.875rem;
   color: var(--color-text-muted);
   max-width: 26rem;
+  overflow-wrap: anywhere;
 }
 
 .product-link {
@@ -1175,5 +1180,12 @@ img {
   .menu-toggle-icon span,
   .site-nav {
     transition: none;
+  }
+}
+
+@media (forced-colors: active) {
+  .notify button:focus-visible {
+    outline: 2px solid Highlight;
+    outline-offset: -2px;
   }
 }

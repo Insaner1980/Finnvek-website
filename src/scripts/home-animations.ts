@@ -122,11 +122,14 @@ const setupNotifyForm = () => {
           website: honeypot?.value ?? '',
         }),
       });
-      const data = (await res.json().catch(() => ({}))) as { success?: boolean; error?: string };
-      if (res.ok && data.success) {
+      const data: unknown = await res.json().catch(() => ({}));
+      const responseData = typeof data === 'object' && data !== null
+        ? data as Record<string, unknown>
+        : {};
+      if (res.ok && responseData.success === true) {
         success = true;
-      } else if (data.error) {
-        errorMessage = data.error;
+      } else if (typeof responseData.error === 'string' && responseData.error) {
+        errorMessage = responseData.error;
       }
     } catch (error) {
       if (error instanceof DOMException && error.name === 'AbortError') {
@@ -145,6 +148,7 @@ const setupNotifyForm = () => {
 
     const finalize = () => {
       const message = document.createElement('span');
+      message.setAttribute('role', 'status');
       message.textContent = "You're in!";
       notifyForm.replaceChildren(message);
       notifyForm.classList.add('is-complete');
@@ -196,11 +200,11 @@ const setupTopbarHeroReveal = () => {
 
 const setupHeroMouseParallax = () => {
   if (prefersReducedMotion || !heroSection) return;
-  if (!window.matchMedia('(min-width: 761px) and (pointer: fine)').matches) return;
   if (!heroWordmark && !heroTagline) return;
 
-  gsap.delayedCall(2.4, () => {
+  gsap.matchMedia().add('(min-width: 761px) and (pointer: fine)', () => {
     const movers: Array<{ x: (v: number) => void; y: (v: number) => void; fx: number; fy: number }> = [];
+    const targets = [heroWordmark, heroTagline].filter(Boolean) as HTMLElement[];
 
     if (heroWordmark) {
       movers.push({
@@ -220,9 +224,7 @@ const setupHeroMouseParallax = () => {
       });
     }
 
-    if (!heroSection) return;
-
-    heroSection.addEventListener('mousemove', (event) => {
+    const handleMouseMove = (event: MouseEvent) => {
       const rect = heroSection.getBoundingClientRect();
       const nx = ((event.clientX - rect.left) / rect.width) * 2 - 1;
       const ny = ((event.clientY - rect.top) / rect.height) * 2 - 1;
@@ -230,14 +232,27 @@ const setupHeroMouseParallax = () => {
         m.x(nx * m.fx);
         m.y(ny * m.fy);
       });
-    });
+    };
 
-    heroSection.addEventListener('mouseleave', () => {
+    const handleMouseLeave = () => {
       movers.forEach((m) => {
         m.x(0);
         m.y(0);
       });
+    };
+
+    const delayedCall = gsap.delayedCall(2.4, () => {
+      heroSection.addEventListener('mousemove', handleMouseMove);
+      heroSection.addEventListener('mouseleave', handleMouseLeave);
     });
+
+    return () => {
+      delayedCall.kill();
+      heroSection.removeEventListener('mousemove', handleMouseMove);
+      heroSection.removeEventListener('mouseleave', handleMouseLeave);
+      gsap.killTweensOf(targets);
+      gsap.set(targets, { x: 0, y: 0 });
+    };
   });
 };
 
