@@ -1018,7 +1018,11 @@ img {
     right: 0;
     flex-direction: column;
     align-items: flex-end;
+    justify-content: flex-start;
     gap: 0;
+    max-height: calc(100vh - 4.25rem);
+    max-height: calc(100svh - 4.25rem);
+    overflow-y: auto;
     padding: 0.25rem 1.25rem 0.75rem 2rem;
     background-color: var(--color-bg);
     opacity: 0;
@@ -1178,7 +1182,7 @@ img {
 @media (prefers-reduced-motion: reduce) {
   .site-header--home .topbar-logo,
   .menu-toggle-icon span,
-  .site-nav {
+  .site-header.is-menu-enhanced .site-nav {
     transition: none;
   }
 }
