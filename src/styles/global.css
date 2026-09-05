@@ -496,6 +496,63 @@ img {
   outline-offset: 3px;
 }
 
+/* ----- Not found page ----- */
+
+.not-found-page {
+  max-width: var(--container-wide);
+  min-height: calc(100vh - 4.75rem);
+  min-height: calc(100svh - 4.75rem);
+  margin: 0 auto;
+  padding: clamp(4rem, 10vw, 7rem) var(--gutter);
+  display: flex;
+  align-items: center;
+}
+
+.not-found-content {
+  max-width: 42rem;
+}
+
+.not-found-code {
+  margin: 0 0 1rem;
+  font-family: var(--font-sans-stack);
+  font-size: 0.75rem;
+  font-weight: 500;
+  line-height: 1.2;
+  letter-spacing: 0.28em;
+  color: var(--red);
+}
+
+.not-found-content h1 {
+  margin: 0;
+  font-family: var(--font-display-stack);
+  font-size: 6rem;
+  font-weight: 400;
+  line-height: 0.9;
+  letter-spacing: -0.01em;
+  color: var(--color-text);
+}
+
+.not-found-content > p:not(.not-found-code) {
+  max-width: 32rem;
+  margin: 1.75rem 0 2rem;
+  font-size: 1.0625rem;
+  line-height: 1.65;
+  color: var(--color-text-muted);
+}
+
+.not-found-link {
+  display: inline-block;
+  font-family: var(--font-sans-stack);
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.not-found-page + .site-footer {
+  margin-top: 0;
+}
+
 /* ----- Products ----- */
 
 .product {
@@ -945,12 +1002,12 @@ img {
     padding: 0.75rem 1.25rem;
   }
 
-  .menu-toggle {
+  .site-header.is-menu-enhanced .menu-toggle {
     display: block;
     margin-left: auto;
   }
 
-  .site-nav {
+  .site-header.is-menu-enhanced .site-nav {
     position: absolute;
     top: 100%;
     right: 0;
@@ -969,7 +1026,7 @@ img {
       visibility 0s linear 160ms;
   }
 
-  .site-header.is-menu-open .site-nav {
+  .site-header.is-menu-enhanced.is-menu-open .site-nav {
     opacity: 1;
     visibility: visible;
     pointer-events: auto;
@@ -977,11 +1034,20 @@ img {
     transition-delay: 0s;
   }
 
-  .site-nav a {
+  .site-header.is-menu-enhanced .site-nav a {
     display: flex;
     align-items: center;
     justify-content: flex-end;
     min-height: 2.75rem;
+  }
+
+  .not-found-page {
+    min-height: calc(100vh - 4.25rem);
+    min-height: calc(100svh - 4.25rem);
+  }
+
+  .not-found-content h1 {
+    font-size: 4rem;
   }
 
   .hero-scroll-cue {

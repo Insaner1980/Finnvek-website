@@ -33,7 +33,7 @@ import runcheckLogo from '../../runcheck-logo.svg?raw';
       <div class="product-text">
         <p data-product-line>KnitTools is a pocket companion for knitters and crocheters. It counts your rows, keeps your patterns one tap away, and your yarn, notes, and progress photos quietly in order. In eleven languages, for Android.</p>
 
-        <form class="notify" data-notify-form data-product-line>
+        <form class="notify" method="post" data-notify-form data-product-line>
           <label class="visually-hidden" for="notify-email">Email address</label>
           <label class="visually-hidden" for="notify-website">Leave this field empty</label>
           <input
@@ -43,9 +43,10 @@ import runcheckLogo from '../../runcheck-logo.svg?raw';
             type="text"
             tabindex="-1"
             autocomplete="off"
+            disabled
           />
-          <input id="notify-email" name="email" type="email" placeholder="email address" autocomplete="email" required />
-          <button type="submit">Notify me at launch</button>
+          <input id="notify-email" name="email" type="email" placeholder="email address" autocomplete="email" required disabled />
+          <button type="submit" disabled>Notify me at launch</button>
         </form>
         <p class="notify-error" data-notify-error role="alert" aria-live="polite" hidden></p>
 

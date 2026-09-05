@@ -3,6 +3,8 @@ const menuButton = header?.querySelector<HTMLButtonElement>('[data-menu-toggle]'
 const navigation = header?.querySelector<HTMLElement>('.site-nav');
 
 if (header && menuButton && navigation) {
+  header.classList.add('is-menu-enhanced');
+
   const setMenuOpen = (open: boolean) => {
     header.classList.toggle('is-menu-open', open);
     menuButton.setAttribute('aria-expanded', String(open));

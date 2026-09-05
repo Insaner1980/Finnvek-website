@@ -27,8 +27,12 @@ const showHeroWithoutMotion = (heroEls: HTMLElement[]) => {
 const prepareHeroWordmark = () => {
   if (!heroWordmark) return [];
 
+  const accessibleName = heroWordmark.getAttribute('aria-label');
   const split = new SplitText(heroWordmark, { type: 'chars', charsClass: 'split-char' });
   const chars = split.chars as HTMLElement[];
+
+  if (accessibleName) heroWordmark.setAttribute('aria-label', accessibleName);
+
   gsap.set(chars, { autoAlpha: 0, y: 26 });
   return chars;
 };
@@ -66,6 +70,10 @@ const setupNotifyForm = () => {
   const honeypot = notifyForm.querySelector<HTMLInputElement>('input[name="website"]');
   const errorEl = document.querySelector<HTMLElement>('[data-notify-error]');
   const originalBtnText = submitBtn?.textContent ?? 'Notify me at launch';
+
+  if (emailInput) emailInput.disabled = false;
+  if (honeypot) honeypot.disabled = false;
+  if (submitBtn) submitBtn.disabled = false;
 
   const showError = (message: string) => {
     if (submitBtn) {
@@ -484,11 +492,11 @@ const setupProductReveals = () => {
     const logoRolls = logo?.dataset.logoRoll !== undefined;
 
     const splits = Array.from(textEls).map(
-      (el) => new SplitText(el, { type: 'words', wordsClass: 'split-word' }),
+      (el) => new SplitText(el, { type: 'words', wordsClass: 'split-word', aria: 'none' }),
     );
     const allWords = splits.flatMap((s) => s.words as HTMLElement[]);
 
-    gsap.set(allWords, { autoAlpha: 0, y: 12, filter: 'blur(8px)' });
+    gsap.set(allWords, { opacity: 0, y: 12, filter: 'blur(8px)' });
     if (otherEls.length) gsap.set(otherEls, { autoAlpha: 0, y: 16 });
     setInitialProductLogoRevealState(
       logo,
@@ -510,7 +518,7 @@ const setupProductReveals = () => {
     });
 
     tl.to(allWords, {
-      autoAlpha: 1,
+      opacity: 1,
       y: 0,
       filter: 'blur(0px)',
       duration: 0.7,
