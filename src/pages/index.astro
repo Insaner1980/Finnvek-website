@@ -7,6 +7,15 @@ import runcheckLogo from '../../runcheck-logo.svg?raw';
 ---
 
 <BaseLayout>
+  <script is:inline>
+    document.documentElement.classList.add('is-home-motion-booting');
+    document.addEventListener(
+      'DOMContentLoaded',
+      () => document.documentElement.classList.remove('is-home-motion-booting'),
+      { once: true },
+    );
+  </script>
+
   <SiteHeader home />
 
   <section class="hero">

@@ -34,6 +34,21 @@ const { home = false, current } = Astro.props;
   </div>
 </header>
 
+<script is:inline>
+  const currentScript = document.currentScript;
+  const header = currentScript?.previousElementSibling;
+
+  if (header instanceof HTMLElement && header.matches('[data-site-header]')) {
+    header.classList.add('is-menu-booting');
+
+    document.addEventListener(
+      'DOMContentLoaded',
+      () => header.classList.remove('is-menu-booting'),
+      { once: true },
+    );
+  }
+</script>
+
 <script>
   import '../scripts/brand-link-animations';
   import '../scripts/site-header';

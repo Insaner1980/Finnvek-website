@@ -120,6 +120,20 @@ img {
   border: 0;
 }
 
+/* Keep motion targets in their intended first frame while the home bundle loads. */
+html.is-home-motion-booting .hero-wordmark,
+html.is-home-motion-booting .hero-tagline,
+html.is-home-motion-booting .hero-scroll-cue,
+html.is-home-motion-booting [data-section-line],
+html.is-home-motion-booting [data-product-line],
+html.is-home-motion-booting [data-product-logo],
+html.is-home-motion-booting .product-name,
+html.is-home-motion-booting .site-footer .footer-wordmark,
+html.is-home-motion-booting .site-footer .footer-tagline,
+html.is-home-motion-booting .site-footer .footer-meta > * {
+  visibility: hidden;
+}
+
 /* ----- Site header ----- */
 
 .site-header {
@@ -1007,11 +1021,13 @@ img {
     padding: 0.75rem 1.25rem;
   }
 
+  .site-header.is-menu-booting .menu-toggle,
   .site-header.is-menu-enhanced .menu-toggle {
     display: block;
     margin-left: auto;
   }
 
+  .site-header.is-menu-booting .site-nav,
   .site-header.is-menu-enhanced .site-nav {
     position: absolute;
     top: 100%;
@@ -1033,6 +1049,10 @@ img {
       opacity 160ms ease,
       transform 160ms ease,
       visibility 0s linear 160ms;
+  }
+
+  .site-header.is-menu-booting .site-nav {
+    transition: none;
   }
 
   .site-header.is-menu-enhanced.is-menu-open .site-nav {
