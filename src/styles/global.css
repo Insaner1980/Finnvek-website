@@ -408,110 +408,277 @@ html.is-home-motion-booting .site-footer .footer-meta > * {
 }
 
 .about-page {
-  max-width: var(--container-wide);
-  margin: clamp(5rem, 10vw, 8rem) auto 0;
-  padding: 0 var(--gutter);
+  margin: 1rem auto 0;
+  padding: 0 0 0 max(var(--gutter), calc((100% - var(--container-wide)) / 2 + var(--gutter)));
+}
+
+@font-face {
+  font-family: 'Caveat Details';
+  src: url('/fonts/caveat/caveat-details.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+.about-stage {
+  position: relative;
+  padding-left: 2.25rem;
 }
 
 .about-article {
   display: grid;
-  grid-template-columns: minmax(0, 1.45fr) minmax(16rem, 0.85fr);
-  grid-template-areas:
-    'intro portrait'
-    'details portrait';
-  column-gap: clamp(3rem, 7vw, 6rem);
+  grid-template-columns: 32% 30% 38%;
   align-items: start;
+  isolation: isolate;
+}
+
+.about-rail {
+  position: absolute;
+  left: 0;
+  top: 6rem;
+  bottom: 6rem;
+  display: flex;
+  align-items: center;
+  gap: 1.375rem;
+  writing-mode: vertical-rl;
+  font: 0.625rem/1 monospace;
+  letter-spacing: 0.1875rem;
+  color: var(--color-text-muted);
+}
+
+.about-rail i {
+  display: block;
+  width: 1px;
+  height: 2.5rem;
+  background: var(--color-border);
 }
 
 .about-intro {
-  grid-area: intro;
-  max-width: 38rem;
+  grid-area: 1 / 1;
   min-width: 0;
+  z-index: 1;
+  padding: 0.5rem 0.625rem 0 0;
 }
 
 .about-intro h1 {
-  margin: 0 0 2rem;
+  margin: 0 0 1rem;
   font-family: var(--font-display-stack);
   font-weight: 400;
-  font-size: 4rem;
-  line-height: 1;
+  font-size: clamp(6.5rem, 10vw, 8rem);
+  line-height: 0.95;
   letter-spacing: -0.01em;
   color: var(--color-text);
 }
 
-.about-intro p,
-.about-details p,
-.about-apps {
-  font-family: var(--font-body-stack);
-  font-size: 1.0625rem;
-  line-height: 1.65;
+.about-intro p {
+  margin: 0 0 1rem;
+  color: var(--color-text-muted);
+  font-size: 1rem;
+  line-height: 1.7;
 }
 
-.about-intro p {
-  margin: 0;
+.about-intro .about-lead {
   color: var(--color-text);
+  font-size: 1.375rem;
+  line-height: 1.6;
+}
+
+.about-intro .about-handwriting {
+  width: max-content;
+  max-width: 100%;
+  margin: 1.5rem 0 1rem;
+  color: var(--color-text);
+  font-family: 'Caveat Details', cursive;
+  font-size: 2.625rem;
+  line-height: 1.05;
+  transform: rotate(-7deg);
+  transform-origin: left center;
+}
+
+.about-handwriting span {
+  display: block;
+  margin-left: 2rem;
+}
+
+.about-intro .about-location {
+  font: 0.6875rem/1.6 monospace;
+  text-transform: uppercase;
+  letter-spacing: 0.125rem;
 }
 
 .about-portrait {
-  grid-area: portrait;
-  width: 100%;
-  max-width: 25rem;
+  grid-area: 1 / 1 / 2 / -1;
+  width: min(41.25%, 33.75rem);
   min-width: 0;
   justify-self: end;
+  margin: -3rem 0 0;
+  pointer-events: none;
+  mask-image: linear-gradient(to bottom, #000 76%, transparent 99%);
+}
+
+.about-portrait picture {
+  display: block;
 }
 
 .about-portrait img {
   width: 100%;
   height: auto;
-}
-
-.about-details {
-  grid-area: details;
-  max-width: 38rem;
-  min-width: 0;
-  margin-top: 2rem;
-}
-
-.about-details p {
-  margin: 0 0 1.25rem;
-  color: var(--color-text-muted);
-}
-
-.about-details p:last-child {
-  margin-bottom: 0;
+  filter: grayscale(1);
+  /* Keep the portrait and its background mask separate. */
+  mask-image: url('../assets/emma-hotakainen-mask.webp');
+  mask-mode: luminance;
+  mask-size: 100% 100%;
+  mask-repeat: no-repeat;
 }
 
 .about-apps {
-  margin: 0 0 2.5rem;
-  padding: 0;
-  list-style: none;
+  grid-area: 1 / 2;
+  z-index: 1;
+  min-width: 0;
+  padding: 1rem 1.5rem 0;
+}
+
+.about-apps h2 {
+  margin: 0 0 1.1875rem;
+  font: 0.6875rem/1.5 monospace;
+  text-transform: uppercase;
+  letter-spacing: 0.1875rem;
   color: var(--color-text-muted);
 }
 
-.about-apps li + li {
-  margin-top: 1.25rem;
+.about-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.375rem;
+  margin-bottom: 1.375rem;
 }
 
-.about-apps strong {
+.about-filters button {
+  padding: 0.375rem 0.6875rem;
+  border: 1px solid var(--color-border);
+  border-radius: 0;
+  background: transparent;
+  color: var(--color-text-muted);
+  font: 0.75rem/1.5 var(--font-body-stack);
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.about-filters button:hover {
   color: var(--color-text);
-  font-weight: 700;
 }
 
-.about-apps a {
-  color: inherit;
-  border-bottom: 1px solid transparent;
-  transition: border-color 150ms ease, color 150ms ease;
-}
-
-.about-apps a:hover,
-.about-apps a:focus-visible {
+.about-filters button[aria-pressed='true'] {
   color: var(--red);
-  border-bottom-color: var(--red);
 }
 
-.about-apps a:focus-visible {
+.about-app-list {
+  min-height: 19.75rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.about-app-row {
+  display: grid;
+  grid-template-columns: 2.6875rem minmax(0, 1fr) 0.75rem;
+  gap: 0.8125rem;
+  align-items: center;
+  min-height: 4.9375rem;
+  padding: 0.5625rem 0;
+}
+
+.about-app-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.6875rem;
+  height: 2.6875rem;
+  overflow: hidden;
+  border-radius: 0.625rem;
+  background: #171719;
+}
+
+.about-app-icon--fonecheck {
+  background: var(--color-text);
+}
+
+.about-fonecheck-icon {
+  width: 2.0625rem;
+  height: auto;
+}
+
+.about-app-icon img,
+.about-runcheck-icon,
+.about-runcheck-icon svg {
+  display: block;
+  width: 2.3125rem;
+  height: 2.3125rem;
+}
+
+.about-app-icon .about-dbcheck-icon {
+  flex-shrink: 0;
+  width: 4.375rem;
+  height: 4.375rem;
+}
+
+.about-app-row strong {
+  display: block;
+  margin-bottom: 0.1875rem;
+  font-size: 1rem;
+  font-weight: 500;
+  line-height: 1.5;
+}
+
+.about-app-row small {
+  display: block;
+  color: var(--color-text-muted);
+  font-size: 0.8125rem;
+  line-height: 1.65;
+}
+
+.about-app-arrow {
+  font-size: 1.0625rem;
+  color: var(--color-text-muted);
+}
+
+a.about-app-row:hover strong {
+  text-decoration: underline;
+  text-decoration-color: var(--red);
+  text-underline-offset: 0.25rem;
+}
+
+a.about-app-row:hover .about-app-arrow {
+  color: var(--red);
+}
+
+.about-app-row:focus-visible,
+.about-filters button:focus-visible {
   outline: 1px solid var(--color-text);
-  outline-offset: 3px;
+  outline-offset: 4px;
+}
+
+.about-filters button:focus-visible {
+  outline-color: var(--red);
+}
+
+.about-app-empty {
+  min-height: 19.75rem;
+  margin: 0;
+  padding: 1.25rem 0;
+  color: var(--color-text-muted);
+  font-size: 0.875rem;
+  line-height: 1.8;
+}
+
+.about-apps [hidden] {
+  display: none;
+}
+
+@media (pointer: coarse) {
+  .about-filters button {
+    min-height: 44px;
+  }
 }
 
 /* ----- Not found page ----- */
@@ -662,11 +829,8 @@ html.is-home-motion-booting .site-footer .footer-meta > * {
   color: var(--color-text-muted);
 }
 
-.product-name--fonecheck {
-  font-family: var(--font-body-stack);
-  font-weight: 600;
-  font-size: clamp(2rem, 3.5vw, 2.6rem);
-  letter-spacing: -0.035em;
+.product-logo--fonecheck path[fill='#17191C'] {
+  fill: var(--color-text);
 }
 
 .product--mirror .product-content {
@@ -959,24 +1123,94 @@ html.is-home-motion-booting .site-footer .footer-meta > * {
 
 /* ----- Responsive ----- */
 
-@media (max-width: 64rem) {
+@media (max-width: 940px) {
   .about-article {
-    grid-template-columns: minmax(0, 1fr);
-    grid-template-areas:
-      'intro'
-      'portrait'
-      'details';
+    grid-template-columns: 48% 52%;
+  }
+
+  .about-intro {
+    padding-bottom: 1.875rem;
   }
 
   .about-portrait {
-    width: 100%;
-    max-width: 32rem;
-    margin: 2.5rem 0;
-    justify-self: start;
+    width: 70%;
+    margin: -0.625rem 0 0;
   }
 
-  .about-details {
-    margin-top: 0;
+  .about-apps {
+    grid-area: 2 / 1 / 3 / -1;
+    padding: 1.75rem 0 2.1875rem;
+    margin-right: var(--gutter);
+  }
+
+  .about-app-list {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0 1.75rem;
+    min-height: 9.875rem;
+  }
+
+  .about-app-empty {
+    min-height: 9.875rem;
+  }
+
+  .about-rail {
+    bottom: auto;
+    height: 23.125rem;
+  }
+}
+
+@media (max-width: 560px) {
+  .about-page {
+    margin-top: 1.5rem;
+  }
+
+  .about-stage {
+    padding-left: 0;
+  }
+
+  .about-rail {
+    display: none;
+  }
+
+  .about-article {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .about-intro {
+    padding: 1.5rem var(--gutter) 0 0;
+  }
+
+  .about-intro h1 {
+    font-size: 6.5rem;
+    margin-bottom: 1.5625rem;
+  }
+
+  .about-intro .about-handwriting {
+    margin: 1.625rem 0 1.375rem;
+    font-size: 2.25rem;
+  }
+
+  .about-portrait {
+    align-self: end;
+    width: 100%;
+    max-width: 23.75rem;
+    margin: -1.5625rem 0 -2.125rem;
+  }
+
+  .about-apps {
+    align-self: stretch;
+    padding-top: 1.25rem;
+  }
+
+  .about-app-list {
+    display: block;
+    min-height: 19.75rem;
+  }
+
+  .about-app-empty {
+    min-height: 19.75rem;
   }
 }
 
@@ -1127,20 +1361,6 @@ html.is-home-motion-booting .site-footer .footer-meta > * {
     font-size: min(clamp(1rem, 1.5vw, 1.25rem), 6.5vw);
   }
 
-  .about-page {
-    margin-top: 4rem;
-  }
-
-  .about-intro h1 {
-    margin-bottom: 1.5rem;
-    font-size: 3.25rem;
-  }
-
-  .about-portrait {
-    max-width: none;
-    margin: 2rem 0;
-  }
-
   .product-name--knittools {
     font-size: min(clamp(2.4rem, 4.5vw, 3.25rem), 18vw);
   }
@@ -1151,10 +1371,6 @@ html.is-home-motion-booting .site-footer .footer-meta > * {
 
   .product-name--dbcheck {
     font-size: min(clamp(1.9rem, 3.5vw, 2.6rem), 18vw);
-  }
-
-  .product-name--fonecheck {
-    font-size: min(clamp(2rem, 3.5vw, 2.6rem), 15vw);
   }
 
   .product-link,

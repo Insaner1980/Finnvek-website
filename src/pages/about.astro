@@ -1,55 +1,93 @@
 ---
 import { Picture } from 'astro:assets';
-import portrait from '../assets/emma-hotakainen-finnvek.png';
+import portrait from '../assets/emma-hotakainen-retouched.png';
+import DbcheckLogo from '../assets/dbcheck-logo.svg';
+import FonecheckLogo from '../assets/fonecheck-logo-light.svg';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import SiteFooter from '../components/SiteFooter.astro';
 import SiteHeader from '../components/SiteHeader.astro';
+import runcheckLogo from '../../runcheck-logo.svg?raw';
 
 const description =
   "Hi, I'm Emma Hotakainen. Finnvek is just the name I put on the things I build. I make Android apps because I like turning ideas into things that actually work.";
+
+const apps = [
+  { name: 'KnitTools', icon: 'knittools', description: 'Knitting and crochet projects.', href: 'https://knittoolsapp.com', status: 'development' },
+  { name: 'runcheck', icon: 'runcheck', description: "Your phone's real condition.", href: 'https://runcheckapp.com', status: 'development' },
+  { name: 'dBcheck', icon: 'dbcheck', description: 'Making sense of everyday sound.', href: 'https://dbcheck.app', status: 'development' },
+  { name: 'fonecheck', icon: 'fonecheck', description: 'A closer look at your Android.', href: undefined, status: 'development' },
+];
 ---
 
 <BaseLayout title="About | Finnvek" description={description}>
   <SiteHeader current="about" />
 
   <main class="about-page">
-    <article class="about-article">
-      <div class="about-intro">
-        <h1>About</h1>
-        <p>Hi, I'm Emma Hotakainen. Finnvek is just the name I put on the things I build. I make Android apps because I like turning ideas into things that actually work. Most of them start with something I think would be useful, something I wish existed or something I think could be done better. Then I tend to keep working on them until all the little details feel right.</p>
+    <div class="about-stage">
+      <div class="about-rail" aria-hidden="true">
+        <span>IDEAS</span><i></i><span>INTO</span><i></i><span>USEFUL</span><i></i><span>APPS</span>
       </div>
+      <div class="about-article">
+        <div class="about-intro">
+          <h1>About</h1>
+          <p class="about-lead">Hi, I'm Emma Hotakainen.</p>
+          <p>Finnvek is just the name I put on the things I build. I make Android apps because I like turning ideas into things that actually work.</p>
+          <p>I design, build and test them myself, and tend to keep working on them until the little details feel right.</p>
+          <p class="about-handwriting">Probably working <span>on the details.</span></p>
+          <p class="about-location">Turku, Finland</p>
+        </div>
 
-      <div class="about-portrait">
-        <Picture
-          src={portrait}
-          formats={['avif', 'webp']}
-          fallbackFormat="png"
-          widths={[360, 540, 720, portrait.width]}
-          sizes="(max-width: 640px) calc(100vw - 2.5rem), (max-width: 64rem) 32rem, 25rem"
-          layout="constrained"
-          fit="contain"
-          quality="high"
-          priority
-          alt="Emma Hotakainen seated inside a small aircraft."
-        />
+        <figure class="about-portrait">
+          <Picture
+            src={portrait}
+            formats={['avif', 'webp']}
+            fallbackFormat="png"
+            widths={[360, 540, 720, portrait.width]}
+            sizes="(max-width: 400px) calc(100vw - 1.25rem), (max-width: 560px) 380px, (max-width: 940px) 70vw, 540px"
+            layout="constrained"
+            fit="contain"
+            quality="high"
+            priority
+            alt="Emma Hotakainen, in black and white."
+          />
+        </figure>
+
+        <section class="about-apps" aria-labelledby="about-apps-heading">
+          <h2 id="about-apps-heading">My apps</h2>
+          <div class="about-filters" role="group" aria-label="Filter apps by release status" hidden>
+            <button type="button" data-app-filter="all" aria-pressed="true" aria-controls="about-app-list">All</button>
+            <button type="button" data-app-filter="development" aria-pressed="false" aria-controls="about-app-list">In development</button>
+            <button type="button" data-app-filter="released" aria-pressed="false" aria-controls="about-app-list">Released</button>
+          </div>
+          <ul id="about-app-list" class="about-app-list">
+            {apps.map((app) => {
+              const Tag = app.href ? 'a' : 'div';
+              return (
+                <li data-app-status={app.status}>
+                  <Tag class="about-app-row" href={app.href}>
+                    <span class:list={['about-app-icon', { 'about-app-icon--fonecheck': app.icon === 'fonecheck' }]} aria-hidden="true">
+                      {app.icon === 'knittools' && <img src="/images/knittools.webp" alt="" width="43" height="43" />}
+                      {app.icon === 'runcheck' && <span class="about-runcheck-icon" set:html={runcheckLogo} />}
+                      {app.icon === 'dbcheck' && <DbcheckLogo class="about-dbcheck-icon" focusable="false" />}
+                      {app.icon === 'fonecheck' && <FonecheckLogo class="about-fonecheck-icon" focusable="false" />}
+                    </span>
+                    <span><strong>{app.name}</strong><small>{app.description}</small></span>
+                    {app.href && <span class="about-app-arrow" aria-hidden="true">→</span>}
+                  </Tag>
+                </li>
+              );
+            })}
+          </ul>
+          <p class="about-app-empty" hidden>No released apps yet.<br />They're still in the works.</p>
+          <span class="visually-hidden" role="status" data-app-count></span>
+        </section>
       </div>
-
-      <div class="about-details">
-        <p>I'm currently developing four Android apps:</p>
-
-        <ul class="about-apps">
-          <li><strong><a href="https://knittoolsapp.com">KnitTools</a>:</strong> keeping track of knitting and crochet projects, rows, yarn and all the other details that come with a project.</li>
-          <li><strong><a href="https://runcheckapp.com">runcheck</a>:</strong> understanding what's going on with your Android phone, from battery and storage to network and performance.</li>
-          <li><strong><a href="https://dbcheck.app">dBcheck</a>:</strong> measuring sound levels and making sense of everyday noise exposure.</li>
-          <li><strong>fonecheck:</strong> a more comprehensive Android diagnostics app for checking and understanding what's happening on your device.</li>
-        </ul>
-
-        <p>I design, build and test every app myself and every decision about what goes in and what stays out is mine. I'd rather make something straightforward that does its job well than add features because an app is expected to have them. None of them have ads. Some of the apps also have articles and guides around them. I research and review that content and try to make it genuinely useful rather than filling a site with things that have already been said a thousand times.</p>
-
-			<p>I'm based in Turku, Finland. Finnvek isn't a company with a team behind it. It's just me, building things and seeing where they go.</p>
-      </div>
-    </article>
+    </div>
   </main>
 
   <SiteFooter current="about" />
 </BaseLayout>
+
+<script>
+  import '../scripts/about-apps';
+</script>
