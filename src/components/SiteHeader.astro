@@ -1,13 +1,4 @@
----
-interface Props {
-  home?: boolean;
-  current?: 'about';
-}
-
-const { home = false, current } = Astro.props;
----
-
-<header class:list={['site-header', { 'site-header--home': home }]} data-site-header>
+<header class="site-header" data-site-header>
   <div class="site-header-inner">
     <a href="/" class="topbar-logo" aria-label="Finnvek home" data-animated-topbar-logo>FINNVEK</a>
 
@@ -28,7 +19,6 @@ const { home = false, current } = Astro.props;
 
     <nav id="primary-navigation" class="site-nav" aria-label="Primary navigation">
       <a class="site-link" href="/#apps">Apps</a>
-      <a class="site-link" href="/about/" aria-current={current === 'about' ? 'page' : undefined}>About</a>
       <a class="site-link" href="mailto:contact@finnvek.com">Contact</a>
     </nav>
   </div>

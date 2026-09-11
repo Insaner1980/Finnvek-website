@@ -1,6 +1,6 @@
 ---
 interface Props {
-  current?: 'about' | 'privacy';
+  current?: 'privacy';
 }
 
 const { current } = Astro.props;
@@ -13,7 +13,7 @@ const { current } = Astro.props;
       <div class="footer-tagline">built to last</div>
     </a>
     <div class="footer-meta">
-      <a class="site-link" href="/about/" aria-current={current === 'about' ? 'page' : undefined}>About</a>
+      <a class="site-link" href="/#about">About</a>
       <a class="site-link" href="mailto:contact@finnvek.com">Contact</a>
       <a class="site-link" href="/privacy" aria-current={current === 'privacy' ? 'page' : undefined}>Privacy Policy</a>
       <span>&copy; 2026</span>

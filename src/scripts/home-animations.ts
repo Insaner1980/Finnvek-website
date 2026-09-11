@@ -6,11 +6,6 @@ gsap.registerPlugin(ScrollTrigger, SplitText);
 
 const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-const topbar = document.querySelector<HTMLElement>('.topbar');
-const heroSection = document.querySelector<HTMLElement>('.hero');
-const heroWordmark = document.querySelector<HTMLElement>('.hero-wordmark');
-const heroTagline = document.querySelector<HTMLElement>('.hero-tagline');
-const heroScrollCue = document.querySelector<HTMLElement>('.hero-scroll-cue');
 const siteFooter = document.querySelector<HTMLElement>('.site-footer');
 const productSections = Array.from(document.querySelectorAll<HTMLElement>('[data-product]'));
 const sectionLines = Array.from(document.querySelectorAll<HTMLElement>('[data-section-line]'));
@@ -18,49 +13,6 @@ const notifyForm = document.querySelector<HTMLFormElement>('[data-notify-form]')
 
 const API_ENDPOINT = 'https://api.finnvek.com/subscribe';
 const SUBSCRIBE_TIMEOUT_MS = 10000;
-
-const showHeroWithoutMotion = (heroEls: HTMLElement[]) => {
-  if (topbar) gsap.set(topbar, { autoAlpha: 1 });
-  if (heroEls.length) gsap.set(heroEls, { autoAlpha: 1, y: 0 });
-};
-
-const prepareHeroWordmark = () => {
-  if (!heroWordmark) return [];
-
-  const accessibleName = heroWordmark.getAttribute('aria-label');
-  const split = new SplitText(heroWordmark, { type: 'chars', charsClass: 'split-char' });
-  const chars = split.chars as HTMLElement[];
-
-  if (accessibleName) heroWordmark.setAttribute('aria-label', accessibleName);
-
-  gsap.set(chars, { autoAlpha: 0, y: 26 });
-  return chars;
-};
-
-const addHeroWordmarkReveal = (timeline: gsap.core.Timeline, chars: HTMLElement[]) => {
-  if (chars.length === 0) return;
-
-  timeline.to(chars, {
-    autoAlpha: 1,
-    y: 0,
-    duration: 1.0,
-    ease: 'power3.out',
-    stagger: 0.09,
-  }, 0.15);
-};
-
-const addHeroWordmarkPulse = (timeline: gsap.core.Timeline, chars: HTMLElement[]) => {
-  if (chars.length === 0) return;
-
-  timeline.to(chars, {
-    color: '#D9A24E',
-    duration: 0.45,
-    ease: 'sine.inOut',
-    stagger: 0.07,
-    yoyo: true,
-    repeat: 1,
-  }, 1.8);
-};
 
 const setupNotifyForm = () => {
   if (!notifyForm) return;
@@ -175,99 +127,24 @@ const setupNotifyForm = () => {
   });
 };
 
-const setupTopbarHeroReveal = () => {
-  const heroEls = [heroWordmark, heroTagline].filter(Boolean) as HTMLElement[];
-  if (!topbar && heroEls.length === 0) return;
+const setupIntroMotion = () => {
+  if (prefersReducedMotion) return;
 
-  if (prefersReducedMotion) {
-    showHeroWithoutMotion(heroEls);
-    return;
-  }
-
-  if (topbar) gsap.set(topbar, { autoAlpha: 0 });
-  if (heroTagline) gsap.set(heroTagline, { autoAlpha: 0, y: 14 });
-  if (heroScrollCue) gsap.set(heroScrollCue, { autoAlpha: 0 });
-
-  const wordmarkChars = prepareHeroWordmark();
-
-  const tl = gsap.timeline({ defaults: { ease: 'power2.out' }, delay: 0.1 });
-  if (topbar) tl.to(topbar, { autoAlpha: 1, duration: 0.5 });
-  addHeroWordmarkReveal(tl, wordmarkChars);
-  if (heroTagline) tl.to(heroTagline, { autoAlpha: 1, y: 0, duration: 0.6 }, 0.9);
-  if (heroScrollCue) tl.to(heroScrollCue, { autoAlpha: 1, duration: 0.6 }, 1.4);
-  addHeroWordmarkPulse(tl, wordmarkChars);
-};
-
-const setupHeroMouseParallax = () => {
-  if (prefersReducedMotion || !heroSection) return;
-  if (!heroWordmark && !heroTagline) return;
-
-  gsap.matchMedia().add('(min-width: 761px) and (pointer: fine)', () => {
-    const movers: Array<{ x: (v: number) => void; y: (v: number) => void; fx: number; fy: number }> = [];
-    const targets = [heroWordmark, heroTagline].filter(Boolean) as HTMLElement[];
-
-    if (heroWordmark) {
-      movers.push({
-        x: gsap.quickTo(heroWordmark, 'x', { duration: 0.8, ease: 'power3.out' }),
-        y: gsap.quickTo(heroWordmark, 'y', { duration: 0.8, ease: 'power3.out' }),
-        fx: 6,
-        fy: 4,
-      });
-    }
-
-    if (heroTagline) {
-      movers.push({
-        x: gsap.quickTo(heroTagline, 'x', { duration: 0.8, ease: 'power3.out' }),
-        y: gsap.quickTo(heroTagline, 'y', { duration: 0.8, ease: 'power3.out' }),
-        fx: -5,
-        fy: -3,
-      });
-    }
-
-    const handleMouseMove = (event: MouseEvent) => {
-      const rect = heroSection.getBoundingClientRect();
-      const nx = ((event.clientX - rect.left) / rect.width) * 2 - 1;
-      const ny = ((event.clientY - rect.top) / rect.height) * 2 - 1;
-      movers.forEach((m) => {
-        m.x(nx * m.fx);
-        m.y(ny * m.fy);
-      });
-    };
-
-    const handleMouseLeave = () => {
-      movers.forEach((m) => {
-        m.x(0);
-        m.y(0);
-      });
-    };
-
-    const delayedCall = gsap.delayedCall(2.4, () => {
-      heroSection.addEventListener('mousemove', handleMouseMove);
-      heroSection.addEventListener('mouseleave', handleMouseLeave);
-    });
-
-    return () => {
-      delayedCall.kill();
-      heroSection.removeEventListener('mousemove', handleMouseMove);
-      heroSection.removeEventListener('mouseleave', handleMouseLeave);
-      gsap.killTweensOf(targets);
-      gsap.set(targets, { x: 0, y: 0 });
-    };
+  gsap.to('.hero-scroll-link svg', {
+    y: 6, duration: 0.65, delay: 1, repeat: 3, yoyo: true, ease: 'sine.inOut',
   });
-};
-
-const setupScrollCueFade = () => {
-  if (prefersReducedMotion || !heroSection || !heroScrollCue) return;
-
-  gsap.to(heroScrollCue, {
-    autoAlpha: 0,
-    ease: 'none',
-    scrollTrigger: {
-      trigger: heroSection,
-      start: 'top top',
-      end: '25% top',
-      scrub: true,
-    },
+  gsap.fromTo('.hero-heading', { autoAlpha: 0, y: 18 }, {
+    autoAlpha: 1, y: 0, duration: 0.8, ease: 'power2.out',
+  });
+  gsap.fromTo('.hero-signature img', { clipPath: 'inset(0 100% 0 0)' }, {
+    clipPath: 'inset(0 0% 0 0)', duration: 1.15, delay: 0.65, ease: 'power1.inOut',
+  });
+  gsap.fromTo('.hero-laptop', { autoAlpha: 0, y: 28 }, {
+    autoAlpha: 1, y: 0, duration: 1.1, delay: 0.12, ease: 'power2.out',
+  });
+  gsap.fromTo('.home-about p', { autoAlpha: 0, y: 20 }, {
+    autoAlpha: 1, y: 0, duration: 0.8, stagger: 0.18, ease: 'power2.out',
+    scrollTrigger: { trigger: '.home-about', start: 'top 85%', once: true },
   });
 };
 
@@ -675,9 +552,7 @@ const setupFooterReveal = () => {
 };
 
 setupNotifyForm();
-setupTopbarHeroReveal();
-setupScrollCueFade();
-setupHeroMouseParallax();
+setupIntroMotion();
 setupSectionLines();
 setupProductReveals();
 setupLogoMotion();
