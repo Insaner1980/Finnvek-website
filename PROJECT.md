@@ -39,7 +39,7 @@ Astro file-based routing currently builds three pages:
 | --- | --- | --- | --- | --- |
 | `src/pages/index.astro` | `/` | `BaseLayout` directly | `BaseLayout` default | shared header bundle plus home bundle |
 | `src/pages/privacy.md` | `/privacy/` | `PolicyLayout` then `BaseLayout` | Markdown frontmatter | shared header bundle |
-| `src/pages/404.astro` | `/404.html` | `BaseLayout` directly | explicit `Page not found | Finnvek` prop | shared header bundle |
+| `src/pages/404.astro` | `/404.html` | `BaseLayout` directly | explicit `Page not found \| Finnvek` prop | shared header bundle |
 
 The former About page (`/about/`) has been removed; its introduction and signature now live on the home page. There are no dynamic parameters, redirects, locale-prefixed routes, feeds, or endpoint files under `src/pages/`.
 
