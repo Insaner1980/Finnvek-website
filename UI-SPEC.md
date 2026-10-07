@@ -15,9 +15,12 @@ The current UI is defined primarily by:
 - `src/components/SiteHeader.astro`
 - `src/components/SiteFooter.astro`
 - `src/pages/index.astro`
-- `src/pages/about.astro`
 - `src/pages/privacy.md`
+- `src/components/AppPolaroid.astro`
 - `src/scripts/home-animations.ts`
+- `src/scripts/app-focus.ts`
+- `src/scripts/laptop-note.ts`
+- `src/scripts/laptop-reveal.ts`
 - `src/scripts/brand-link-animations.ts`
 - `src/scripts/site-header.ts`
 
@@ -82,10 +85,9 @@ Body text uses a default line height of `1.5`. Display headings use tight line h
 
 `BaseLayout.astro` provides the HTML document, metadata, font preloads, canonical URL, social metadata, icons, global stylesheet, page slot, and Cloudflare Web Analytics.
 
-All three routes use the shared visual language:
+Both content routes use the shared visual language:
 
 - `/` uses `BaseLayout` directly.
-- `/about/` uses `BaseLayout`, `SiteHeader`, and `SiteFooter`.
 - `/privacy/` uses `PolicyLayout`, which composes `BaseLayout`, `SiteHeader`, and `SiteFooter` around the Markdown policy.
 
 ## Header and primary navigation
@@ -93,7 +95,7 @@ All three routes use the shared visual language:
 The shared header is fixed to the top of the viewport. It contains:
 
 - a compact Finnvek logo at the upper left
-- `Apps`, `About`, and `Contact` at the upper right on larger screens
+- `Apps` and `Contact` at the upper right on larger screens
 - a native hamburger button and the same links in a mobile menu on smaller screens
 
 Navigation links are white in their normal state. Hover, keyboard focus, active press, and current-page states use the gold accent without an underline.
@@ -101,9 +103,9 @@ Navigation links are white in their normal state. Hover, keyboard focus, active 
 ### Desktop behavior
 
 - Header height: `4.75rem`.
-- The compact logo stays visible on About and Privacy.
+- The compact logo stays visible on Privacy.
 - The navigation stays fixed while the page scrolls.
-- `Apps` points to `/#apps`, `About` to `/about/`, and `Contact` to `mailto:contact@finnvek.com`.
+- `Apps` points to `/#apps` and `Contact` to `mailto:contact@finnvek.com`.
 
 ### Home-page compact logo
 
@@ -125,69 +127,33 @@ The menu button and links have minimum `44px` targets.
 
 ### Hero
 
-The hero fills at least one viewport and contains:
+The hero fills roughly one viewport and contains:
 
-- a large `FINNVEK` wordmark
-- the statement `Software made for years. Not weeks.`
-- a small scroll cue
+- the heading `Hi, I'm Emma.`
+- a laptop image with Emma on its screen and a handwritten note (Caveat) that changes with Finnish time of day
+- a cursor lens that reveals Kotlin code over the dark screen background, never over Emma's face, plus a one-time hint sweep after load
+- a faint floor light and shadow under the laptop
+- a small gold scroll cue
 
-The wordmark spans most of the available width. The word `years.` is gold. On desktop the statement is positioned in the lower-right area; the mobile layout becomes a single column.
+On mobile the heading sits above the laptop in a single column.
 
-### Apps divider
+### Introduction
 
-The `Apps` heading separates the hero from the product list and supplies the `#apps` anchor. Its scroll margin accounts for the fixed header.
+Two short paragraphs introduce Finnvek, signed off with Emma's handwritten signature, which is written in after the paragraphs appear.
 
-### Product sections
+### Apps
 
-Product entries use a two-column layout:
+The `#apps` divider leads to an `Apps` label, a gold handwritten hint, and a dark lined notebook page with four taped polaroids (KnitTools, runcheck, dBcheck, fonecheck). Each polaroid shows the real app logo as a printed photo with the app name handwritten on its bottom border. A handwritten note in the page corner says that all four are still in the works.
 
-- a roughly `200px` label or logo column
-- a flexible description and action column
+Selecting a polaroid lifts it from under its tape into a full-screen focus view with the description, the domain link, and for KnitTools the launch-notification form. The lifted polaroid itself links to the app's site. Escape, the close button, and the backdrop close the view and return the polaroid under its tape.
 
-The layout collapses to one column at `900px` or less.
+The notebook shows four columns above `760px` and two at `760px` and below.
 
-#### KnitTools
+KnitTools launch-notification form:
 
-- Uses `/images/knittools.webp`.
-- The image links to `https://knittoolsapp.com`.
-- The description includes knitting and crochet.
-- A launch-notification form accepts an email address.
 - Form submission posts JSON to `https://api.finnvek.com/subscribe` with source `finnvek` and a honeypot field.
 - Success replaces the controls with `You're in!`.
 - Validation and request failures remain visible in the form.
-
-#### runcheck
-
-- Uses the repository-root `runcheck-logo.svg`, rendered inline so its parts can move independently.
-- The logo links to `https://runcheckapp.com`.
-- The hook descends into place, the arrow rises through it, and a short settle glow completes the reveal. The SVG also carries the same shine sweep as the runcheck website.
-
-#### dBcheck
-
-- Uses the imported dBcheck SVG asset.
-- The logo links to `https://dbcheckapp.com`.
-
-#### fonecheck
-
-- Is presented as a text-only product name and short description.
-- It intentionally has no logo or outbound link yet.
-
-### Product links
-
-Interactive product names and logos remain visually bright in their normal state so that they read as clickable. Their focus states remain visible without adding conventional text underlines.
-
-## About page
-
-The About page uses the shared fixed header and footer. Its main content consists of:
-
-- a gold uppercase eyebrow
-- the heading `Built by one person, on purpose.`
-- editorial body copy
-- a responsive portrait of Emma Hotakainen
-
-The portrait is sourced from `src/assets/emma-hotakainen-finnvek.png` and rendered through Astro's `Picture` component as optimized AVIF/WebP with a PNG fallback. Its alternative text is `Emma Hotakainen seated inside a small aircraft.`
-
-The page uses a two-column text-and-portrait layout above `64rem` and a single column below it.
 
 ## Privacy page
 
@@ -210,7 +176,7 @@ The shared footer contains:
 
 - an animated and clickable Finnvek wordmark at the lower left
 - the tagline `built to last`
-- `About`, `Contact`, and `Privacy Policy` links at the lower right
+- `Contact` and `Privacy Policy` links at the lower right
 - `© 2026`
 
 Clicking the footer wordmark returns to the top of the current page. Its animation matches the compact Finnvek brand interaction used in the header.
@@ -229,17 +195,17 @@ At `640px` or less, the footer stacks vertically and aligns its metadata to the 
 
 ### Home reveal and scroll motion
 
-`home-animations.ts` uses GSAP, ScrollTrigger, and SplitText for:
+`home-animations.ts` uses GSAP and ScrollTrigger for:
 
-- the initial hero reveal and brief wordmark pulse
-- fine-pointer hero parallax after the opening animation
-- scroll-cue fading
+- the hero heading and laptop entrance, and the handwritten laptop note being written in
+- the introduction reveal and the signature being written in
 - section-divider progression
-- product-copy and product-logo reveals
-- KnitTools roll and stamp movement
-- runcheck hook-and-arrow reveal and settle glow
-- dBcheck signal movement
+- polaroids dropping onto the notebook page, tapes being pressed on, and captions being written in
+- each app logo's own reveal inside its polaroid (KnitTools roll, runcheck hook and arrow with settle glow, dBcheck signal, fonecheck wordmark)
+- the corner note being written in
 - footer reveal
+
+`laptop-reveal.ts` drives the cursor lens and the hint sweep; `app-focus.ts` drives the polaroid lift into the focus view.
 
 Scroll-triggered reveals are intended to play once where configured and leave content in its final visible state.
 
@@ -290,11 +256,9 @@ Keyboard focus must remain visible even where pointer hover supplies animation.
 
 | Width range | Required behavior |
 | --- | --- |
-| Above `64rem` | About page uses text and portrait columns. |
-| Above `900px` | Product entries use label/content columns; desktop motion may run. |
+| Above `760px` | The apps notebook shows four polaroid columns. |
 | `901px` and above | Full desktop navigation is available. |
-| `900px` and below | Product entries collapse to one column. |
-| `760px` and below | Hamburger navigation replaces the desktop link row; home hero becomes a mobile composition. |
+| `760px` and below | Hamburger navigation replaces the desktop link row; the hero becomes one column; the notebook shows two polaroid columns. |
 | `640px` and below | Gutters shrink and the footer stacks with left-aligned metadata. |
 
 Verification should cover keyboard-only navigation, coarse-pointer interaction, reduced motion, form success and error states, long policy content, and the home header transition from the hero wordmark to the compact logo.

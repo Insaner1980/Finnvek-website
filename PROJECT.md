@@ -21,9 +21,8 @@ The Git repository root is `finnvek-site/`. The parent file `../finnvek-site-spe
 
 Finnvek.com is an English-language static website for Android apps created by Emma Hotakainen. The current site:
 
-- presents KnitTools, runcheck, dBcheck, and fonecheck on the home page;
-- explains the developer and Finnvek brand on the About page;
-- publishes a shared privacy policy for KnitTools, runcheck, and dBcheck;
+- introduces Emma and presents KnitTools, runcheck, dBcheck, and fonecheck on the home page;
+- publishes a shared privacy policy for KnitTools, runcheck, dBcheck, and fonecheck;
 - provides a KnitTools launch-notification form;
 - loads Cloudflare Web Analytics on every page;
 - generates canonical metadata and an XML sitemap at build time.
@@ -34,15 +33,15 @@ The privacy page proves which statements the website publishes. It does not prov
 
 ## Implemented routes
 
-Astro file-based routing currently builds exactly three pages:
+Astro file-based routing currently builds three pages:
 
 | Source | Built route | Layout path | Page title source | Authored browser bundles |
 | --- | --- | --- | --- | --- |
 | `src/pages/index.astro` | `/` | `BaseLayout` directly | `BaseLayout` default | shared header bundle plus home bundle |
-| `src/pages/about.astro` | `/about/` | `BaseLayout` directly | explicit `About | Finnvek` prop | shared header bundle |
 | `src/pages/privacy.md` | `/privacy/` | `PolicyLayout` then `BaseLayout` | Markdown frontmatter | shared header bundle |
+| `src/pages/404.astro` | `/404.html` | `BaseLayout` directly | explicit `Page not found | Finnvek` prop | shared header bundle |
 
-There is no authored 404 page. There are no dynamic parameters, redirects, locale-prefixed routes, feeds, or endpoint files under `src/pages/`.
+The former About page (`/about/`) has been removed; its introduction and signature now live on the home page. There are no dynamic parameters, redirects, locale-prefixed routes, feeds, or endpoint files under `src/pages/`.
 
 The footer links to `/privacy` without a trailing slash. The generated canonical URL and sitemap entry are `/privacy/`.
 
@@ -134,7 +133,6 @@ First, League Gothic, Teko, and Manrope are separate repository-owned static fon
 | `src/components/SiteHeader.astro` | shared header markup and prop contract | navigation, home mode, accessible menu |
 | `src/components/SiteFooter.astro` | shared footer markup and prop contract | links, current-page semantics, brand home link |
 | `src/pages/index.astro` | home content and all app presentations | product status, outbound links, form markup, motion hooks |
-| `src/pages/about.astro` | developer narrative and portrait | product descriptions, image pipeline, page metadata |
 | `src/pages/privacy.md` | published app privacy policy | legal copy and cross-repository app behavior claims |
 | `src/scripts/site-header.ts` | menu and compact-home-logo state | breakpoint parity, focus, event state, observer threshold |
 | `src/scripts/brand-link-animations.ts` | shared Finnvek wordmark interactions | pointer modes, focus behavior, reduced motion |
@@ -190,26 +188,12 @@ Its built-in fallbacks are title `Finnvek` and description `Privacy policy for F
 
 ### Header prop contract and markup
 
-`SiteHeader.astro` accepts:
-
-```ts
-interface Props {
-  home?: boolean;
-  current?: 'about';
-}
-```
-
-- `home` defaults to `false` and adds `site-header--home`.
-- `current="about"` sets `aria-current="page"` on the About link.
-- There is no header `current="privacy"` state because Privacy is not in the header navigation.
-
-The header contains:
+`SiteHeader.astro` takes no props. It contains:
 
 - a compact `FINNVEK` link to `/` with `aria-label="Finnvek home"`;
 - a native button with `aria-controls="primary-navigation"`, initial `aria-expanded="false"`, and an accessible open-state label;
 - a labelled primary `<nav>`;
 - Apps linking to `/#apps`;
-- About linking to `/about/`;
 - Contact linking to `mailto:contact@finnvek.com`.
 
 The component imports both `brand-link-animations.ts` and `site-header.ts` into a shared browser module used by every route.
@@ -245,14 +229,14 @@ The header gains `is-logo-visible` when the hero wordmark is outside the viewpor
 
 ### Footer prop contract and behavior
 
-`SiteFooter.astro` accepts `current?: 'about' | 'privacy'`. It renders:
+`SiteFooter.astro` accepts `current?: 'privacy'`. It renders:
 
 - a `FINNVEK` brand link to `/` with `aria-label="Finnvek home"`;
 - the tagline `built to last`;
-- About, Contact, and Privacy Policy links;
+- Contact and Privacy Policy links;
 - hard-coded copyright year 2026.
 
-`current` applies `aria-current="page"` to About or Privacy. There is currently no CSS selector for `aria-current`; the state is semantic and does not receive a distinct persistent color. Header and footer `.site-link` elements become gold on hover, active press, or keyboard focus only.
+`current` applies `aria-current="page"` to the Privacy link. There is currently no CSS selector for `aria-current`; the state is semantic and does not receive a distinct persistent color. Header and footer `.site-link` elements become gold on hover, active press, or keyboard focus only.
 
 The footer brand always navigates to the site home page. It does not scroll the current page to its top.
 
@@ -385,31 +369,6 @@ The endpoint, its CORS policy, validation, storage, rate limiting, abuse protect
 On success, reduced-motion mode replaces the controls immediately. Otherwise, GSAP first fades the form children upward and then reveals the success message. The script does not persist subscription state locally, redirect the user, or move focus after success or failure.
 
 The current privacy page describes the Android apps. It does not contain a website-specific section describing the notification email flow.
-
-## About page
-
-`src/pages/about.astro` provides an explicit title and description to `BaseLayout`, marks About current in both shared navigation components, and wraps its content in `<main>` and `<article>`.
-
-The source contains:
-
-- an About `<h1>`;
-- an introductory first-person description of Emma Hotakainen and Finnvek;
-- a portrait imported from `src/assets/emma-hotakainen-finnvek.png`;
-- a list of the same four Android apps;
-- copy about individual ownership, product decisions, no advertising, supporting articles, and Turku.
-
-The portrait uses Astro's `<Picture>` component:
-
-- AVIF and WebP sources;
-- PNG fallback;
-- widths 360, 540, 720, and source width 1085;
-- constrained layout with `fit="contain"`;
-- high quality;
-- eager, high-priority loading because `priority` is set;
-- alternative text `Emma Hotakainen seated inside a small aircraft.`;
-- source aspect ratio 1085 by 1450.
-
-The About article uses text and portrait columns above `64rem`. At `64rem` and below it becomes a single reading order: intro, portrait, details.
 
 ## Privacy page
 
@@ -565,7 +524,7 @@ Selection uses the gold accent as background and the page background as text col
 
 | Token | Default | Small-screen override | Purpose |
 | --- | --- | --- | --- |
-| `--container-wide` | `1180px` | none | products and About maximum width |
+| `--container-wide` | `1180px` | none | apps section maximum width |
 | `--container-prose` | `720px` | none | privacy reading width |
 | `--gutter` | `2.5rem` | `1.25rem` at 640px and below | horizontal content gutter |
 
@@ -578,17 +537,18 @@ The footer is not constrained by `--container-wide`; `.footer-inner` spans the v
 | body and prose | Astro Font IBM Plex Sans, then system fallback | built WOFF2 assets |
 | interface/navigation/tagline | Astro Font Epilogue | built WOFF2 assets |
 | editorial display headings | League Gothic | `public/fonts/league-gothic/` |
+| handwriting (laptop note, polaroid captions, notes) | Astro Font Caveat | built WOFF2 assets |
 | Finnvek wordmarks | First | `public/fonts/first.ttf` |
 | KnitTools name | Teko, then League Gothic | `public/fonts/teko/` |
 | runcheck name | Manrope | `public/fonts/manrope/` |
 
-Base body line height is 1.5. Product text uses 1.6. About body copy uses 1.65. Display faces use tighter line heights where their classes define them.
+Base body line height is 1.5. The home introduction uses 1.65. Display faces use tighter line heights where their classes define them.
 
 ### Core interaction styles
 
 - Generic anchors remove underlines and inherit bright text.
 - `.site-link` changes from warm white to gold on hover, active, or keyboard focus.
-- Header, footer-brand, product-lockup, About-link, and form controls each have explicit focus treatments.
+- Header, footer-brand, polaroid, focus-view, and form controls each have explicit focus treatments.
 - Product text links use a transparent underline border that becomes gold on hover or focus.
 - The notification input uses an inset one-pixel focus outline.
 - The notification button inverts to a light background with dark text on hover or focus.
@@ -602,8 +562,6 @@ No CSS rule currently gives a persistent visual style to `[aria-current="page"]`
 
 | Condition | Implemented change |
 | --- | --- |
-| Above `64rem` | About uses text and portrait columns |
-| `64rem` and below | About reads intro, portrait, details in one column; portrait max becomes 32rem |
 | Above `760px` | the notebook page has four polaroid columns |
 | `760px` and below | the notebook page has two polaroid columns |
 | `761px` and above | full navigation row; home desktop hero and fine-pointer parallax may run |
@@ -622,11 +580,11 @@ Currently implemented:
 - labelled primary navigation;
 - native menu button with state and target relationship;
 - Escape dismissal with focus return;
-- semantic current-page attributes for About and Privacy where supported by the component;
+- a semantic current-page attribute for Privacy in the footer;
 - accessible labels for Finnvek and product-logo links;
 - empty alternative text for the KnitTools image inside an already named link;
 - hidden dBcheck and runcheck logo graphics inside already named links;
-- descriptive About portrait alternative text;
+- the signature image announced as "Emma";
 - visible keyboard focus rules for the principal interactive elements;
 - real notification-form labels, native email validity, and live error reporting;
 - minimum 44px mobile navigation targets;
@@ -650,7 +608,11 @@ These are implementation facts, not automatic defect classifications. A review s
 
 | Source | Import mode | Current output behavior |
 | --- | --- | --- |
-| `src/assets/emma-hotakainen-finnvek.png` | Astro image metadata and `<Picture>` | width-specific AVIF, WebP, and PNG variants |
+| `src/assets/laptop-blank-screen.png` | Astro image metadata and `<Picture>` | width-specific WebP and PNG variants of the hero laptop |
+| `src/assets/laptop-screen-matte.png` | Astro image metadata, URL in an inline custom property | alpha matte for the code lens |
+| `src/assets/emma-signature-clean-transparent.png` | Astro `<Image>` | PNG signature under the introduction |
+| `src/assets/polaroid/` | Astro `<Image>` | WebP variants of the polaroid frame and three tape strips |
+| `src/assets/code/RowCounter.kt` | Vite `?raw` import into Astro `<Code>` | syntax-highlighted code for the laptop lens |
 | `src/assets/dbcheck-logo.svg` | Astro SVG component | component markup is inlined in the home HTML; the build also emits a hashed SVG asset copy |
 | `runcheck-logo.svg` | Vite `?raw` import | entire SVG injected inline with `set:html` |
 
@@ -669,11 +631,8 @@ Because `runcheck-logo.svg` is inserted as trusted raw markup, changes to that f
 | `/fonts/teko/Teko-VariableFont_wght.ttf` | `public/fonts/teko/Teko-VariableFont_wght.ttf` | KnitTools name |
 | `/fonts/manrope/Manrope-VariableFont_wght.ttf` | `public/fonts/manrope/Manrope-VariableFont_wght.ttf` | runcheck name |
 | `/images/knittools.webp` | `public/images/knittools.webp` | KnitTools home visual |
-| `/images/runcheck.webp` | `public/images/runcheck.webp` | no current markup or CSS consumer |
 | `/robots.txt` | `public/robots.txt` | crawler policy |
 | `/.well-known/security.txt` | `public/.well-known/security.txt` | security-contact publication |
-
-`public/images/runcheck.webp` is currently unused by source but is still copied into `dist/images/`. Removing it changes the public artifact even though it does not change rendered markup.
 
 The tracked `first-font/Befonts-License.txt` records commercial-use permission and its source link. `.gitignore` ignores the `first-font/` source directory for future untracked files while the already tracked license remains versioned.
 
@@ -682,7 +641,6 @@ The tracked `first-font/Befonts-License.txt` records commercial-use permission a
 `BaseLayout` owns canonical, Open Graph, and Twitter metadata. The sitemap integration currently emits:
 
 - `https://finnvek.com/`
-- `https://finnvek.com/about/`
 - `https://finnvek.com/privacy/`
 
 `public/robots.txt` allows all crawlers and points to `https://finnvek.com/sitemap-index.xml`.
@@ -717,7 +675,6 @@ The following details matter during cleanup and code review because they can be 
 
 - `home-animations.ts` queries `.topbar`, but current markup contains no element with that class. The guarded topbar opacity operations currently do nothing.
 - `--color-text-dimmed` and `--red-dark` are declared but not consumed elsewhere in authored CSS.
-- `public/images/runcheck.webp` is published but not referenced by current source.
 - fonecheck has no form.
 - The header has no Privacy link and therefore no privacy current-state prop.
 - The site has no persistent visual styling for `aria-current`.
@@ -732,15 +689,15 @@ Use this map to frame review questions and avoid single-file changes that break 
 | Change | Primary files | Required adjacent review |
 | --- | --- | --- |
 | add or remove a route | `src/pages/`, relevant layout | title/description, canonical URL, navigation, footer current state, sitemap output |
-| change shared metadata | `BaseLayout.astro` | all three built HTML files, canonical origin, social previews |
+| change shared metadata | `BaseLayout.astro` | all built HTML files, canonical origin, social previews |
 | change privacy metadata or wrapper | `privacy.md`, `PolicyLayout.astro` | frontmatter precedence, semantic wrapper, header/footer |
-| change app name, status, claim, or URL | `index.astro`, `about.astro` | privacy scope where data behavior changes, product typography, external-link accessibility |
-| add fonecheck publication or data flow | home/About source | destination, visual asset, motion hook, privacy coverage, metadata copy |
+| change app name, status, claim, or URL | `index.astro` (`AppPolaroid` props) | privacy scope where data behavior changes, product typography, external-link accessibility |
+| add fonecheck publication or data flow | home source | destination, visual asset, motion hook, privacy coverage, metadata copy |
 | change header layout or breakpoint | `SiteHeader.astro`, `global.css`, `site-header.ts` | 760/761 parity, open state, Escape, outside click, home-logo observer |
 | change footer links or semantics | `SiteFooter.astro`, `global.css`, brand script | current prop union, focus state, mobile stacking, home-link behavior |
 | change a design token | `global.css` `:root` | all route contexts, focus contrast, selection, SVG colors that are not tokenized |
 | change typography | `astro.config.mjs`, `BaseLayout.astro`, `global.css`, `public/fonts/` | font ranges, fallback stacks, preload behavior, generated build assets, licenses |
-| change portrait rendering | `about.astro`, source PNG | widths, formats, aspect ratio, loading priority, build-time optimization |
+| change the hero laptop image | `src/assets/laptop-blank-screen.png`, `laptop-reveal.ts`, laptop note CSS | re-measure `SCREEN_QUAD`, regenerate the screen matte, re-tune the note position, floor shadow points |
 | change runcheck SVG | root SVG, `index.astro`, `home-animations.ts`, CSS | raw markup trust, group selectors, IDs, shine, GSAP reveal, reduced motion |
 | change dBcheck SVG | `src/assets/dbcheck-logo.svg`, home script | data-part selectors, component output, reveal and focus response |
 | change product animation hook | `index.astro`, `home-animations.ts` | initial hidden state, final static state, reduced motion, focus parity |
@@ -814,13 +771,13 @@ npm run build
 git diff --check
 ```
 
-`npm ci` is the reproducible install path because `package-lock.json` is committed. `npm run build` must generate three HTML routes plus sitemap output. A source change that touches browser behavior or responsive layout also needs browser verification; a build alone cannot exercise pointer, focus, viewport, network, or reduced-motion state.
+`npm ci` is the reproducible install path because `package-lock.json` is committed. `npm run build` must generate the home, privacy, and 404 pages plus sitemap output. A source change that touches browser behavior or responsive layout also needs browser verification; a build alone cannot exercise pointer, focus, viewport, network, or reduced-motion state.
 
 ### Suggested browser matrix
 
 At minimum, verify:
 
-- home, About, and Privacy at a wide desktop width;
+- home and Privacy at a wide desktop width;
 - four-column app grid above 760px and two-column app grid at 760px and below;
 - navigation immediately above and below 760px;
 - footer and notification stacking at 640px and below;

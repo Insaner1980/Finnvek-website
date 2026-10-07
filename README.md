@@ -5,9 +5,8 @@ The source for [finnvek.com](https://finnvek.com), a static English-language sit
 
 ## What is included
 
-- A full-viewport Finnvek landing page with sections for KnitTools, runcheck, dBcheck, and fonecheck
-- An About page for Emma Hotakainen and the Finnvek brand
-- A shared privacy policy for KnitTools, runcheck, and dBcheck
+- A home page with Emma's introduction and the four apps (KnitTools, runcheck, dBcheck, and fonecheck) as taped polaroids that open a details view
+- A shared privacy policy for KnitTools, runcheck, dBcheck, and fonecheck
 - Responsive fixed navigation and shared footer components
 - GSAP-powered entrance, scroll, logo, and product animations with reduced-motion handling
 - A KnitTools launch-notification form that posts to the Finnvek subscription API
@@ -37,8 +36,7 @@ Astro serves the site at `http://localhost:4321` by default.
 
 Available routes:
 
-- `/` - home and app overview
-- `/about/` - creator and brand information
+- `/` - home, introduction, and app overview
 - `/privacy/` - app privacy policy
 
 ## Build and preview
@@ -62,14 +60,14 @@ The repository does not contain an automated deployment workflow. The production
 ```text
 src/
   assets/       Images and SVG assets processed by Astro
-  components/   Shared site header and footer
+  components/   Shared site header and footer, app polaroid
   layouts/      Shared document shell and privacy layout
-  pages/        Home, About, and Privacy routes
+  pages/        Home, Privacy, and 404 routes
   scripts/      Navigation, form, and animation behavior
   styles/       Global design system and responsive rules
 public/
   fonts/        Local typefaces
-  images/       Static app imagery
+  images/       Static app imagery (KnitTools logo)
   .well-known/  Published security contact
 ```
 
@@ -77,7 +75,7 @@ The home page imports `runcheck-logo.svg` from the project root and renders it i
 
 ## External services
 
-- Astro's Google font provider supplies IBM Plex Sans and Epilogue at build time.
+- Astro's Google font provider supplies IBM Plex Sans, Epilogue, and Caveat at build time.
 - Cloudflare Web Analytics is loaded from the shared base layout.
 - The notification form posts JSON to `https://api.finnvek.com/subscribe`.
 - The sitemap integration generates `sitemap-index.xml` for the configured production URL.
