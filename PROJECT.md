@@ -519,7 +519,7 @@ App grid reveal behavior:
 - fonecheck slides "fone" and "check" in from the sides and then draws the orange rule;
 - labels follow logo-specific start offsets.
 
-Interactive logo behavior (listeners are on the `.app-trigger` button):
+Interactive logo behavior (listeners are on the `[data-app-trigger]` button, `.polaroid-trigger`):
 
 - the whole polaroid lifts and straightens slightly on hover or keyboard focus (CSS);
 - dBcheck uses `mouseenter` and `focus` to expand ticks and separate letters, then restores on `mouseleave`;
@@ -821,7 +821,7 @@ git diff --check
 At minimum, verify:
 
 - home, About, and Privacy at a wide desktop width;
-- four-column app grid at phone widths;
+- four-column app grid above 760px and two-column app grid at 760px and below;
 - navigation immediately above and below 760px;
 - footer and notification stacking at 640px and below;
 - keyboard-only navigation and visible focus;
