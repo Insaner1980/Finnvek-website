@@ -1,24 +1,24 @@
 ---
 layout: ../layouts/PolicyLayout.astro
 title: Privacy Policy for Finnvek Apps
-description: Privacy policy for the KnitTools, runcheck, and dBcheck Android apps published by Finnvek.
+description: Privacy policy for the KnitTools, runcheck, dBcheck, and fonecheck Android apps published by Finnvek.
 ---
 
 <p class="prose-kicker">Privacy Policy</p>
 
 # Privacy policy for Finnvek apps.
 
-**Last updated:** 16 July 2026
+**Last updated:** 24 September 2026
 
 ## At a glance
 
-I am an independent Android developer based in Finland. I publish KnitTools, runcheck, and dBcheck under the Finnvek brand name.
+I am an independent Android developer based in Finland. I publish KnitTools, runcheck, dBcheck, and fonecheck under the Finnvek brand name.
 
 - I do not use advertising SDKs, ad networks, behavioral profiling, or cross-app advertising tracking in these apps.
 - I do not sell or rent personal data, and I do not share it with data brokers.
 - Most app data stays in private storage on your device.
-- Automatic Android cloud backup and device transfer are disabled for all three apps.
-- All three apps use Firebase Crashlytics to collect crash and diagnostic reports so I can find and fix stability problems.
+- Automatic Android cloud backup and device transfer are disabled for all four apps.
+- All four apps use Firebase Crashlytics to collect crash and diagnostic reports so I can find and fix stability problems.
 - The apps do not use a separate app-usage analytics service. External services are limited to the specific purposes described below, such as crash diagnostics, Ravelry access, Google Play purchases, M-Lab network tests, and optional Health Connect integration.
 - None of the apps requires a Finnvek profile account. KnitTools creates a technical anonymous Firebase identifier only when its Ravelry integration needs the Finnvek backend.
 
@@ -41,12 +41,13 @@ This policy applies to these Android apps:
 - **KnitTools**, a knitting project and pattern companion
 - **runcheck**, a device health, storage, battery, thermal, and network utility
 - **dBcheck**, a sound awareness and personal hearing baseline app
+- **fonecheck**, a phone diagnostics app for checking hardware and features and keeping local reports
 
 If I publish another app under the Finnvek name, I will add its actual data practices to this policy before referring users to it.
 
 ---
 
-## Principles applying to all three apps
+## Principles applying to all four apps
 
 ### No advertising or behavioral tracking
 
@@ -71,13 +72,13 @@ The apps use Android app-private storage for local data, disable cleartext netwo
 
 ### Google Play
 
-The paid Pro versions are one-time purchases handled by Google Play Billing. I do not receive or store your card details. Google Play tells the app whether the relevant Pro purchase is valid.
+The paid Pro versions of KnitTools, runcheck, and dBcheck, and the full version of fonecheck, are one-time purchases handled by Google Play Billing. I do not receive or store your card details. Google Play tells the app whether the relevant purchase is valid.
 
 Google Play may also process technical, purchase, update, and review information under [Google's Privacy Policy](https://policies.google.com/privacy).
 
 ### Crash diagnostics
 
-KnitTools, runcheck, and dBcheck use Firebase Crashlytics, a crash-reporting service provided by Google Firebase. Crashlytics can automatically send a report when an app crashes or encounters a serious error.
+KnitTools, runcheck, dBcheck, and fonecheck use Firebase Crashlytics, a crash-reporting service provided by Google Firebase. Crashlytics can automatically send a report when an app crashes or encounters a serious error.
 
 A report may include:
 
@@ -87,7 +88,7 @@ A report may include:
 - whether the device appears to be rooted
 - a Crashlytics installation identifier, Firebase installation identifier, and random session identifier used to group related reports and estimate how many installations are affected
 
-I use this information only to diagnose crashes, fix bugs, and improve app stability. I do not use it for advertising, behavioral profiling, or tracking what you do across apps. The apps do not intentionally attach your projects, notes, photos, measurement history, audio recordings, hearing-test results, Health Connect data, media files, or precise location to Crashlytics reports.
+I use this information only to diagnose crashes, fix bugs, and improve app stability. I do not use it for advertising, behavioral profiling, or tracking what you do across apps. The apps do not intentionally attach your projects, notes, photos, measurement history, audio recordings, hearing-test results, diagnostic reports, Health Connect data, media files, or precise location to Crashlytics reports.
 
 Google states that Firebase Crashlytics keeps crash stack traces and associated identifiers for 90 days before starting their removal from live and backup systems. Firebase may process this data on Google's global infrastructure. See [Firebase Privacy and Security](https://firebase.google.com/support/privacy).
 
@@ -269,12 +270,63 @@ Local backups are stored in dBcheck's app-private storage. Clearing measurement 
 
 ---
 
+## fonecheck
+
+fonecheck is an Android app for checking a phone's hardware and features across 14 diagnostic areas, running a guided Full Check, and keeping reports of the results. fonecheck is not yet available on Google Play. This section describes the version being prepared for release.
+
+### Data stored on your device
+
+fonecheck stores the following data locally:
+
+- saved diagnostic reports, including the results for each checked area, score, coverage, and the time of the check
+- device details included in each report: manufacturer, model, brand, product name, Android version, API level, security patch level, and the fonecheck version
+- app settings: theme, language, the test warning setting, whether the introduction on the Home screen has been dismissed, and whether each permission has been requested before
+
+Reports are stored in the app's private local database. They are not uploaded to Finnvek, and fonecheck has no report cloud sync and no account.
+
+Some checks show sensitive details on screen while they run, such as the Wi-Fi network name, IP addresses, GPS coordinates, mobile operator and cell information, or the Bluetooth adapter name. These details are not saved in reports or included in exports. Reports keep only whether a feature was available, enabled, or working.
+
+Camera test photos and microphone test recordings are held in memory only for the check you are running. fonecheck does not save them as files or include them in reports.
+
+### Permissions
+
+Every runtime permission is optional. If you deny one, only the related check is limited, and the report marks that check as not measured.
+
+- **Camera**: used for the camera check, including the preview, a test photo, and the flash.
+- **Microphone**: used to make a short test recording that you can play back. The recording stays in memory and is discarded.
+- **Audio settings**: used to route test sounds to the speaker or earpiece during the audio check.
+- **Approximate and precise location**: used for the GPS check and, where Android requires it, for Wi-Fi details. fonecheck does not store or send your location and does not request background location.
+- **Phone state**: used to read SIM and mobile network information for the SIM and connectivity checks.
+- **Bluetooth**: used to read whether Bluetooth is available and enabled.
+- **Physical activity**: used only for the step sensor check.
+- **Network, Wi-Fi, and NFC state**: used to show connection and NFC information.
+- **Vibration**: used for the vibration check.
+- **Biometrics**: used to open Android's own fingerprint or face prompt. Android handles the authentication, and fonecheck only receives whether it succeeded. fonecheck never receives fingerprint or face data.
+- **Internet**: used for crash reports through Firebase Crashlytics and for Google Play purchases. fonecheck does not use an internet connection for its diagnostic checks and does not include an internet speed test.
+
+### Exports and sharing
+
+fonecheck creates a PDF or JSON copy of a report only when you choose to export it. An export contains the report's contents, including the device details listed above. The file is created in the app's private cache and handed to the Android share destination you select with temporary read access. Once you share or save the file, the receiving app or storage provider controls its copy.
+
+### The fonecheck.app website
+
+The fonecheck.app website does not use advertising, analytics scripts, a mailing-list form, or account registration. Fonts and images are served with the site itself. Cloudflare Pages hosts the website and processes the technical request data needed to deliver it. On the homepage, a script may ask Cloudflare for your country code to show the full-version price in your local currency. The website does not store that country code.
+
+### Retention and deletion
+
+- **Reports**: kept until you delete them in the app, one at a time in History or all at once in Settings, clear app storage, or uninstall fonecheck. Reports do not expire automatically.
+- **Export files in the app's cache**: files older than 24 hours are removed when you next export a report. Clearing app storage or uninstalling fonecheck also removes them.
+- **Exported or shared files**: managed by you and the receiving app or storage provider.
+- **Google Play purchase records**: retained by Google under Google's policies.
+
+---
+
 ## Legal bases for processing
 
 For users in the European Economic Area, the UK, or Switzerland, the relevant legal bases depend on the feature:
 
 - **Performance of a contract**: providing the app features you request and processing Pro entitlement through Google Play.
-- **Consent**: optional permissions and integrations such as camera access, location-related access, Ravelry connection, media access, usage access, and Health Connect. You can withdraw this by disabling the feature, revoking the permission, or disconnecting the service.
+- **Consent**: optional permissions and integrations such as camera and microphone access, location-related access, Ravelry connection, media access, usage access, and Health Connect. You can withdraw this by disabling the feature, revoking the permission, or disconnecting the service.
 - **Legitimate interests**: diagnosing crashes, fixing stability problems, securing the apps and backend, preventing abuse, and maintaining reliable operation, provided those interests do not override your rights.
 
 ---
@@ -288,6 +340,7 @@ You can also:
 - disconnect Ravelry from KnitTools to delete the backend token record
 - manage Health Connect permissions and records through Android's Health Connect settings
 - clear runcheck or dBcheck history from their settings
+- delete fonecheck reports in History or Settings
 - delete exported files from the destination where you saved them
 - manage Google Play purchases through Google Play
 

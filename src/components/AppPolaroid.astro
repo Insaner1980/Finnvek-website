@@ -1,0 +1,84 @@
+---
+// Yksi sovellus teipattuna polaroidina muistikirjan sivulla ja sen fokusnäkymä.
+// Painike avaa dialogin natiivisti (command/commandfor), ja app-focus.ts nostaa
+// saman polaroidin teipin alta dialogiin. Teippi jää sivulle.
+import { Image } from 'astro:assets';
+import frame from '../assets/polaroid/polaroid-frame.png';
+import tape1 from '../assets/polaroid/tape-1.png';
+import tape2 from '../assets/polaroid/tape-2.png';
+import tape3 from '../assets/polaroid/tape-3.png';
+
+interface Props {
+  id: string;
+  name: string;
+  url: string;
+  domain: string;
+  description: string;
+  status?: string;
+  /** Polaroidin kallistus sivulla asteina. */
+  tilt: number;
+  /** Polaroidin pystysiirtymä sivulla, CSS-pituus. */
+  drop: string;
+  /** Mikä kolmesta teipistä (1–3) ja sen kallistus asteina. */
+  tape: 1 | 2 | 3;
+  tapeTilt: number;
+}
+
+const { id, name, url, domain, description, status, tilt, drop, tape, tapeTilt } = Astro.props;
+const tapeImage = { 1: tape1, 2: tape2, 3: tape3 }[tape];
+const dialogId = `app-${id}`;
+const titleId = `${dialogId}-title`;
+---
+
+<li class="polaroid-item" style={`--tilt: ${tilt}deg; --drop: ${drop}; --tape-tilt: ${tapeTilt}deg`}>
+  <button
+    type="button"
+    class="polaroid-trigger"
+    command="show-modal"
+    commandfor={dialogId}
+    aria-haspopup="dialog"
+    aria-label={`${name}, show details`}
+    data-app-trigger
+  >
+    <span class="polaroid-slot" data-app-card-slot>
+      <span class={`polaroid polaroid--${id}`} style={`--app-accent: var(--accent-${id})`} data-app-card>
+        <span class="polaroid-photo">
+          <slot name="logo" />
+        </span>
+        <Image class="polaroid-frame" src={frame} alt="" widths={[320, 640]} sizes="(max-width: 760px) 45vw, 20rem" />
+        <span class="polaroid-caption">{name}</span>
+      </span>
+      <Image class="polaroid-tape" src={tapeImage} alt="" widths={[240, 480]} sizes="10rem" data-polaroid-tape />
+    </span>
+  </button>
+
+  <dialog id={dialogId} class="app-focus" aria-labelledby={titleId}>
+    <div class="app-focus-backdrop" data-focus-backdrop></div>
+    <div class="app-focus-layout">
+      <!-- Nostettu polaroid on linkki sovelluksen sivulle; app-focus.ts siirtää sen tänne. -->
+      <a class="app-focus-card" href={url} aria-label={`Visit ${domain}`} data-app-card-target></a>
+      <div class="app-focus-details" data-focus-details>
+        <h2 id={titleId} class="section-label app-focus-title">
+          {name}
+          {status && <span class="app-focus-status">{status}</span>}
+        </h2>
+        <p class="app-focus-description">{description}</p>
+        <slot />
+        <a href={url} class="product-link">{domain}</a>
+      </div>
+    </div>
+    <button
+      type="button"
+      class="app-focus-close"
+      command="close"
+      commandfor={dialogId}
+      aria-label={`Close ${name} details`}
+      autofocus
+      data-focus-close
+    >
+      <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+        <path d="M4 4l12 12M16 4L4 16" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+      </svg>
+    </button>
+  </dialog>
+</li>

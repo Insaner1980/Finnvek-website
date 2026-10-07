@@ -265,13 +265,10 @@ The footer brand always navigates to the site home page. It does not scroll the 
 1. shared header in home mode;
 2. hero section;
 3. one horizontal divider with `id="apps"`;
-4. KnitTools product section;
-5. runcheck product section;
-6. dBcheck product section;
-7. fonecheck product section;
-8. shared footer.
+4. the Apps section: an `Apps` heading, a handwritten hint, and a `<ul class="notebook">` with one `AppPolaroid` per app (KnitTools, runcheck, dBcheck, fonecheck);
+5. shared footer.
 
-The home page does not currently wrap its content in a `<main>` landmark. Its `<h1>` is the hero statement; every product name is an `<h2>`. The Apps anchor is an `<hr>`, not a heading.
+The home page does not currently wrap its content in a `<main>` landmark. Its `<h1>` is the hero statement; `Apps` is an `<h2>`, and each app's focus dialog has its own `<h2>` title. The Apps anchor is an `<hr>`, not a heading.
 
 ### Hero
 
@@ -286,26 +283,57 @@ Desktop layout uses a 12-column grid, full viewport minimum height, and `1.75rem
 
 At `760px` and below, the hero becomes one column, uses `1.5rem 1.25rem` padding, and has a minimum height of `calc(100svh - 7rem)` with a `100vh` fallback. It is therefore intentionally shorter than a full mobile viewport.
 
-### Product layout
+### About intro and signature
 
-Each `.product` has an outer `200px 1fr` grid and an inner two-column `.product-content`. Mirror sections reverse the visual order of lockup and text. At `900px` and below, both grids collapse to one column and the lockup precedes the copy.
+The hero heading is plain text ("Hi, I'm Emma."). Emma's handwritten signature (`src/assets/emma-signature-clean-transparent.png`, light strokes on transparency) signs off the short intro in `#about`, like a letter: `.home-about-signature` with `alt="Emma"`, tilted slightly. When the intro scrolls into view, `home-animations.ts` fades the paragraphs in and then writes the signature in left to right with a `clip-path` reveal.
 
-The first section is the only one with a visible section label, `In the works`. Empty labels on the later sections are marked `aria-hidden="true"`.
+### Laptop note
 
-| Product | Current status and visual | Destination | Active motion hooks |
-| --- | --- | --- | --- |
-| KnitTools | linked 500 by 500 WebP, Teko text name, launch form | `https://knittoolsapp.com` | `data-logo-roll`, `data-logo-stamp` |
-| runcheck | root SVG injected as raw inline markup, Manrope text name | `https://runcheckapp.com` | `data-logo-runcheck`; SVG also owns its shine animation |
-| dBcheck | imported SVG component, text name with muted `check` | `https://dbcheck.app` | `data-logo-signal` and internal part markers |
-| fonecheck | text-only lockup and one description paragraph | none | generic name and text reveal only |
+The hero laptop image (`src/assets/laptop-blank-screen.png`) has an empty screen area; the handwritten two-line note on it is real HTML text (`.laptop-note`) set in Caveat (`--font-hand`, configured in `astro.config.mjs` and preloaded only on the home page through `BaseLayout`'s `head` slot). Its position, size, tilt and skew are `cqi` values against the image width, tuned to match the screen's perspective.
+
+The notes live in `laptopNotes` at the top of `index.astro`: each has a starting hour (`from`, Finnish time) and two short lines. The 09:00 note is rendered into the HTML so it shows without JavaScript; `src/scripts/laptop-note.ts` picks the note for the current hour in `Europe/Helsinki`, checks again every minute and cross-fades when the note changes. `home-animations.ts` writes the lines in left to right after the laptop appears. Keep each line short (about 17 characters) so it does not run into the face.
+
+### Laptop floor light and shadow
+
+An inline SVG (`.laptop-floor`) behind the laptop image grounds it on the dark page: a faint elliptical pool of light on the floor, a blurred shadow shaped like the laptop's base, and a narrow contact shadow along the front edges. The SVG uses the image's own `viewBox` (`laptop.width` × `laptop.height`), so its points are source-image pixels and it scales with the image; the base corners were measured from the image's alpha channel (left 24,805 / front 850,1063 / right 1318,790). It sits at `z-index: -1` inside `.hero-laptop` (`isolation: isolate`) and may extend past the image box (`overflow: visible`). Without the light pool the shadow would not show against the near-black background.
+
+### Laptop code reveal
+
+Under the cursor, a soft circular lens on the laptop screen reveals Kotlin/Compose code (`src/assets/code/RowCounter.kt`, highlighted at build time with Astro's `<Code>` and the `css-variables` theme, mapped to site colors on `.laptop-reveal`). The layer is decorative: `aria-hidden` and `inert`, so the `tabindex` Shiki adds to `<pre>` cannot take focus.
+
+`src/scripts/laptop-reveal.ts` owns the geometry: `SCREEN_QUAD` holds the screen corners in source-image pixels (measured on `laptop-blank-screen.png`; re-measure if the image changes). On every resize it scales them to the rendered image, maps the flat 1000 × 625 code plane onto them with a `matrix3d` homography, and clips the layer to the screen polygon. The lens position and radius are the CSS custom properties `--lens-x`, `--lens-y` and `--lens-r`, used in a radial `mask-image`. That lens mask is intersected with `src/assets/laptop-screen-matte.png` (passed as `--reveal-matte`), an alpha matte that is opaque over the dark screen background and transparent over Emma's silhouette with a soft edge, so the code only appears around her and her face is never covered. The matte was generated from `laptop-blank-screen.png` (luminance threshold, hole filling and a 10 px margin inside the same screen quad); regenerate it if the laptop image changes.
+
+The lens follows fine pointers that can hover. About 2.6 seconds after load it sweeps once across the screen as a hint; on touch devices this sweep is the only way to see the code. Under reduced motion there is no sweep and the lens follows the pointer without easing.
+
+### App polaroids and focus view
+
+The apps are taped polaroids on a dark lined notebook page (`<ul class="notebook">`). `src/components/AppPolaroid.astro` renders one `<li>` per app:
+
+- a `.polaroid-trigger` button with `command="show-modal"`, `commandfor="app-<id>"` and `aria-label="<name>, show details"`, so the dialog opens natively even without JavaScript;
+- inside it a `.polaroid-slot` that keeps its size and holds the `.polaroid` (`data-app-card`) and the tape (`data-polaroid-tape`). The tape stays on the page when the polaroid is lifted into the dialog;
+- the `.polaroid`: a `.polaroid-photo` with the logo (`logo` slot) and a "printed photo" treatment (accent glow from `--accent-<id>`, muted tone filter, vignette, sheen and SVG film grain), the frame image on top, and the app name handwritten in Caveat on the bottom border (`.polaroid-caption`);
+- a full-screen `<dialog class="app-focus" id="app-<id>">` with a backdrop element, an empty `[data-app-card-target]` link to the app's site (the lifted polaroid is moved into it, so clicking the polaroid opens the site; its accessible name is "Visit <domain>"), and details (title with optional status, description, default slot content, domain link), plus a close button with `command="close"`.
+
+Props `tilt`, `drop`, `tape` (1–3) and `tapeTilt` place each polaroid; `--tilt` is the polaroid's resting angle. The frame and tape images in `src/assets/polaroid/` were generated with ChatGPT and prepared locally: the green background was keyed out, the photo area cut transparent and the tapes split into separate files. `.polaroid-photo` uses the photo area measured from the frame image (left 6.6 %, top 6.4 %, 86.8 % × 72.7 %, slightly oversized so no gap shows). Polaroid content is sized in `cqi` units because the same element is shown on the page and, larger, in the dialog.
+
+The page has four columns above `760px` and two at `760px` and below.
+
+All four apps are still in development, so their shared status is said once: a handwritten note (`.notebook-note`, "All four are still in the works.") in the page's bottom-right corner, written in after the polaroids land. No app currently passes the per-app `status` prop; use it when one app's status differs, for example after its release.
+
+| App | Logo | Destination | Active motion hooks | Extra |
+| --- | --- | --- | --- | --- |
+| KnitTools | 500 by 500 WebP | `https://knittoolsapp.com` | `data-logo-roll` | launch form in the dialog |
+| runcheck | root SVG injected as raw inline markup | `https://runcheckapp.com` | `data-logo-runcheck`; SVG also owns its shine animation | |
+| dBcheck | imported SVG component, name with muted `check` | `https://dbcheck.app` | `data-logo-signal` and internal part markers | |
+| fonecheck | imported wordmark SVG; text name visually hidden | `https://fonecheck.app` | `data-logo-fonecheck` | |
 
 All current external app links open in the same browsing context. No `target` or `rel` attribute is supplied.
 
-The fonecheck entry deliberately has no logo, product URL, or secondary action in current markup. A review must not infer those from the other product sections.
+`src/scripts/app-focus.ts` takes over opening and closing: it cancels the native command, moves the same `.polaroid` element into the dialog and lifts it from its page position (FLIP), straightening it, and on close puts it back at its resting angle before returning it to its slot under the tape. Escape (`cancel`), the close button and the backdrop all use the animated close; a forced native close restores the polaroid without animation. `html:has(.app-focus[open])` locks page scrolling, and `scrollbar-gutter: stable` keeps the page from shifting. Without JavaScript the polaroid stays on the page and `.app-focus-card:empty` is hidden.
 
 ### KnitTools notification form
 
-The form markup is owned by `index.astro`; its browser behavior is owned by `setupNotifyForm()` in `home-animations.ts`.
+The form markup is owned by `index.astro` (inside the KnitTools `AppPolaroid` dialog); its browser behavior is owned by `setupNotifyForm()` in `home-animations.ts`.
 
 Markup contract:
 
@@ -455,7 +483,7 @@ For the footer, the link itself retains `aria-label="Finnvek home"`; only its in
 
 ### `home-animations.ts`
 
-This module registers GSAP ScrollTrigger and SplitText and then invokes eight setup functions:
+This module registers GSAP ScrollTrigger and then invokes its setup functions:
 
 | Function | Current responsibility |
 | --- | --- |
@@ -464,7 +492,7 @@ This module registers GSAP ScrollTrigger and SplitText and then invokes eight se
 | `setupScrollCueFade()` | scrubbed cue fade over the first 25 percent of hero scrolling |
 | `setupHeroMouseParallax()` | delayed fine-pointer hero movement on desktop |
 | `setupSectionLines()` | one-way divider growth based on maximum observed scroll progress |
-| `setupProductReveals()` | word, logo, name, and link reveal timelines per product |
+| `setupAppReveals()` | one timeline that drops the polaroids onto the page, presses the tape on and plays each logo's own reveal |
 | `setupLogoMotion()` | interactive logo-specific responses |
 | `setupFooterReveal()` | one-time footer wordmark, tagline, and metadata entrance |
 
@@ -479,23 +507,21 @@ Hero timing and capability gates:
 - wordmark movement is at most 6px horizontally and 4px vertically;
 - tagline movement uses the opposite direction at up to 5px horizontally and 3px vertically.
 
-Product reveal behavior:
+App grid reveal behavior:
 
-- text paragraphs and the first section label are split into words;
-- words begin 12px low, blurred by 8px, and transparent;
-- other annotated elements begin 16px low and transparent;
-- the first product starts when its top reaches 95 percent of the viewport;
-- later products start when their top reaches 75 percent;
-- ScrollTrigger timelines are configured to run once;
+- one ScrollTrigger timeline starts when the grid top reaches 80 percent of the viewport and runs once;
+- polaroids drop in 0.14 seconds apart from 32px high, slightly larger and turned 8 degrees past their `--tilt`;
+- each tape is revealed left to right 0.45 seconds after its polaroid;
+- each logo reveal is nested 0.4 seconds after its polaroid, and the handwritten caption is written in left to right;
 - KnitTools rolls in from `x: 150` and `rotation: 240`;
 - runcheck reveals the hook from above and the arrow from below, then pulses an SVG drop shadow;
 - dBcheck reveals its divider, letters, and outer ticks in a staged signal sequence;
-- product names follow logo-specific start offsets;
-- fonecheck has no logo state and receives only text and name reveals.
+- fonecheck slides "fone" and "check" in from the sides and then draws the orange rule;
+- labels follow logo-specific start offsets.
 
-Interactive logo behavior:
+Interactive logo behavior (listeners are on the `[data-app-trigger]` button, `.polaroid-trigger`):
 
-- KnitTools uses `mouseenter` to compress and spring the whole lockup;
+- the whole polaroid lifts and straightens slightly on hover or keyboard focus (CSS);
 - dBcheck uses `mouseenter` and `focus` to expand ticks and separate letters, then restores on `mouseleave`;
 - runcheck has no additional hover timeline in this module;
 - runcheck's inline SVG independently runs a five-second CSS shine sweep;
@@ -507,7 +533,8 @@ Footer reveal starts when the footer top reaches 92 percent of the viewport and 
 
 Reduced motion is enforced across three layers:
 
-- `home-animations.ts` shows hero, product, divider, runcheck, and footer elements in their final states, skips parallax and logo interaction, and completes form success without a transition;
+- `home-animations.ts` shows hero, polaroid, divider, runcheck, and footer elements in their final states, skips logo interaction, and completes form success without a transition;
+- `app-focus.ts` opens and closes the focus dialogs without the polaroid flight;
 - `brand-link-animations.ts` does not split or animate shared wordmarks;
 - `global.css` stops the scroll-cue animation and removes structural header/menu transitions;
 - `runcheck-logo.svg` stops its internal shine animation.
@@ -577,14 +604,14 @@ No CSS rule currently gives a persistent visual style to `[aria-current="page"]`
 | --- | --- |
 | Above `64rem` | About uses text and portrait columns |
 | `64rem` and below | About reads intro, portrait, details in one column; portrait max becomes 32rem |
-| Above `900px` | products use outer label/content and inner lockup/text columns |
-| `900px` and below | products and mirrored products become one column; lockup precedes text |
+| Above `760px` | the notebook page has four polaroid columns |
+| `760px` and below | the notebook page has two polaroid columns |
 | `761px` and above | full navigation row; home desktop hero and fine-pointer parallax may run |
 | `760px` and below | hamburger menu, shorter header, one-column mobile hero, shorter scroll cue |
 | `640px` and below | 1.25rem gutter, constrained logo sizes, stacked footer, stacked notification form, 10px navigation text |
 | reduced motion | structural transitions and authored animations are removed or resolved to final state |
 
-When reviewing the 760/761 boundary, compare the CSS `max-width: 760px` rule with the script's `min-width: 761px` query. When reviewing products, keep the separate 900px layout boundary in sync with animation assumptions.
+When reviewing the 760/761 boundary, compare the CSS `max-width: 760px` rule with the script's `min-width: 761px` query. When reviewing the notebook page, remember that the focus animation measures the polaroid's page and dialog positions at run time, so layout changes do not need matching script changes.
 
 ## Accessibility and semantic implementation
 
@@ -689,10 +716,9 @@ The repository includes no first-party server code. Do not answer backend-securi
 The following details matter during cleanup and code review because they can be mistaken for active behavior:
 
 - `home-animations.ts` queries `.topbar`, but current markup contains no element with that class. The guarded topbar opacity operations currently do nothing.
-- Generic `data-logo-rise` and `data-logo-nudge` branches exist in `home-animations.ts`, but no current page markup supplies those attributes.
 - `--color-text-dimmed` and `--red-dark` are declared but not consumed elsewhere in authored CSS.
 - `public/images/runcheck.webp` is published but not referenced by current source.
-- fonecheck has no link, image, logo-specific motion, form, or privacy-policy section.
+- fonecheck has no form.
 - The header has no Privacy link and therefore no privacy current-state prop.
 - The site has no persistent visual styling for `aria-current`.
 - The project has no tracked deployment configuration despite the Cloudflare analytics integration.
@@ -795,7 +821,7 @@ git diff --check
 At minimum, verify:
 
 - home, About, and Privacy at a wide desktop width;
-- product collapse at 900px and below;
+- four-column app grid above 760px and two-column app grid at 760px and below;
 - navigation immediately above and below 760px;
 - footer and notification stacking at 640px and below;
 - keyboard-only navigation and visible focus;
