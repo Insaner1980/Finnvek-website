@@ -718,7 +718,7 @@ The following details matter during cleanup and code review because they can be 
 - `home-animations.ts` queries `.topbar`, but current markup contains no element with that class. The guarded topbar opacity operations currently do nothing.
 - `--color-text-dimmed` and `--red-dark` are declared but not consumed elsewhere in authored CSS.
 - `public/images/runcheck.webp` is published but not referenced by current source.
-- fonecheck has no link, image, logo-specific motion, form, or privacy-policy section.
+- fonecheck has no form.
 - The header has no Privacy link and therefore no privacy current-state prop.
 - The site has no persistent visual styling for `aria-current`.
 - The project has no tracked deployment configuration despite the Cloudflare analytics integration.
