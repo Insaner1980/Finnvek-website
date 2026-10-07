@@ -1,16 +1,35 @@
 ---
-import { Image, Picture } from 'astro:assets';
+import { Font, Image, Picture } from 'astro:assets';
+import { Code } from 'astro:components';
 import signature from '../assets/emma-signature-clean-transparent.png';
-import laptop from '../assets/laptop-hair-tidy.png';
+import laptop from '../assets/laptop-blank-screen.png';
+import laptopMatte from '../assets/laptop-screen-matte.png';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import DbcheckLogo from '../assets/dbcheck-logo.svg';
 import FonecheckLogo from '../assets/fonecheck-logo-light.svg';
+import AppPolaroid from '../components/AppPolaroid.astro';
 import SiteFooter from '../components/SiteFooter.astro';
 import SiteHeader from '../components/SiteHeader.astro';
 import runcheckLogo from '../../runcheck-logo.svg?raw';
+import revealCode from '../assets/code/RowCounter.kt?raw';
+
+// Läppärin ruudun käsialateksti Suomen ajan mukaan. `from` on tunti (0–23),
+// josta alkaen teksti näkyy. Rivit pidetään lyhyinä, jotta ne eivät osu kasvoihin.
+const laptopNotes = [
+  { from: 0, lines: ['Probably asleep.', "It's night here."] },
+  { from: 6, lines: ['Probably on my', 'first coffee.'] },
+  { from: 9, lines: ['Probably working', 'on the details.'] },
+  { from: 11, lines: ['Probably at lunch.', 'Back soon.'] },
+  { from: 12, lines: ['Probably working', 'on the details.'] },
+  { from: 17, lines: ['Probably testing', 'one more thing.'] },
+  { from: 21, lines: ['Probably fixing', 'one last detail.'] },
+];
+// Ilman JavaScriptiä näytetään työpäivän teksti.
+const defaultNote = laptopNotes.find((note) => note.from === 9) ?? laptopNotes[0];
 ---
 
 <BaseLayout>
+  <Font cssVariable="--font-hand" preload slot="head" />
   <script is:inline>
     document.documentElement.classList.add('is-home-motion-booting');
     document.addEventListener(
@@ -23,8 +42,29 @@ import runcheckLogo from '../../runcheck-logo.svg?raw';
   <SiteHeader />
 
   <section class="hero" aria-labelledby="hero-heading">
-    <h1 id="hero-heading" class="hero-heading">Hi, I'm <span class="hero-name"><span class="hero-name-print">Emma.</span><span class="hero-signature" aria-hidden="true"><Image src={signature} alt="" format="png" width={600} loading="eager" /></span></span></h1>
+    <h1 id="hero-heading" class="hero-heading">Hi, I'm Emma.</h1>
     <div class="hero-laptop">
+      <svg class="laptop-floor" viewBox={`0 0 ${laptop.width} ${laptop.height}`} aria-hidden="true" focusable="false">
+        <defs>
+          <radialGradient id="laptop-floor-light" cx="0.5" cy="0.5" r="0.5">
+            <stop offset="0" stop-color="currentColor" stop-opacity="0.16" />
+            <stop offset="0.55" stop-color="currentColor" stop-opacity="0.06" />
+            <stop offset="1" stop-color="currentColor" stop-opacity="0" />
+          </radialGradient>
+          <filter id="laptop-floor-soft" x="-30%" y="-30%" width="160%" height="160%">
+            <feGaussianBlur stdDeviation="30" />
+          </filter>
+          <filter id="laptop-floor-contact" x="-10%" y="-10%" width="120%" height="120%">
+            <feGaussianBlur stdDeviation="5" />
+          </filter>
+        </defs>
+        <!-- Valolammikko lattialla, jota vasten varjo erottuu tummasta taustasta. -->
+        <ellipse cx="690" cy="905" rx="920" ry="330" fill="url(#laptop-floor-light)" />
+        <!-- Pohjan muotoinen pehmeä varjo; kulmat ovat kuvan pikseleitä. -->
+        <polygon points="10,832 850,1094 1330,814 500,582" fill="#000" opacity="0.9" filter="url(#laptop-floor-soft)" />
+        <!-- Kapea kosketusvarjo etureunoissa. -->
+        <polyline points="34,818 850,1072 1316,802" fill="none" stroke="#000" stroke-width="14" stroke-linejoin="round" opacity="0.85" filter="url(#laptop-floor-contact)" />
+      </svg>
       <Picture
         src={laptop}
         formats={['webp']}
@@ -33,8 +73,18 @@ import runcheckLogo from '../../runcheck-logo.svg?raw';
         sizes="(max-width: 760px) calc(100vw - 2.5rem), 70vw"
         quality="high"
         priority
-        alt="A laptop with Emma Hotakainen on screen and the words: Probably working on the details."
+        alt="A laptop with Emma Hotakainen on screen."
       />
+      <p class="laptop-note" data-laptop-note data-notes={JSON.stringify(laptopNotes)}>
+        {defaultNote.lines.map((line) => <span class="laptop-note-line" data-laptop-note-line>{line}</span>)}
+        <span class="laptop-note-rule" aria-hidden="true"></span>
+      </p>
+      <div class="laptop-reveal" aria-hidden="true" inert data-laptop-reveal data-source-width={laptop.width} style={`--reveal-matte: url(${laptopMatte.src})`}>
+        <div class="laptop-reveal-plane" data-laptop-reveal-plane>
+          <div class="laptop-reveal-tab">RowCounter.kt</div>
+          <Code code={revealCode} lang="kotlin" theme="css-variables" />
+        </div>
+      </div>
     </div>
     <a class="hero-scroll-link" href="#about" aria-label="Continue to the introduction">
       <svg width="24" height="32" viewBox="0 0 24 32" fill="none" aria-hidden="true">
@@ -46,22 +96,33 @@ import runcheckLogo from '../../runcheck-logo.svg?raw';
   <section id="about" class="home-about" aria-label="About Emma">
     <p>Finnvek is just the name I put on the things I build. I make Android apps because I like turning ideas into things that actually work.</p>
     <p>I design, build and test them myself, and tend to keep working on them until the little details feel right.</p>
+    <Image class="home-about-signature" src={signature} alt="Emma" format="png" width={480} />
   </section>
 
   <hr id="apps" class="section-divider" data-section-line />
 
-  <section class="product product--mirror" data-product data-first-product>
-    <div class="section-label" data-product-line>In the works</div>
-    <div class="product-content">
-      <a href="https://knittoolsapp.com" class="product-lockup" data-product-lockup aria-label="KnitTools — knittoolsapp.com">
-        <img src="/images/knittools.webp" alt="" width="500" height="500" loading="lazy" decoding="async" data-product-logo data-logo-roll data-logo-stamp />
-        <h2 class="product-name product-name--knittools">KnitTools</h2>
-      </a>
+  <section class="apps" aria-labelledby="apps-heading">
+    <div class="apps-head">
+      <h2 id="apps-heading" class="section-label">Apps</h2>
+      <p class="apps-hint">Pick one up for a closer look.</p>
+    </div>
 
-      <div class="product-text">
-        <p data-product-line>KnitTools is a pocket companion for knitters and crocheters. It counts your rows, keeps your patterns one tap away, and your yarn, notes, and progress photos quietly in order. In eleven languages, for Android.</p>
+    <div class="notebook-wrap">
+    <ul class="notebook" data-app-grid>
+      <AppPolaroid
+        id="knittools"
+        tilt={-4}
+        drop="0rem"
+        tape={1}
+        tapeTilt={-3}
+        name="KnitTools"
+        url="https://knittoolsapp.com"
+        domain="knittoolsapp.com"
+        description="KnitTools is a pocket companion for knitters and crocheters. It counts your rows, keeps your patterns one tap away, and your yarn, notes, and progress photos quietly in order. In eleven languages, for Android."
+      >
+        <img slot="logo" src="/images/knittools.webp" alt="" width="500" height="500" loading="lazy" decoding="async" data-app-logo data-logo-roll />
 
-        <form class="notify" method="post" data-notify-form data-product-line>
+        <form class="notify" method="post" data-notify-form>
           <label class="visually-hidden" for="notify-email">Email address</label>
           <label class="visually-hidden" for="notify-website">Leave this field empty</label>
           <input
@@ -77,61 +138,59 @@ import runcheckLogo from '../../runcheck-logo.svg?raw';
           <button type="submit" disabled>Notify me at launch</button>
         </form>
         <p class="notify-error" data-notify-error role="alert" aria-live="polite" hidden></p>
+      </AppPolaroid>
 
-        <a href="https://knittoolsapp.com" class="product-link" data-product-line>knittoolsapp.com</a>
-      </div>
-    </div>
-  </section>
-
-  <section class="product" data-product>
-    <div class="section-label" aria-hidden="true"></div>
-    <div class="product-content">
-      <a href="https://runcheckapp.com" class="product-lockup" data-product-lockup aria-label="runcheck — runcheckapp.com">
+      <AppPolaroid
+        id="runcheck"
+        tilt={3}
+        drop="2.25rem"
+        tape={3}
+        tapeTilt={4}
+        name="runcheck"
+        url="https://runcheckapp.com"
+        domain="runcheckapp.com"
+        description="runcheck shows your phone's real condition. It checks battery, network, thermals, and storage, and turns the raw numbers into one clear health score. It warns you before small problems become annoying ones. For Android."
+      >
         <span
-          class="product-logo product-logo--runcheck"
+          slot="logo"
+          class="app-logo app-logo--runcheck"
           aria-hidden="true"
-          data-product-logo
+          data-app-logo
           data-logo-runcheck
           set:html={runcheckLogo}
         />
-        <h2 class="product-name product-name--runcheck">runcheck</h2>
-      </a>
+      </AppPolaroid>
 
-      <div class="product-text">
-        <p data-product-line>runcheck shows your phone's real condition. It checks battery, network, thermals, and storage, and turns the raw numbers into one clear health score. It warns you before small problems become annoying ones. For Android.</p>
+      <AppPolaroid
+        id="dbcheck"
+        tilt={-2}
+        drop="-0.5rem"
+        tape={2}
+        tapeTilt={-5}
+        name="dBcheck"
+        url="https://dbcheck.app"
+        domain="dbcheck.app"
+        description="dBcheck makes everyday sound easier to understand. It helps you follow noise exposure over time and compare personal hearing checks with your own baseline. For Android."
+      >
+        <Fragment slot="logo"><DbcheckLogo aria-hidden="true" focusable="false" data-app-logo data-logo-signal /></Fragment>
+      </AppPolaroid>
 
-        <a href="https://runcheckapp.com" class="product-link" data-product-line>runcheckapp.com</a>
-      </div>
-    </div>
-  </section>
-
-  <section class="product product--mirror" data-product>
-    <div class="section-label" aria-hidden="true"></div>
-    <div class="product-content">
-      <a href="https://dbcheck.app" class="product-lockup" data-product-lockup aria-label="dBcheck — dbcheck.app">
-        <DbcheckLogo aria-hidden="true" focusable="false" data-product-logo data-logo-signal />
-        <h2 class="product-name product-name--dbcheck">dB<em>check</em></h2>
-      </a>
-
-      <div class="product-text">
-        <p data-product-line>dBcheck makes everyday sound easier to understand. It helps you follow noise exposure over time and compare personal hearing checks with your own baseline. For Android.</p>
-
-        <a href="https://dbcheck.app" class="product-link" data-product-line>dbcheck.app</a>
-      </div>
-    </div>
-  </section>
-
-  <section class="product" data-product>
-    <div class="section-label" aria-hidden="true"></div>
-    <div class="product-content">
-      <div class="product-lockup product-lockup--text">
-        <h2 class="visually-hidden">fonecheck</h2>
-        <FonecheckLogo class="product-logo--fonecheck" aria-hidden="true" focusable="false" />
-      </div>
-
-      <div class="product-text">
-        <p data-product-line>fonecheck is a more comprehensive Android diagnostics app for checking and understanding what's happening on your device.</p>
-      </div>
+      <AppPolaroid
+        id="fonecheck"
+        tilt={5}
+        drop="1.5rem"
+        tape={1}
+        tapeTilt={2}
+        name="fonecheck"
+        url="https://fonecheck.app"
+        domain="fonecheck.app"
+        description="fonecheck is a more comprehensive Android diagnostics app for checking and understanding what's happening on your device."
+      >
+        <Fragment slot="logo"><FonecheckLogo class="app-logo--fonecheck" aria-hidden="true" focusable="false" data-app-logo data-logo-fonecheck /></Fragment>
+      </AppPolaroid>
+    </ul>
+    <!-- Kaikkien sovellusten yhteinen tila kerran, käsin kirjoitettuna sivun kulmaan. -->
+    <p class="notebook-note" data-notebook-note>All four are still in the works.</p>
     </div>
   </section>
 
@@ -139,5 +198,8 @@ import runcheckLogo from '../../runcheck-logo.svg?raw';
 </BaseLayout>
 
 <script>
+  import '../scripts/laptop-note';
+  import '../scripts/laptop-reveal';
   import '../scripts/home-animations';
+  import '../scripts/app-focus';
 </script>

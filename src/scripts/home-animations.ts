@@ -1,13 +1,13 @@
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { SplitText } from 'gsap/SplitText';
 
-gsap.registerPlugin(ScrollTrigger, SplitText);
+gsap.registerPlugin(ScrollTrigger);
 
 const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 const siteFooter = document.querySelector<HTMLElement>('.site-footer');
-const productSections = Array.from(document.querySelectorAll<HTMLElement>('[data-product]'));
+const appGrid = document.querySelector<HTMLElement>('[data-app-grid]');
+const appTriggers = Array.from(document.querySelectorAll<HTMLElement>('[data-app-trigger]'));
 const sectionLines = Array.from(document.querySelectorAll<HTMLElement>('[data-section-line]'));
 const notifyForm = document.querySelector<HTMLFormElement>('[data-notify-form]');
 
@@ -136,16 +136,21 @@ const setupIntroMotion = () => {
   gsap.fromTo('.hero-heading', { autoAlpha: 0, y: 18 }, {
     autoAlpha: 1, y: 0, duration: 0.8, ease: 'power2.out',
   });
-  gsap.fromTo('.hero-signature img', { clipPath: 'inset(0 100% 0 0)' }, {
-    clipPath: 'inset(0 0% 0 0)', duration: 1.15, delay: 0.65, ease: 'power1.inOut',
-  });
   gsap.fromTo('.hero-laptop', { autoAlpha: 0, y: 28 }, {
     autoAlpha: 1, y: 0, duration: 1.1, delay: 0.12, ease: 'power2.out',
   });
-  gsap.fromTo('.home-about p', { autoAlpha: 0, y: 20 }, {
-    autoAlpha: 1, y: 0, duration: 0.8, stagger: 0.18, ease: 'power2.out',
-    scrollTrigger: { trigger: '.home-about', start: 'top 85%', once: true },
+  // Ruudun käsialarivit piirtyvät vasemmalta oikealle kuten allekirjoitus.
+  gsap.fromTo('.laptop-note > *', { clipPath: 'inset(-30% 100% -30% 0)' }, {
+    clipPath: 'inset(-30% 0% -30% 0)', duration: 0.7, delay: 0.95, stagger: 0.4, ease: 'power1.inOut',
   });
+  // Esittely tulee esiin, ja lopuksi allekirjoitus piirtyy vasemmalta oikealle.
+  gsap.timeline({ scrollTrigger: { trigger: '.home-about', start: 'top 85%', once: true } })
+    .fromTo('.home-about p', { autoAlpha: 0, y: 20 }, {
+      autoAlpha: 1, y: 0, duration: 0.8, stagger: 0.18, ease: 'power2.out',
+    })
+    .fromTo('.home-about-signature', { clipPath: 'inset(-20% 100% -20% 0)' }, {
+      clipPath: 'inset(-20% 0% -20% 0)', duration: 1.15, ease: 'power1.inOut',
+    }, '-=0.2');
 };
 
 const setupSectionLines = () => {
@@ -201,13 +206,37 @@ const getRuncheckLogoParts = (logo: HTMLElement) => ({
 
 type RuncheckLogoParts = ReturnType<typeof getRuncheckLogoParts>;
 
-const showProductWithoutMotion = (
-  lines: HTMLElement[],
+// The fonecheck wordmark is one SVG with three paths in order: "fone", the
+// orange rule and "check". The reveal mirrors the fonecheck.app intro.
+const getFonecheckLogoParts = (logo: HTMLElement) => {
+  const [fone, rule, check] = Array.from(logo.querySelectorAll<SVGPathElement>('path'));
+  return { fone, rule, check };
+};
+
+type FonecheckLogoParts = ReturnType<typeof getFonecheckLogoParts>;
+
+const hasFonecheckParts = (parts: FonecheckLogoParts | null): parts is FonecheckLogoParts =>
+  Boolean(parts?.fone && parts.rule && parts.check);
+
+const setInitialFonecheckLogoState = (logo: HTMLElement, parts: FonecheckLogoParts) => {
+  // The pieces start outside the SVG box, so it must not clip them.
+  gsap.set(logo, { autoAlpha: 1, overflow: 'visible' });
+  gsap.set(parts.fone, { autoAlpha: 0, x: -170 });
+  gsap.set(parts.check, { autoAlpha: 0, x: 170 });
+  gsap.set(parts.rule, { scaleX: 0, transformOrigin: '50% 50%' });
+};
+
+const addFonecheckLogoReveal = (timeline: gsap.core.Timeline, parts: FonecheckLogoParts) => {
+  timeline.to(parts.fone, { autoAlpha: 1, x: 0, duration: 1.05, ease: 'expo.out' }, 0.1);
+  timeline.to(parts.check, { autoAlpha: 1, x: 0, duration: 1.05, ease: 'expo.out' }, 0.19);
+  timeline.to(parts.rule, { scaleX: 1, duration: 0.56, ease: 'power2.inOut' }, 0.92);
+};
+
+const showAppWithoutMotion = (
   logo: HTMLElement | null,
   name: HTMLElement | null,
   signalParts: SignalLogoParts | null,
 ) => {
-  if (lines.length) gsap.set(lines, { autoAlpha: 1 });
   if (logo) gsap.set(logo, { autoAlpha: 1, scale: 1, x: 0, y: 0, rotation: 0 });
   if (signalParts) gsap.set(signalParts.all, { autoAlpha: 1, scale: 1, scaleY: 1, x: 0 });
   if (name) gsap.set(name, { autoAlpha: 1, y: 0 });
@@ -217,7 +246,6 @@ const setInitialProductLogoState = (
   logo: HTMLElement | null,
   logoRolls: boolean,
   logoSignals: boolean,
-  logoRises: boolean,
   signalParts: SignalLogoParts | null,
 ) => {
   if (!logo) return;
@@ -234,10 +262,6 @@ const setInitialProductLogoState = (
     gsap.set(signalParts.ticks, { autoAlpha: 0, scaleY: 0.18, transformOrigin: '50% 50%' });
     return;
   }
-  if (logoRises) {
-    gsap.set(logo, { autoAlpha: 0, y: 30 });
-    return;
-  }
   gsap.set(logo, { autoAlpha: 0, scale: 0.98, transformOrigin: 'center center' });
 };
 
@@ -246,7 +270,6 @@ const addProductLogoReveal = (
   logo: HTMLElement | null,
   logoRolls: boolean,
   logoSignals: boolean,
-  logoRises: boolean,
   signalParts: SignalLogoParts | null,
 ) => {
   if (!logo) return;
@@ -269,10 +292,6 @@ const addProductLogoReveal = (
       { autoAlpha: 1, scaleY: 1, duration: 0.5, ease: 'back.out(2)', stagger: 0.08 },
       0.42,
     );
-    return;
-  }
-  if (logoRises) {
-    timeline.to(logo, { autoAlpha: 1, y: 0, duration: 1.1, ease: 'power3.out' }, 0.1);
     return;
   }
   timeline.to(logo, { autoAlpha: 1, scale: 1, duration: 0.9, ease: 'power2.out' }, 0.1);
@@ -299,7 +318,6 @@ const setInitialProductLogoRevealState = (
   logoRuncheck: boolean,
   logoRolls: boolean,
   logoSignals: boolean,
-  logoRises: boolean,
   signalParts: SignalLogoParts | null,
   runcheckParts: RuncheckLogoParts | null,
 ) => {
@@ -309,7 +327,7 @@ const setInitialProductLogoRevealState = (
     gsap.set(runcheckParts.arrow, { autoAlpha: 0, y: 620 });
     return;
   }
-  setInitialProductLogoState(logo, logoRolls, logoSignals, logoRises, signalParts);
+  setInitialProductLogoState(logo, logoRolls, logoSignals, signalParts);
 };
 
 const addRuncheckLogoReveal = (
@@ -350,140 +368,107 @@ const addProductLogoRevealToTimeline = (
   logo: HTMLElement | null,
   logoRolls: boolean,
   logoSignals: boolean,
-  logoRises: boolean,
   signalParts: SignalLogoParts | null,
   runcheckParts: RuncheckLogoParts | null,
 ) => {
   if (runcheckParts && addRuncheckLogoReveal(timeline, runcheckParts)) return;
-  addProductLogoReveal(timeline, logo, logoRolls, logoSignals, logoRises, signalParts);
+  addProductLogoReveal(timeline, logo, logoRolls, logoSignals, signalParts);
 };
 
-const setupProductReveals = () => {
-  productSections.forEach((section) => {
-    const lines = Array.from(section.querySelectorAll<HTMLElement>('[data-product-line]'));
-    const logo = section.querySelector<HTMLElement>('[data-product-logo]');
-    const name = section.querySelector<HTMLElement>('.product-name');
-    if (lines.length === 0 && !logo && !name) return;
+const POLAROID_STAGGER = 0.14;
+const POLAROID_LOGO_DELAY = 0.4;
 
-    const logoSignals = logo?.dataset.logoSignal !== undefined;
-    const signalParts = logo && logoSignals ? getSignalLogoParts(logo) : null;
-    const logoRuncheck = logo?.dataset.logoRuncheck !== undefined;
-    const runcheckParts = logo && logoRuncheck ? getRuncheckLogoParts(logo) : null;
+// Polaroidin kallistus tulee CSS-muuttujasta, jotta se on sama ilman JavaScriptiäkin.
+const getTilt = (el: HTMLElement) => Number.parseFloat(getComputedStyle(el).getPropertyValue('--tilt')) || 0;
 
-    if (prefersReducedMotion) {
-      showProductWithoutMotion(lines, logo, name, signalParts);
-      showRuncheckWithoutMotion(runcheckParts);
-      return;
-    }
+// Builds one app's logo and label reveal as its own timeline, so the grid can
+// pop the icons in one by one and let each logo play its own intro.
+const createAppLogoTimeline = (trigger: HTMLElement) => {
+  const logo = trigger.querySelector<HTMLElement>('[data-app-logo]');
+  const name = trigger.querySelector<HTMLElement>('.polaroid-caption');
+  const logoSignals = logo?.dataset.logoSignal !== undefined;
+  const signalParts = logo && logoSignals ? getSignalLogoParts(logo) : null;
+  const logoRuncheck = logo?.dataset.logoRuncheck !== undefined;
+  const runcheckParts = logo && logoRuncheck ? getRuncheckLogoParts(logo) : null;
+  const fonecheckParts = logo && logo.dataset.logoFonecheck !== undefined ? getFonecheckLogoParts(logo) : null;
+  const logoRolls = logo?.dataset.logoRoll !== undefined;
 
-    const textEls = section.querySelectorAll<HTMLElement>(
-      'p[data-product-line], .section-label[data-product-line]',
-    );
-    const otherEls = lines.filter((el) => !el.matches('p, .section-label'));
-    const logoRises = logo?.dataset.logoRise !== undefined;
-    const logoRolls = logo?.dataset.logoRoll !== undefined;
+  if (prefersReducedMotion) {
+    showAppWithoutMotion(logo, name, signalParts);
+    showRuncheckWithoutMotion(runcheckParts);
+    return null;
+  }
 
-    const splits = Array.from(textEls).map(
-      (el) => new SplitText(el, { type: 'words', wordsClass: 'split-word', aria: 'none' }),
-    );
-    const allWords = splits.flatMap((s) => s.words as HTMLElement[]);
+  const tl = gsap.timeline();
 
-    gsap.set(allWords, { opacity: 0, y: 12, filter: 'blur(8px)' });
-    if (otherEls.length) gsap.set(otherEls, { autoAlpha: 0, y: 16 });
-    setInitialProductLogoRevealState(
-      logo,
-      logoRuncheck,
-      logoRolls,
-      logoSignals,
-      logoRises,
-      signalParts,
-      runcheckParts,
-    );
-    if (name) gsap.set(name, { autoAlpha: 0, y: 10 });
+  if (logo && hasFonecheckParts(fonecheckParts)) {
+    setInitialFonecheckLogoState(logo, fonecheckParts);
+    addFonecheckLogoReveal(tl, fonecheckParts);
+  } else {
+    setInitialProductLogoRevealState(logo, logoRuncheck, logoRolls, logoSignals, signalParts, runcheckParts);
+    addProductLogoRevealToTimeline(tl, logo, logoRolls, logoSignals, signalParts, runcheckParts);
+  }
 
-    const tl = gsap.timeline({
-      scrollTrigger: {
-        trigger: section,
-        start: section.dataset.firstProduct !== undefined ? 'top 95%' : 'top 75%',
-        once: true,
-      },
-    });
+  // Kuvateksti piirtyy vasemmalta oikealle kuin se kirjoitettaisiin.
+  if (name) {
+    gsap.set(name, { clipPath: 'inset(-30% 100% -30% 0)' });
+    tl.to(name, { clipPath: 'inset(-30% 0% -30% 0)', duration: 0.6, ease: 'power1.inOut' }, getProductNameRevealStart(logoRuncheck, logoRolls, logoSignals));
+  }
 
-    tl.to(allWords, {
-      opacity: 1,
-      y: 0,
-      filter: 'blur(0px)',
-      duration: 0.7,
-      ease: 'power2.out',
-      stagger: 0.014,
-    }, 0);
+  return tl;
+};
 
-    addProductLogoRevealToTimeline(
-      tl,
-      logo,
-      logoRolls,
-      logoSignals,
-      logoRises,
-      signalParts,
-      runcheckParts,
-    );
+const setupAppReveals = () => {
+  if (!appGrid || appTriggers.length === 0) return;
 
-    if (name) {
-      const nameRevealStart = getProductNameRevealStart(logoRuncheck, logoRolls, logoSignals);
-      tl.to(name, { autoAlpha: 1, y: 0, duration: 0.5, ease: 'power2.out' }, nameRevealStart);
-    }
+  const logoTimelines = appTriggers.map(createAppLogoTimeline);
+  if (prefersReducedMotion) return;
 
-    if (otherEls.length) {
-      tl.to(otherEls, {
-        autoAlpha: 1,
-        y: 0,
-        duration: 0.6,
-        ease: 'power2.out',
-        stagger: 0.06,
-      }, '-=0.3');
-    }
+  const page = gsap.timeline({
+    scrollTrigger: { trigger: appGrid, start: 'top 80%', once: true },
   });
+
+  appTriggers.forEach((trigger, index) => {
+    const card = trigger.querySelector<HTMLElement>('[data-app-card]');
+    const tape = trigger.querySelector<HTMLElement>('[data-polaroid-tape]');
+    const at = index * POLAROID_STAGGER;
+    const logoTimeline = logoTimelines[index];
+
+    // Polaroid pudotetaan sivulle ja asettuu omaan kulmaansa; teippi painetaan päälle.
+    if (card) {
+      const tilt = getTilt(card);
+      page.fromTo(
+        card,
+        { autoAlpha: 0, y: -32, scale: 1.06, rotation: tilt + (index % 2 === 0 ? -8 : 8) },
+        { autoAlpha: 1, y: 0, scale: 1, rotation: tilt, duration: 0.65, ease: 'back.out(1.3)' },
+        at,
+      );
+    }
+    if (tape) {
+      page.fromTo(
+        tape,
+        { autoAlpha: 0, clipPath: 'inset(0% 100% 0% 0%)' },
+        { autoAlpha: 0.92, clipPath: 'inset(0% 0% 0% 0%)', duration: 0.35, ease: 'power2.out' },
+        at + 0.45,
+      );
+    }
+    if (logoTimeline) page.add(logoTimeline, at + POLAROID_LOGO_DELAY);
+  });
+
+  // Lopuksi sivun kulmaan kirjoitetaan yhteinen huomautus.
+  const note = document.querySelector<HTMLElement>('[data-notebook-note]');
+  if (note) {
+    page.fromTo(note, { clipPath: 'inset(-30% 100% -30% 0)' }, {
+      clipPath: 'inset(-30% 0% -30% 0)', duration: 0.9, ease: 'power1.inOut',
+    }, appTriggers.length * POLAROID_STAGGER + 0.9);
+  }
 };
 
 const setupLogoMotion = () => {
   if (prefersReducedMotion) return;
 
-  document.querySelectorAll<HTMLElement>('[data-logo-stamp]').forEach((logo) => {
-    const lockup = logo.closest<HTMLElement>('[data-product-lockup]');
-    if (!lockup) return;
-    let stampTl: gsap.core.Timeline | null = null;
-
-    lockup.addEventListener('mouseenter', () => {
-      stampTl?.kill();
-      stampTl = gsap
-        .timeline()
-        .to(lockup, { scale: 0.95, duration: 0.12, ease: 'power2.in' })
-        .to(lockup, { scale: 1, duration: 0.45, ease: 'back.out(2.5)' });
-    });
-  });
-
-  document.querySelectorAll<HTMLElement>('[data-logo-nudge]').forEach((logo) => {
-    const lockup = logo.closest<HTMLElement>('[data-product-lockup]');
-    if (!lockup) return;
-    let nudgeTl: gsap.core.Timeline | null = null;
-
-    lockup.addEventListener('mouseenter', () => {
-      nudgeTl?.kill();
-      nudgeTl = gsap
-        .timeline()
-        .to(logo, { y: -7, duration: 0.18, ease: 'power2.out' })
-        .to(logo, { y: 0, duration: 0.5, ease: 'back.out(2)' });
-    });
-
-    lockup.addEventListener('mouseleave', () => {
-      nudgeTl?.kill();
-      nudgeTl = null;
-      gsap.to(logo, { y: 0, duration: 0.25, ease: 'power2.out' });
-    });
-  });
-
   document.querySelectorAll<HTMLElement>('[data-logo-signal]').forEach((logo) => {
-    const lockup = logo.closest<HTMLElement>('[data-product-lockup]');
+    const lockup = logo.closest<HTMLElement>('[data-app-trigger]');
     const parts = getSignalLogoParts(logo);
     if (!lockup || parts.all.length === 0) return;
     let signalTl: gsap.core.Timeline | null = null;
@@ -554,6 +539,6 @@ const setupFooterReveal = () => {
 setupNotifyForm();
 setupIntroMotion();
 setupSectionLines();
-setupProductReveals();
+setupAppReveals();
 setupLogoMotion();
 setupFooterReveal();

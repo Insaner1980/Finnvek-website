@@ -21,5 +21,12 @@ export default defineConfig({
       weights: ['400 500'],
       styles: ['normal', 'italic'],
     },
+    {
+      provider: fontProviders.google(),
+      name: 'Caveat',
+      cssVariable: '--font-hand',
+      weights: [400],
+      styles: ['normal'],
+    },
   ],
 });
