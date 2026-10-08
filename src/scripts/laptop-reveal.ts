@@ -24,7 +24,6 @@ const LENS_RADIUS = 0.11;
 const PEEK_DELAY = 2.6;
 
 const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-const canHover = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
 
 // Projektiivinen muunnos, joka vie suorakulmion (0,0)–(w,h) neljään pisteeseen
 // (Heckbertin neliö–nelikulmio-ratkaisu), CSS:n matrix3d-muodossa.
@@ -99,8 +98,7 @@ const setupLaptopReveal = () => {
       onUpdate: render,
     });
 
-  // Kerran latauksen jälkeen linssi pyyhkäisee ruudun yli vihjeeksi. Puhelimella
-  // tämä on ainoa tapa nähdä koodi, koska kursoria ei ole.
+  // Sweep once after loading to hint at the interactive reveal.
   let peek: gsap.core.Timeline | null = null;
   if (!prefersReducedMotion) {
     const scale = () => host.clientWidth / sourceWidth;
@@ -112,10 +110,11 @@ const setupLaptopReveal = () => {
       .to(lens, { r: 0, duration: 0.45, ease: 'power2.in' }, '-=0.35');
   }
 
-  if (!canHover) return;
-
-  host.addEventListener('pointermove', (event) => {
-    if (event.pointerType === 'touch') return;
+  const activeTouches = new Set<number>();
+  let touchHide: gsap.core.Tween | null = null;
+  const revealAtPointer = (event: PointerEvent) => {
+    touchHide?.kill();
+    touchHide = null;
     if (peek) {
       peek.kill();
       peek = null;
@@ -123,7 +122,11 @@ const setupLaptopReveal = () => {
     const rect = host.getBoundingClientRect();
     const x = event.clientX - rect.left;
     const y = event.clientY - rect.top;
-    if (prefersReducedMotion) {
+    if (prefersReducedMotion || event.pointerType === 'touch') {
+      moveX.tween.pause();
+      moveY.tween.pause();
+      gsap.killTweensOf(lens, 'r');
+      lensOpen = true;
       Object.assign(lens, { x, y, r: lensRadius });
       render();
       return;
@@ -136,9 +139,11 @@ const setupLaptopReveal = () => {
     }
     moveX(x);
     moveY(y);
-  });
+  };
 
-  host.addEventListener('pointerleave', () => {
+  const hideLens = () => {
+    touchHide?.kill();
+    touchHide = null;
     lensOpen = false;
     if (prefersReducedMotion) {
       lens.r = 0;
@@ -146,6 +151,27 @@ const setupLaptopReveal = () => {
       return;
     }
     showLens(false);
+  };
+
+  host.addEventListener('pointerdown', (event) => {
+    if (event.pointerType !== 'touch') return;
+    activeTouches.add(event.pointerId);
+    revealAtPointer(event);
+  });
+  host.addEventListener('pointermove', revealAtPointer);
+  host.addEventListener('pointerup', (event) => {
+    if (event.pointerType !== 'touch') return;
+    if (!activeTouches.delete(event.pointerId) || activeTouches.size > 0) return;
+    // Keep the code visible briefly after the finger no longer covers it.
+    touchHide?.kill();
+    touchHide = gsap.delayedCall(1.2, hideLens);
+  });
+  host.addEventListener('pointercancel', (event) => {
+    activeTouches.delete(event.pointerId);
+    if (activeTouches.size === 0) hideLens();
+  });
+  host.addEventListener('pointerleave', (event) => {
+    if (event.pointerType !== 'touch' && activeTouches.size === 0) hideLens();
   });
 };
 
