@@ -122,7 +122,9 @@ const setupLaptopReveal = () => {
     const x = event.clientX - rect.left;
     const y = event.clientY - rect.top;
     if (prefersReducedMotion || event.pointerType === 'touch') {
-      gsap.killTweensOf(lens);
+      moveX.tween.pause();
+      moveY.tween.pause();
+      gsap.killTweensOf(lens, 'r');
       lensOpen = true;
       Object.assign(lens, { x, y, r: lensRadius });
       render();
