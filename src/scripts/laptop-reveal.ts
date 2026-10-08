@@ -110,6 +110,7 @@ const setupLaptopReveal = () => {
       .to(lens, { r: 0, duration: 0.45, ease: 'power2.in' }, '-=0.35');
   }
 
+  const activeTouches = new Set<number>();
   let touchHide: gsap.core.Tween | null = null;
   const revealAtPointer = (event: PointerEvent) => {
     touchHide?.kill();
@@ -153,17 +154,24 @@ const setupLaptopReveal = () => {
   };
 
   host.addEventListener('pointerdown', (event) => {
-    if (event.pointerType === 'touch') revealAtPointer(event);
+    if (event.pointerType !== 'touch') return;
+    activeTouches.add(event.pointerId);
+    revealAtPointer(event);
   });
   host.addEventListener('pointermove', revealAtPointer);
   host.addEventListener('pointerup', (event) => {
     if (event.pointerType !== 'touch') return;
+    if (!activeTouches.delete(event.pointerId) || activeTouches.size > 0) return;
     // Keep the code visible briefly after the finger no longer covers it.
+    touchHide?.kill();
     touchHide = gsap.delayedCall(1.2, hideLens);
   });
-  host.addEventListener('pointercancel', hideLens);
+  host.addEventListener('pointercancel', (event) => {
+    activeTouches.delete(event.pointerId);
+    if (activeTouches.size === 0) hideLens();
+  });
   host.addEventListener('pointerleave', (event) => {
-    if (event.pointerType !== 'touch') hideLens();
+    if (event.pointerType !== 'touch' && activeTouches.size === 0) hideLens();
   });
 };
 
