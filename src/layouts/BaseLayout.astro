@@ -38,8 +38,8 @@ const canonical = new URL(Astro.url.pathname, Astro.site).toString();
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
 
-    <Font cssVariable="--font-body" preload />
-    <Font cssVariable="--font-sans" preload />
+    <Font cssVariable="--font-body" preload={[{ style: 'normal' }]} />
+    <Font cssVariable="--font-sans" preload={[{ style: 'normal' }]} />
     <link rel="preload" href="/fonts/first.ttf" as="font" type="font/ttf" crossorigin />
     <link rel="preload" href="/fonts/league-gothic/leaguegothic-regular-webfont.woff" as="font" type="font/woff" crossorigin />
 
