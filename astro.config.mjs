@@ -5,6 +5,9 @@ import sitemap from '@astrojs/sitemap';
 // https://astro.build/config
 export default defineConfig({
   site: 'https://finnvek.com',
+  build: {
+    inlineStylesheets: 'always',
+  },
   integrations: [sitemap()],
   fonts: [
     {
