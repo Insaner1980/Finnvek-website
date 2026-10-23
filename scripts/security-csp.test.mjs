@@ -45,6 +45,19 @@ test("built pages allow their own scripts without allowing arbitrary inline Java
   }
   console.log(`CSP verified: ${protectedPages}/${files.length} HTML documents`);
   const headers = readFileSync("dist/_headers", "utf8");
+  const cacheRules = new Map();
+  let route;
+  for (const line of headers.split(/\r?\n/)) {
+    if (!line.trim() || line.trim().startsWith("#")) continue;
+    if (line.startsWith("/")) route = line.trim();
+    const cache = line.match(/^\s+Cache-Control:\s*(.+)$/i);
+    if (cache) cacheRules.set(route, cache[1]);
+  }
+  assert.equal(cacheRules.get("/*"), "no-transform", "Assets must not inherit forced revalidation");
+  for (const route of ["/", "/privacy", "/privacy/", "/404.html"]) {
+    assert.equal(cacheRules.get(route), "public, must-revalidate, max-age=0", `${route}: HTML freshness`);
+  }
+  assert.equal(cacheRules.size, 5, "Cache overrides must remain limited to HTML routes");
   assert.match(headers, /frame-ancestors 'none'/);
   assert.match(headers, /X-Frame-Options: DENY/);
   assert.match(headers, /X-Content-Type-Options: nosniff/);
