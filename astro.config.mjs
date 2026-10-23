@@ -18,7 +18,9 @@ export default defineConfig({
       scriptDirective: {
         resources: ["'self'", 'https://static.cloudflareinsights.com'],
       },
-      styleDirective: { resources: ["'self'", "'unsafe-inline'"] },
+      styleDirective: {
+        resources: ["'self'", "'unsafe-inline'", { resource: "'unsafe-inline'", kind: 'attribute' }],
+      },
     },
   },
   build: {

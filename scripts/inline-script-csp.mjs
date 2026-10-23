@@ -4,9 +4,8 @@ import { join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { parse } from "parse5";
 
-// Only explicitly trusted, build-time inline scripts receive a hash.
-// Keep their exact bytes and execution order; Astro handles bundled scripts.
-export function hashInlineScripts(html) {
+/** Collect the document head, CSP, redirect marker, and explicitly trusted script hashes. */
+function collectCspData(html) {
   const nodes = [parse(html, { sourceCodeLocationInfo: true })];
   const hashes = new Set();
   let policyNode, head, redirect;
@@ -25,10 +24,16 @@ export function hashInlineScripts(html) {
       hashes.add(`'sha256-${createHash("sha256").update(code).digest("base64")}'`);
     }
   }
+  return { hashes, policyNode, head, redirect };
+}
+
+/** Add hashes for trusted inline scripts without changing their bytes or execution order. */
+export function hashInlineScripts(html) {
+  const { hashes, policyNode, head, redirect } = collectCspData(html);
   if (!policyNode) {
     if (!redirect || !head || hashes.size) throw new Error("Pages require Astro security.csp");
     // Astro's static redirect documents bypass layout rendering.
-      const offset = head.sourceCodeLocation?.startTag.endOffset ?? head.childNodes[0].sourceCodeLocation.startOffset;
+    const offset = head.sourceCodeLocation?.startTag.endOffset ?? head.childNodes[0].sourceCodeLocation.startOffset;
     const meta = '<meta http-equiv="content-security-policy" content="default-src \'none\'; script-src \'none\'; style-src \'unsafe-inline\'; base-uri \'none\'; form-action \'none\'">';
     return html.slice(0, offset) + meta + html.slice(offset);
   }
@@ -48,19 +53,20 @@ export function hashInlineScripts(html) {
   return html.slice(0, headEnd) + meta + html.slice(headEnd, metaStart) + html.slice(metaEnd);
 }
 
+/** Create the Astro integration that secures generated HTML after each build. */
 export default function inlineScriptCsp() {
   return {
     name: "inline-script-csp",
     hooks: {
       "astro:build:done": async ({ dir }) => {
         const root = fileURLToPath(dir);
-        for (const file of await readdir(root, { recursive: true })) {
-          if (!file.endsWith(".html")) continue;
+        const files = (await readdir(root, { recursive: true })).filter((file) => file.endsWith(".html"));
+        await Promise.all(files.map(async (file) => {
           const path = join(root, file);
           const html = await readFile(path, "utf8");
           const secured = hashInlineScripts(html);
           if (secured !== html) await writeFile(path, secured);
-        }
+        }));
       },
     },
   };

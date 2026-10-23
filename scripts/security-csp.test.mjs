@@ -52,6 +52,29 @@ test("built pages allow their own scripts without allowing arbitrary inline Java
   for (const line of headers.split(/\r?\n/)) assert.ok(line.length <= 2000, "Cloudflare header line limit");
 });
 
+test("built pages allow style attributes independently of stylesheet hashes", () => {
+  const files = readdirSync("dist", { recursive: true }).filter((file) => file.endsWith(".html"));
+  let revealMatteFound = false;
+  for (const file of files) {
+    const nodes = [parse(readFileSync(join("dist", file), "utf8"))];
+    let policy;
+    let hasStyleAttributes = false;
+    while (nodes.length) {
+      const node = nodes.pop();
+      nodes.push(...(node.childNodes ?? []));
+      const attrs = Object.fromEntries((node.attrs ?? []).map(({ name, value }) => [name, value]));
+      if (attrs["http-equiv"]?.toLowerCase() === "content-security-policy") policy = attrs.content;
+      if ("style" in attrs) hasStyleAttributes = true;
+      if (attrs.style?.includes("--reveal-matte")) revealMatteFound = true;
+    }
+    if (hasStyleAttributes) {
+      const attributePolicy = policy?.split(";").find((value) => value.trim().startsWith("style-src-attr "));
+      assert.equal(attributePolicy?.trim(), "style-src-attr 'unsafe-inline'", `${file}: blocked style attributes`);
+    }
+  }
+  assert.ok(revealMatteFound, "The home page reveal style must be covered");
+});
+
 if (existsSync("scripts/inline-script-csp.mjs")) {
   test("only explicitly marked scripts are hashed and the document body stays unchanged", async () => {
     const { hashInlineScripts } = await import("./inline-script-csp.mjs");
