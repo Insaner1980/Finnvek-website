@@ -30,7 +30,7 @@ const defaultNote = laptopNotes.find((note) => note.from === 9) ?? laptopNotes[0
 
 <BaseLayout>
   <Font cssVariable="--font-hand" preload slot="head" />
-  <script is:inline>
+  <script is:inline data-csp-hash>
     document.documentElement.classList.add('is-home-motion-booting');
     document.addEventListener(
       'DOMContentLoaded',
