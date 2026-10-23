@@ -1,5 +1,7 @@
 # Script/resource CSP (including script hashes) is generated in HTML by astro.config.mjs.
 /*
+  # Prevent Cloudflare script injection from conflicting with the hash-based CSP.
+  Cache-Control: public, must-revalidate, max-age=0, no-transform
   Content-Security-Policy: base-uri 'self'; object-src 'none'; frame-ancestors 'none'; form-action 'self'; upgrade-insecure-requests
   X-Frame-Options: DENY
   X-Content-Type-Options: nosniff
