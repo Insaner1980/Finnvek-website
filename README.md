@@ -9,7 +9,6 @@ The source for [finnvek.com](https://finnvek.com), a static English-language sit
 - A shared privacy policy for KnitTools, runcheck, dBcheck, and fonecheck
 - Responsive fixed navigation and shared footer components
 - GSAP-powered entrance, scroll, logo, and product animations with reduced-motion handling
-- A KnitTools launch-notification form that posts to the Finnvek subscription API
 
 ## Requirements
 
@@ -77,7 +76,6 @@ The home page imports `runcheck-logo.svg` from the project root and renders it i
 
 - Astro's Google font provider supplies IBM Plex Sans, Epilogue, and Caveat at build time.
 - Cloudflare Web Analytics is loaded from the shared base layout.
-- The notification form posts JSON to `https://api.finnvek.com/subscribe`.
 - The sitemap integration generates `sitemap-index.xml` for the configured production URL.
 
 No environment variables are read by the current site source.

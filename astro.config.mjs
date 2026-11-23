@@ -10,7 +10,7 @@ export default defineConfig({
     csp: {
       directives: [
         "default-src 'self'",
-        "connect-src 'self' https://api.finnvek.com https://cloudflareinsights.com",
+        "connect-src 'self' https://cloudflareinsights.com",
         "img-src 'self' data:",
         "frame-src 'none'",
         "object-src 'none'",

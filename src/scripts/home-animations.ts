@@ -9,123 +9,6 @@ const siteFooter = document.querySelector<HTMLElement>('.site-footer');
 const appGrid = document.querySelector<HTMLElement>('[data-app-grid]');
 const appTriggers = Array.from(document.querySelectorAll<HTMLElement>('[data-app-trigger]'));
 const sectionLines = Array.from(document.querySelectorAll<HTMLElement>('[data-section-line]'));
-const notifyForm = document.querySelector<HTMLFormElement>('[data-notify-form]');
-
-const API_ENDPOINT = 'https://api.finnvek.com/subscribe';
-const SUBSCRIBE_TIMEOUT_MS = 10000;
-
-const setupNotifyForm = () => {
-  if (!notifyForm) return;
-
-  const submitBtn = notifyForm.querySelector<HTMLButtonElement>('button[type="submit"]');
-  const emailInput = notifyForm.querySelector<HTMLInputElement>('input[name="email"]');
-  const honeypot = notifyForm.querySelector<HTMLInputElement>('input[name="website"]');
-  const errorEl = document.querySelector<HTMLElement>('[data-notify-error]');
-  const originalBtnText = submitBtn?.textContent ?? 'Notify me at launch';
-
-  if (emailInput) emailInput.disabled = false;
-  if (honeypot) honeypot.disabled = false;
-  if (submitBtn) submitBtn.disabled = false;
-
-  const showError = (message: string) => {
-    if (submitBtn) {
-      submitBtn.disabled = false;
-      submitBtn.textContent = originalBtnText;
-    }
-    if (errorEl) {
-      errorEl.textContent = message;
-      errorEl.hidden = false;
-    }
-  };
-
-  const hideError = () => {
-    if (errorEl) {
-      errorEl.textContent = '';
-      errorEl.hidden = true;
-    }
-  };
-
-  notifyForm.addEventListener('submit', async (event) => {
-    event.preventDefault();
-
-    if (!notifyForm.reportValidity()) return;
-
-    hideError();
-
-    if (submitBtn) {
-      submitBtn.disabled = true;
-      submitBtn.textContent = 'Sending…';
-    }
-
-    let success = false;
-    let errorMessage = 'Something went wrong. Please try again.';
-
-    const controller = new AbortController();
-    const timeoutId = window.setTimeout(() => controller.abort(), SUBSCRIBE_TIMEOUT_MS);
-
-    try {
-      const res = await fetch(API_ENDPOINT, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        signal: controller.signal,
-        body: JSON.stringify({
-          email: emailInput?.value.trim() ?? '',
-          source: 'finnvek',
-          website: honeypot?.value ?? '',
-        }),
-      });
-      const data: unknown = await res.json().catch(() => ({}));
-      const responseData = typeof data === 'object' && data !== null
-        ? data as Record<string, unknown>
-        : {};
-      if (res.ok && responseData.success === true) {
-        success = true;
-      } else if (typeof responseData.error === 'string' && responseData.error) {
-        errorMessage = responseData.error;
-      }
-    } catch (error) {
-      if (error instanceof DOMException && error.name === 'AbortError') {
-        errorMessage = 'Request timed out. Please try again.';
-      } else {
-        errorMessage = 'Network error. Please check your connection.';
-      }
-    } finally {
-      window.clearTimeout(timeoutId);
-    }
-
-    if (!success) {
-      showError(errorMessage);
-      return;
-    }
-
-    const finalize = () => {
-      const message = document.createElement('span');
-      message.setAttribute('role', 'status');
-      message.textContent = "You're in!";
-      notifyForm.replaceChildren(message);
-      notifyForm.classList.add('is-complete');
-    };
-
-    if (prefersReducedMotion) {
-      finalize();
-      return;
-    }
-
-    const controls = Array.from(notifyForm.children) as HTMLElement[];
-
-    gsap
-      .timeline()
-      .to(controls, {
-        autoAlpha: 0,
-        y: -6,
-        duration: 0.16,
-        stagger: 0.03,
-        ease: 'power1.out',
-      })
-      .add(finalize)
-      .fromTo(notifyForm, { autoAlpha: 0, y: 8 }, { autoAlpha: 1, y: 0, duration: 0.36, ease: 'power2.out' });
-  });
-};
 
 const setupIntroMotion = () => {
   if (prefersReducedMotion) return;
@@ -536,7 +419,6 @@ const setupFooterReveal = () => {
   }
 };
 
-setupNotifyForm();
 setupIntroMotion();
 setupSectionLines();
 setupAppReveals();

@@ -122,23 +122,6 @@ const defaultNote = laptopNotes.find((note) => note.from === 9) ?? laptopNotes[0
         description="KnitTools is a pocket companion for knitters and crocheters. It counts your rows, keeps your patterns one tap away, and your yarn, notes, and progress photos quietly in order. In eleven languages, for Android."
       >
         <img slot="logo" src="/images/knittools.webp" alt="" width="500" height="500" loading="lazy" decoding="async" data-app-logo data-logo-roll />
-
-        <form class="notify" method="post" data-notify-form>
-          <label class="visually-hidden" for="notify-email">Email address</label>
-          <label class="visually-hidden" for="notify-website">Leave this field empty</label>
-          <input
-            class="visually-hidden"
-            id="notify-website"
-            name="website"
-            type="text"
-            tabindex="-1"
-            autocomplete="off"
-            disabled
-          />
-          <input id="notify-email" name="email" type="email" placeholder="email address" autocomplete="email" required disabled />
-          <button type="submit" disabled>Notify me at launch</button>
-        </form>
-        <p class="notify-error" data-notify-error role="alert" aria-live="polite" hidden></p>
       </AppPolaroid>
 
       <AppPolaroid
