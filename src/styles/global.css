@@ -964,89 +964,6 @@ html.is-home-motion-booting .site-footer .footer-meta > * {
   outline: none;
 }
 
-.notify {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
-  width: 100%;
-  max-width: 26rem;
-  margin: 0 0 1.25rem 0;
-  border: 1px solid var(--color-border);
-}
-
-.notify input,
-.notify button {
-  min-width: 0;
-  height: 2.75rem;
-  font: inherit;
-  font-family: var(--font-body-stack);
-  font-size: 0.9375rem;
-  background: transparent;
-  color: var(--color-text);
-  border: 0;
-  margin: 0;
-}
-
-.notify input {
-  width: 100%;
-  padding: 0 1rem;
-  border-right: 1px solid var(--color-border);
-  /* iOS Safari zoomaa input-fokuksessa jos fonttikoko < 16px */
-  font-size: 1rem;
-}
-
-.notify input#notify-website {
-  width: 1px;
-  height: 1px;
-  padding: 0;
-  margin: -1px;
-  border: 0;
-}
-
-.notify input::placeholder {
-  color: var(--color-text-muted);
-}
-
-.notify input:focus {
-  outline: 1px solid var(--color-text);
-  outline-offset: -1px;
-}
-
-.notify button {
-  font-family: var(--font-sans-stack);
-  font-weight: 500;
-  letter-spacing: 0.08em;
-  padding: 0 1.25rem;
-  cursor: pointer;
-  white-space: nowrap;
-  text-transform: uppercase;
-  transition: background-color 150ms ease, color 150ms ease;
-}
-
-.notify button:hover,
-.notify button:focus-visible {
-  background-color: var(--color-text);
-  color: var(--color-bg);
-  outline: none;
-}
-
-.notify.is-complete {
-  display: block;
-  padding: 0;
-  border: 0;
-  font-family: var(--font-body-stack);
-  font-size: 0.9375rem;
-  color: var(--color-text);
-}
-
-.notify-error {
-  margin: 0.5rem 0 1rem 0;
-  font-family: var(--font-body-stack);
-  font-size: 0.875rem;
-  color: var(--color-text-muted);
-  max-width: 26rem;
-  overflow-wrap: anywhere;
-}
-
 .product-link {
   display: inline-block;
   font-family: var(--font-sans-stack);
@@ -1407,22 +1324,6 @@ html.is-home-motion-booting .site-footer .footer-meta > * {
     align-items: flex-start;
     text-align: left;
   }
-
-  .notify {
-    grid-template-columns: 1fr;
-  }
-
-  .notify button {
-    height: auto;
-    min-height: 2.75rem;
-    padding-block: 0.625rem;
-    white-space: normal;
-  }
-
-  .notify input {
-    border-right: 0;
-    border-bottom: 1px solid var(--color-border);
-  }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -1432,12 +1333,5 @@ html.is-home-motion-booting .site-footer .footer-meta > * {
   .menu-toggle-icon span,
   .site-header.is-menu-enhanced .site-nav {
     transition: none;
-  }
-}
-
-@media (forced-colors: active) {
-  .notify button:focus-visible {
-    outline: 2px solid Highlight;
-    outline-offset: -2px;
   }
 }
